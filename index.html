@@ -54,10 +54,12 @@
         
         .student-name { text-align: right !important; padding-right: 10px; font-weight: bold; width: 40%; }
         
+        /* بٹن کو ٹچ سے غیر فعال کیا گیا ہے */
         .status-btn { 
-            width: 90px; padding: 6px 0; cursor: pointer; font-weight: bold; 
+            width: 90px; padding: 6px 0; font-weight: bold; 
             border-radius: 6px; background: #eee; border: 1px solid #ccc; 
             display: inline-block; font-size: 16px;
+            pointer-events: none; /* ٹچ کام نہیں کرے گا */
         }
         
         .present { background-color: var(--present-clr) !important; color: white !important; }
@@ -68,9 +70,8 @@
         .num-absent { color: var(--absent-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
         .num-leave { color: var(--leave-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
 
-        .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; }
+        .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; background: #f0f0f0; }
 
-        /* ویڈیوز کے لیے خاص ڈیزائن */
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
         .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
@@ -165,21 +166,20 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
-        <button class="btn-tool" style="background:#ad1457" onclick="downloadBackup()">بیک اپ لیں</button>
     </div>
 </div>
 
 <script>
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
-    // ہر بچے کی یوٹیوب پلے لسٹ یا ویڈیو لنک یہاں ڈالیں
     const videoLinks = {
-        "0": "https://www.youtube.com/embed/videoseries?list=PLxyz1", // آذان منصور
-        "1": "https://www.youtube.com/embed/videoseries?list=PLxyz2", // آیان ولید
-        "11": "https://www.youtube.com/embed/videoseries?list=PLxyz3" // سمیع نذیر
+        "0": "https://www.youtube.com/embed/videoseries?list=PLxyz1",
+        "1": "https://www.youtube.com/embed/videoseries?list=PLxyz2",
+        "11": "https://www.youtube.com/embed/videoseries?list=PLxyz3"
     };
 
-    const storageKey = 'hussain_masjid_final_v6';
+    // یہاں آپ وہ ڈیٹا ڈالیں گے جو آپ سب کو دکھانا چاہتے ہیں
+    const offlineData = {}; 
 
     window.onload = function() {
         if(!document.getElementById('mainDate').value) document.getElementById('mainDate').valueAsDate = new Date();
@@ -199,8 +199,7 @@
         const dObj = new Date(date);
         document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
 
-        const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
-        const dayData = data[date] || {};
+        const dayData = offlineData[date] || {};
 
         const b1 = document.getElementById('attTableBody'), 
               b2 = document.getElementById('lessTableBody'), 
@@ -211,11 +210,10 @@
 
         names.forEach((n, i) => {
             const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
-            b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" onclick="tglA(this,${i})">${s.aS}</div></td></tr>`;
-            b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}" onclick="tglL(this,${i})">${s.lS}</div></td></tr>`;
-            b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" onchange="saveW(${i},this.value)"></td></tr>`;
+            b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}">${s.aS}</div></td></tr>`;
+            b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}">${s.lS}</div></td></tr>`;
+            b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" readonly></td></tr>`;
             
-            // ویڈیو ٹیب کا ڈیٹا
             b4.innerHTML += `
                 <tr>
                     <td>${i+1}</td>
@@ -245,40 +243,7 @@
         }
     }
 
-    function tglA(el, i) {
-        let s, c;
-        if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
-        else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
-        else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
-        else {s="---"; c="status-btn";}
-        el.innerText=s; el.className=c; save(i,'aS',s,c);
-    }
-
-    function tglL(el, i) {
-        let s, c;
-        if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
-        else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
-        else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
-        else {s="---"; c="status-btn";}
-        el.innerText=s; el.className=c; save(i,'lS',s,c);
-    }
-
-    function saveW(i, v) { save(i, 'w', v); }
-
-    function save(i, k, v, c) {
-        const d = document.getElementById('mainDate').value;
-        let data = JSON.parse(localStorage.getItem(storageKey) || '{}');
-        if(!data[d]) data[d] = {};
-        if(!data[d][i]) data[d][i] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:''};
-        
-        if(k==='aS'){ data[d][i].aS=v; data[d][i].aC=c; }
-        else if(k==='lS'){ data[d][i].lS=v; data[d][i].lC=c; }
-        else { data[d][i].w=v; }
-        localStorage.setItem(storageKey, JSON.stringify(data));
-    }
-
     function loadReports() {
-        const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
         const selDate = new Date(document.getElementById('mainDate').value);
         const mName = selDate.toLocaleDateString('ur-PK', {month:'long', year:'numeric'});
         const mKey = document.getElementById('mainDate').value.substring(0, 7);
@@ -290,9 +255,9 @@
 
         names.forEach((n, i) => {
             let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
-            for(let d in data) {
-                if(d.startsWith(mKey) && data[d][i]) {
-                    const r = data[d][i];
+            for(let d in offlineData) {
+                if(d.startsWith(mKey) && offlineData[d][i]) {
+                    const r = offlineData[d][i];
                     if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
                     if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
                 }
@@ -301,13 +266,6 @@
             bL.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${sn}</td><td class="num-absent">${yn}</td><td class="num-leave">${ns}</td></tr>`;
         });
     }
-
-    function downloadBackup() {
-        const blob = new Blob([localStorage.getItem(storageKey)], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = 'hussain_masjid_data.txt'; a.click();
-    }
 </script>
 </body>
 </html>
-
