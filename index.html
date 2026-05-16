@@ -54,12 +54,11 @@
         
         .student-name { text-align: right !important; padding-right: 10px; font-weight: bold; width: 40%; }
         
-        /* بٹن کو ٹچ سے غیر فعال کیا گیا ہے */
         .status-btn { 
             width: 90px; padding: 6px 0; font-weight: bold; 
             border-radius: 6px; background: #eee; border: 1px solid #ccc; 
             display: inline-block; font-size: 16px;
-            pointer-events: none; /* ٹچ کام نہیں کرے گا */
+            pointer-events: none; /* ٹچ غیر فعال */
         }
         
         .present { background-color: var(--present-clr) !important; color: white !important; }
@@ -75,6 +74,9 @@
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
         .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+        .app-btn-container { margin-top: 10px; text-align: center; }
+        .open-app-btn { display: inline-block; background: #2e7d32; color: white; text-decoration: none; padding: 8px 15px; border-radius: 8px; font-size: 15px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
         .footer-tools { margin-top: 20px; display: flex; gap: 10px; }
         .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; font-weight: bold; }
@@ -173,13 +175,8 @@
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
     const videoLinks = {
-        "0": "https://www.youtube.com/embed/videoseries?list=PLxyz1",
-        "1": "https://www.youtube.com/embed/videoseries?list=PLxyz2",
-        "11": "https://www.youtube.com/embed/videoseries?list=PLxyz3"
+        "0": "PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF", "1": "PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG", "2": "PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ", "3": "PL3-aVTBoE-114ez2v-su_1RK46bVns8sd", "4": "PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo", "5": "PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ", "6": "PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK", "7": "PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu", "8": "PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl", "9": "PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy", "10": "PL3-aVTBoE-11d-65cVValCeAfDHo46HaK", "11": "PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS", "12": "PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr", "13": "PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK", "14": "PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL", "15": "PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH", "16": "PL3-aVTBoE-13NbwY9qlqURI14HdArML2-", "17": "PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO", "18": "PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky", "19": "PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks", "20": "PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC", "21": "PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_", "22": "PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-", "23": "PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n", "24": "PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd", "25": "PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F", "26": "PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
-
-    // یہاں آپ وہ ڈیٹا ڈالیں گے جو آپ سب کو دکھانا چاہتے ہیں
-    const offlineData = {}; 
 
     window.onload = function() {
         if(!document.getElementById('mainDate').value) document.getElementById('mainDate').valueAsDate = new Date();
@@ -199,13 +196,8 @@
         const dObj = new Date(date);
         document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
 
-        const dayData = offlineData[date] || {};
-
-        const b1 = document.getElementById('attTableBody'), 
-              b2 = document.getElementById('lessTableBody'), 
-              b3 = document.getElementById('diaryTableBody'),
-              b4 = document.getElementById('videoTableBody');
-              
+        const dayData = myData[date] || {};
+        const b1 = document.getElementById('attTableBody'), b2 = document.getElementById('lessTableBody'), b3 = document.getElementById('diaryTableBody'), b4 = document.getElementById('videoTableBody');
         b1.innerHTML = ''; b2.innerHTML = ''; b3.innerHTML = ''; b4.innerHTML = '';
 
         names.forEach((n, i) => {
@@ -213,51 +205,34 @@
             b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}">${s.aS}</div></td></tr>`;
             b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}">${s.lS}</div></td></tr>`;
             b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" readonly></td></tr>`;
-            
-            b4.innerHTML += `
-                <tr>
-                    <td>${i+1}</td>
-                    <td class="student-name">${n}</td>
-                    <td><button class="video-btn" onclick="toggleVideo(${i})">ویڈیوز</button></td>
-                </tr>
-                <tr id="videoRow-${i}" class="video-container">
-                    <td colspan="3">
-                        <div id="videoArea-${i}"></div>
-                    </td>
-                </tr>`;
+            b4.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><button class="video-btn" onclick="toggleVideo(${i})">ویڈیوز</button></td></tr><tr id="videoRow-${i}" class="video-container"><td colspan="3"><div id="videoArea-${i}"></div></td></tr>`;
         });
     }
 
     function toggleVideo(i) {
         const row = document.getElementById(`videoRow-${i}`);
         const area = document.getElementById(`videoArea-${i}`);
-        const link = videoLinks[i] || "https://www.youtube.com/embed/dQw4w9WgXcQ";
-
-        if (row.style.display === "table-row") {
-            row.style.display = "none";
-            area.innerHTML = "";
-        } else {
+        const playlistId = videoLinks[i];
+        if (row.style.display === "table-row") { row.style.display = "none"; area.innerHTML = ""; } 
+        else {
             document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
             row.style.display = "table-row";
-            area.innerHTML = `<iframe height="250" src="${link}" frameborder="0" allowfullscreen></iframe>`;
+            if(playlistId) {
+                area.innerHTML = `<iframe height="250" src="https://www.youtube.com/embed/videoseries?list=${playlistId}" frameborder="0" allowfullscreen></iframe><div class="app-btn-container"><a href="https://youtube.com/playlist?list=${playlistId}" target="_blank" class="open-app-btn">تمام ویڈیوز یوٹیوب ایپ میں دیکھیں 📱</a></div>`;
+            } else { area.innerHTML = `<iframe height="250" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>`; }
         }
     }
 
     function loadReports() {
-        const selDate = new Date(document.getElementById('mainDate').value);
-        const mName = selDate.toLocaleDateString('ur-PK', {month:'long', year:'numeric'});
         const mKey = document.getElementById('mainDate').value.substring(0, 7);
-        
-        document.querySelectorAll('.monthTitle').forEach(el => el.innerText = "رپورٹ برائے: " + mName);
-        
+        document.querySelectorAll('.monthTitle').forEach(el => el.innerText = "رپورٹ برائے: " + new Date(document.getElementById('mainDate').value).toLocaleDateString('ur-PK', {month:'long', year:'numeric'}));
         const bA = document.getElementById('attReportBody'), bL = document.getElementById('lessReportBody');
         bA.innerHTML = ''; bL.innerHTML = '';
-
         names.forEach((n, i) => {
             let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
-            for(let d in offlineData) {
-                if(d.startsWith(mKey) && offlineData[d][i]) {
-                    const r = offlineData[d][i];
+            for(let d in myData) {
+                if(d.startsWith(mKey) && myData[d][i]) {
+                    const r = myData[d][i];
                     if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
                     if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
                 }
@@ -266,6 +241,9 @@
             bL.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${sn}</td><td class="num-absent">${yn}</td><td class="num-leave">${ns}</td></tr>`;
         });
     }
+
+    // ======= روزانہ کا بیک اپ ٹیکسٹ بالکل نیچے یہاں پیسٹ کریں =======
+    const myData = {};
 </script>
 </body>
 </html>
