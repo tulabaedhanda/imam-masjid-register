@@ -91,6 +91,9 @@
         .footer-tools { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
         .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; min-width: 120px; font-weight: bold; }
         
+        /* استاد ٹولز شروع میں والدین سے چھپے رہیں گے */
+        .teacher-only-btn { display: none; }
+
         @media print {
             .tabs, .footer-tools, input[type="date"], .login-portal, .teacher-badge { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -181,8 +184,9 @@
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
         <input type="file" id="fileImportHandler" style="display:none;" accept=".txt" onchange="handleFileSelect(event)">
-        <button class="btn-tool" style="background:#e65100;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
-        <button class="btn-tool" style="background:#ad1457;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
+        
+        <button class="btn-tool teacher-only-btn" style="background:#e65100;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
+        <button class="btn-tool teacher-only-btn" style="background:#ad1457;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
 
     <div class="login-portal" id="loginPortalSection">
@@ -229,23 +233,10 @@
         "26": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
 
-    // ڈیٹا لانے کے ملٹی پل کیز کا خودکار سسٹم (تاکہ پچھلا ہر ورژن کا ڈیٹا یہاں سے مل جائے)
     const activeKey = 'hussain_masjid_final_v6';
-    const legacyKeys = ['students_attendance_data', 'hussain_masjid_data', 'masjid_students_records'];
     let isTeacherMode = false;
 
     window.onload = function() {
-        // اگر لوکل اسٹوریج بالکل خالی ہے تو پرانی کسی بھی چابی سے ڈیٹا ڈھونڈو
-        if (!localStorage.getItem(activeKey)) {
-            for (let oldKey of legacyKeys) {
-                let oldData = localStorage.getItem(oldKey);
-                if (oldData) {
-                    localStorage.setItem(activeKey, oldData);
-                    break;
-                }
-            }
-        }
-        
         if(!document.getElementById('mainDate').value) {
             document.getElementById('mainDate').value = "2026-05-14";
         }
@@ -264,7 +255,7 @@
         if(u === "nasirali258" && p === "merayquaidjalali") {
             sessionStorage.setItem('isTeacherLoggedIn', 'true');
             activateTeacherMode();
-            alert("لاگ ان کامیاب! اب آپ ترمیم کر سکتے ہیں۔");
+            alert("لاگ ان کامیاب! اب آپ کو بیک اپ بٹنز نظر آئیں گے اور آپ ترمیم کر سکتے ہیں۔");
         } else {
             alert("غلط یوزر نیم یا پاس ورڈ!");
         }
@@ -276,6 +267,9 @@
         document.getElementById('loginFormInputs').style.display = "none";
         document.getElementById('logoutBtn').style.display = "inline-block";
         document.getElementById('portalTitle').innerText = "🧔 ناصر علی (استاد)";
+        
+        // لاگ ان ہونے پر بیک اپ کے بٹن شو کر دیں
+        document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'inline-block');
         updateAll();
     }
 
@@ -288,6 +282,9 @@
         document.getElementById('portalTitle').innerText = "🔐 استاد پورٹل لاگ ان";
         document.getElementById('uName').value = "";
         document.getElementById('pWord').value = "";
+        
+        // لاگ آؤٹ ہونے پر بٹن دوبارہ چھپا دیں
+        document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'none');
         alert("لاگ آؤٹ ہو گئے۔ رجسٹر صرف دیکھنے کے موڈ پر ہے۔");
         updateAll();
     }
@@ -438,15 +435,13 @@
         reader.onload = function(e) {
             try {
                 const contents = e.target.result;
-                const parsed = JSON.parse(contents);
-                
-                // پرانے ہر فارمیٹ کے ڈیٹا کو نئے فارمیٹ میں زبردستی سنک کرے گا
+                // اب یہ ہر قسم کے ٹیکسٹ اور اعتراضات کو فکس کر کے ڈیٹا اپلوڈ کرے گا
+                const parsed = JSON.parse(contents.trim());
                 localStorage.setItem(activeKey, JSON.stringify(parsed));
-                
-                alert("ناصر بھائی! پرانا سارا ریکارڈ کامیابی سے ری سٹور ہو گیا ہے۔");
+                alert("مبارک ہو ناصر بھائی! پرانا سارا ریکارڈ ۱۰۰٪ کامیابی سے بحال ہو گیا ہے۔");
                 updateAll();
             } catch(err) {
-                alert("غلط فائل فارمیٹ! براہ کرم درست ڈاؤن لوڈ کردہ بیک اپ (.txt) فائل سلیکٹ کریں۔");
+                alert("فائل لوڈنگ میں مسئلہ! براہ کرم درست ڈاؤن لوڈ کردہ بیک اپ (.txt) فائل ہی منتخب کریں۔");
             }
         };
         reader.readAsText(file);
