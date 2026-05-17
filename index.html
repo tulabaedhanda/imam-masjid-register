@@ -29,7 +29,7 @@
         }
 
         .header-section { text-align: center; margin: -15px -15px 20px -15px; background: #880e4f; border-radius: 15px 15px 0 0; min-height: 120px; position: relative; }
-        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; height: auto; min-height: 120px; }
+        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; height: auto; }
 
         .urdu-date { 
             background: #ad1457; color: white; padding: 5px 20px; 
@@ -101,7 +101,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img id="masjidHeaderBanner" src="https://docs.google.com/uc?export=view&id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img" onerror="fallbackImage()">
+        <img id="masjidHeaderBanner" src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -229,16 +229,23 @@
         "26": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
 
-    const storageKey = 'hussain_masjid_final_v6';
+    // ڈیٹا لانے کے ملٹی پل کیز کا خودکار سسٹم (تاکہ پچھلا ہر ورژن کا ڈیٹا یہاں سے مل جائے)
+    const activeKey = 'hussain_masjid_final_v6';
+    const legacyKeys = ['students_attendance_data', 'hussain_masjid_data', 'masjid_students_records'];
     let isTeacherMode = false;
 
-    // بنیادی ڈیٹا محفوظ رکھا گیا ہے
-    const initialPermanentData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
-
     window.onload = function() {
-        if(!localStorage.getItem(storageKey)) {
-            localStorage.setItem(storageKey, JSON.stringify(initialPermanentData));
+        // اگر لوکل اسٹوریج بالکل خالی ہے تو پرانی کسی بھی چابی سے ڈیٹا ڈھونڈو
+        if (!localStorage.getItem(activeKey)) {
+            for (let oldKey of legacyKeys) {
+                let oldData = localStorage.getItem(oldKey);
+                if (oldData) {
+                    localStorage.setItem(activeKey, oldData);
+                    break;
+                }
+            }
         }
+        
         if(!document.getElementById('mainDate').value) {
             document.getElementById('mainDate').value = "2026-05-14";
         }
@@ -249,11 +256,6 @@
         
         updateAll();
     };
-
-    function fallbackImage() {
-        // اگر پہلا لنک فیل ہو تو متبادل اوپن لنک امیج لوڈ کرے گا
-        document.getElementById('masjidHeaderBanner').src = "https://docs.google.com/uc?id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ";
-    }
 
     function checkTeacherLogin() {
         const u = document.getElementById('uName').value;
@@ -305,7 +307,7 @@
         const dObj = new Date(date);
         document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
 
-        const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        const data = JSON.parse(localStorage.getItem(activeKey) || '{}');
         const dayData = data[date] || {};
 
         const b1 = document.getElementById('attTableBody'), 
@@ -365,7 +367,7 @@
 
     function save(i, k, v, c) {
         const d = document.getElementById('mainDate').value;
-        let data = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        let data = JSON.parse(localStorage.getItem(activeKey) || '{}');
 
         if(!data[d]) data[d] = {};
         if(!data[d][i]) data[d][i] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:''};
@@ -373,11 +375,11 @@
         if(k==='aS'){ data[d][i].aS=v; data[d][i].aC=c; }
         else if(k==='lS'){ data[d][i].lS=v; data[d][i].lC=c; }
         else { data[d][i].w=v; }
-        localStorage.setItem(storageKey, JSON.stringify(data));
+        localStorage.setItem(activeKey, JSON.stringify(data));
     }
 
     function loadReports() {
-        const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        const data = JSON.parse(localStorage.getItem(activeKey) || '{}');
         const mainDateEl = document.getElementById('mainDate');
         if(!mainDateEl || !mainDateEl.value) return;
 
@@ -437,8 +439,11 @@
             try {
                 const contents = e.target.result;
                 const parsed = JSON.parse(contents);
-                localStorage.setItem(storageKey, JSON.stringify(parsed));
-                alert("مبارک ہو ناصر بھائی! بیک اپ فائل سے سارا ریکارڈ کامیابی سے اپلوڈ ہو گیا ہے۔");
+                
+                // پرانے ہر فارمیٹ کے ڈیٹا کو نئے فارمیٹ میں زبردستی سنک کرے گا
+                localStorage.setItem(activeKey, JSON.stringify(parsed));
+                
+                alert("ناصر بھائی! پرانا سارا ریکارڈ کامیابی سے ری سٹور ہو گیا ہے۔");
                 updateAll();
             } catch(err) {
                 alert("غلط فائل فارمیٹ! براہ کرم درست ڈاؤن لوڈ کردہ بیک اپ (.txt) فائل سلیکٹ کریں۔");
@@ -449,7 +454,7 @@
     }
 
     function downloadBackup() {
-        const data = localStorage.getItem(storageKey) || '{}';
+        const data = localStorage.getItem(activeKey) || '{}';
         const blob = new Blob([data], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = 'hussain_masjid_data.txt'; a.click();
