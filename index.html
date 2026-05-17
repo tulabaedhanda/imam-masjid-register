@@ -255,7 +255,7 @@
         if(u === "nasirali258" && p === "merayquaidjalali") {
             sessionStorage.setItem('isTeacherLoggedIn', 'true');
             activateTeacherMode();
-            alert("لاگ ان کامیاب! اب آپ کو بیک اپ بٹنز نظر آئیں گے اور آپ ترمیم کر سکتےtop.");
+            alert("لاگ ان کامیاب! اب آپ کو بیک اپ بٹنز نظر آئیں گے اور آپ ترمیم کر سکتے ہیں۔");
         } else {
             alert("غلط یوزر نیم یا پاس ورڈ!");
         }
@@ -341,7 +341,7 @@
     }
 
     function tglA(el, i) {
-        if (!isTeacherMode) return; // والدین ٹچ کریں تو خاموشی رہے گی، کوئی الرٹ میسج نہیں آئے گا
+        if (!isTeacherMode) return; 
         let s, c;
         if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
         else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
@@ -351,7 +351,7 @@
     }
 
     function tglL(el, i) {
-        if (!isTeacherMode) return; // والدین ٹچ کریں تو خاموشی رہے گی، کوئی الرٹ میسج نہیں آئے گا
+        if (!isTeacherMode) return; 
         let s, c;
         if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
         else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
@@ -435,48 +435,50 @@
         importBtn.style.opacity = "0.8";
         
         let progress = 0;
-        // سوشل میڈیا کی طرح لائیو اپلوڈنگ انڈیکیٹر ٹیکسٹ تبدیل ہونا شروع ہوگا
         const uploadTimer = setInterval(() => {
             progress += 20;
             if (progress <= 80) {
                 importBtn.innerText = `⏳ اپلوڈ ہورہی ہے... ${progress}%`;
             }
-            
-            if (progress >= 100) {
-                clearInterval(uploadTimer);
-                importBtn.innerText = `⏳ اپلوڈ ہورہی ہے... 95%`;
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const contents = e.target.result;
-                        const parsed = JSON.parse(contents.trim());
-                        localStorage.setItem(activeKey, JSON.stringify(parsed));
-                        
-                        // کامیابی پر بٹن ہرا ہو جائے گا اور کوئی الرٹ پاپ اپ نہیں آئے گا
-                        importBtn.style.background = "#1b5e20";
-                        importBtn.innerText = "✅ اپلوڈ مکمل ہو گیا!";
-                        importBtn.style.opacity = "1";
-                        updateAll();
-                        
-                        setTimeout(() => {
-                            importBtn.style.background = "#e65100";
-                            importBtn.innerText = "پرانا بیک اپ اپلوڈ کریں";
-                        }, 3000);
-                    } catch(err) {
-                        importBtn.style.background = "#b71c1c";
-                        importBtn.innerText = "❌ فائل فارمیٹ درست نہیں";
-                        importBtn.style.opacity = "1";
-                        setTimeout(() => {
-                            importBtn.style.background = "#e65100";
-                            importBtn.innerText = "پرانا بیک اپ اپلوڈ کریں";
-                        }, 3000);
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }, 150);
+        }, 100);
 
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            clearInterval(uploadTimer); 
+            importBtn.innerText = `⏳ اپلوڈ ہورہی ہے... 95%`;
+            
+            setTimeout(() => {
+                try {
+                    const contents = e.target.result;
+                    const parsed = JSON.parse(contents.trim());
+                    
+                    localStorage.setItem(activeKey, JSON.stringify(parsed));
+                    
+                    importBtn.style.background = "#1b5e20";
+                    importBtn.innerText = "✅ اپلوڈ مکمل ہو گیا! 100%";
+                    importBtn.style.opacity = "1";
+                    
+                    updateAll();
+                    
+                    setTimeout(() => {
+                        importBtn.style.background = "#e65100";
+                        importBtn.innerText = "پرانا بیک اپ اپلوڈ کریں";
+                    }, 3000);
+                    
+                } catch(err) {
+                    clearInterval(uploadTimer);
+                    importBtn.style.background = "#b71c1c";
+                    importBtn.innerText = "❌ فائل فارمیٹ درست نہیں";
+                    importBtn.style.opacity = "1";
+                    setTimeout(() => {
+                        importBtn.style.background = "#e65100";
+                        importBtn.innerText = "پرانا بیک اپ اپلوڈ کریں";
+                    }, 3000);
+                }
+            }, 300); 
+        };
+        
+        reader.readAsText(file);
         event.target.value = ''; 
     }
 
