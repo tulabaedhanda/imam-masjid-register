@@ -255,7 +255,7 @@
         if(u === "nasirali258" && p === "merayquaidjalali") {
             sessionStorage.setItem('isTeacherLoggedIn', 'true');
             activateTeacherMode();
-            alert("لاگ ان کامیاب! اب آپ کو بیک اپ بٹنز نظر آئیں گے اور آپ ترمیم کر سکتے ہیں۔");
+            alert("لاگ ان کامیاب! اب آپ کو بیک اپ بٹنز نظر آئیں گے اور آپ ترمیم کر سکتےtop.");
         } else {
             alert("غلط یوزر نیم یا پاس ورڈ!");
         }
@@ -268,7 +268,6 @@
         document.getElementById('logoutBtn').style.display = "inline-block";
         document.getElementById('portalTitle').innerText = "🧔 ناصر علی (استاد)";
         
-        // لاگ ان ہونے پر بیک اپ کے بٹن شو کر دیں
         document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'inline-block');
         updateAll();
     }
@@ -283,7 +282,6 @@
         document.getElementById('uName').value = "";
         document.getElementById('pWord').value = "";
         
-        // لاگ آؤٹ ہونے پر بٹن دوبارہ چھپا دیں
         document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'none');
         alert("لاگ آؤٹ ہو گئے۔ رجسٹر صرف دیکھنے کے موڈ پر ہے۔");
         updateAll();
@@ -320,8 +318,8 @@
         names.forEach((n, i) => {
             const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
             
-            const clickA = isTeacherMode ? `onclick="tglA(this,${i})"` : `onclick="alert('محترم والدین! آپ یہاں ترمیم نہیں کر سکتے۔ یہ صفحہ صرف دیکھنے کے لیے ہے۔')"`;
-            const clickL = isTeacherMode ? `onclick="tglL(this,${i})"` : `onclick="alert('محترم والدین! آپ یہاں ترمیم نہیں کر سکتے۔')"`;
+            const clickA = `onclick="tglA(this,${i})"`;
+            const clickL = `onclick="tglL(this,${i})"`;
             const disabledInput = isTeacherMode ? '' : 'disabled';
 
             if(b1) b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" ${clickA}>${s.aS}</div></td></tr>`;
@@ -343,6 +341,7 @@
     }
 
     function tglA(el, i) {
+        if (!isTeacherMode) return; // والدین ٹچ کریں تو خاموشی رہے گی، کوئی الرٹ میسج نہیں آئے گا
         let s, c;
         if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
         else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
@@ -352,6 +351,7 @@
     }
 
     function tglL(el, i) {
+        if (!isTeacherMode) return; // والدین ٹچ کریں تو خاموشی رہے گی، کوئی الرٹ میسج نہیں آئے گا
         let s, c;
         if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
         else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
@@ -431,20 +431,52 @@
         const file = event.target.files;
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const contents = e.target.result;
-                // اب یہ ہر قسم کے ٹیکسٹ اور اعتراضات کو فکس کر کے ڈیٹا اپلوڈ کرے گا
-                const parsed = JSON.parse(contents.trim());
-                localStorage.setItem(activeKey, JSON.stringify(parsed));
-                alert("مبارک ہو ناصر بھائی! پرانا سارا ریکارڈ ۱۰۰٪ کامیابی سے بحال ہو گیا ہے۔");
-                updateAll();
-            } catch(err) {
-                alert("فائل لوڈنگ میں مسئلہ! براہ کرم درست ڈاؤن لوڈ کردہ بیک اپ (.txt) فائل ہی منتخب کریں۔");
+        const importBtn = document.getElementById('importBtn');
+        importBtn.style.opacity = "0.8";
+        
+        let progress = 0;
+        // سوشل میڈیا کی طرح لائیو اپلوڈنگ انڈیکیٹر ٹیکسٹ تبدیل ہونا شروع ہوگا
+        const uploadTimer = setInterval(() => {
+            progress += 20;
+            if (progress <= 80) {
+                importBtn.innerText = `⏳ اپلوڈ ہورہی ہے... ${progress}%`;
             }
-        };
-        reader.readAsText(file);
+            
+            if (progress >= 100) {
+                clearInterval(uploadTimer);
+                importBtn.innerText = `⏳ اپلوڈ ہورہی ہے... 95%`;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const contents = e.target.result;
+                        const parsed = JSON.parse(contents.trim());
+                        localStorage.setItem(activeKey, JSON.stringify(parsed));
+                        
+                        // کامیابی پر بٹن ہرا ہو جائے گا اور کوئی الرٹ پاپ اپ نہیں آئے گا
+                        importBtn.style.background = "#1b5e20";
+                        importBtn.innerText = "✅ اپلوڈ مکمل ہو گیا!";
+                        importBtn.style.opacity = "1";
+                        updateAll();
+                        
+                        setTimeout(() => {
+                            importBtn.style.background = "#e65100";
+                            importBtn.innerText = "پرانا بیک اپ اپلوڈ کریں";
+                        }, 3000);
+                    } catch(err) {
+                        importBtn.style.background = "#b71c1c";
+                        importBtn.innerText = "❌ فائل فارمیٹ درست نہیں";
+                        importBtn.style.opacity = "1";
+                        setTimeout(() => {
+                            importBtn.style.background = "#e65100";
+                            importBtn.innerText = "پرانا بیک اپ اپلوڈ کریں";
+                        }, 3000);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }, 150);
+
         event.target.value = ''; 
     }
 
