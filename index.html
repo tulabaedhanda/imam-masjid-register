@@ -28,13 +28,16 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        .header-section { text-align: center; margin: -15px -15px 20px -15px; }
-        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; }
+        .header-section { text-align: center; margin: -15px -15px 20px -15px; background: #880e4f; border-radius: 15px 15px 0 0; min-height: 80px; position: relative; }
+        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; min-height: 80px; background: #880e4f; }
         
+        /* اگر امیج لوڈ نہ ہو تو یہ خوبصورت ٹیکسٹ ہیڈر نظر آئے گا */
+        .banner-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ffd700; font-size: 24px; font-weight: bold; width: 100%; text-align: center; pointer-events: none; }
+
         .urdu-date { 
             background: #ad1457; color: white; padding: 5px 20px; 
             border-radius: 50px; display: inline-block; margin-top: -20px;
-            position: relative; border: 2px solid #ffd700; font-size: 18px;
+            position: relative; border: 2px solid #ffd700; font-size: 18px; z-index: 10;
         }
 
         .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
@@ -73,9 +76,8 @@
 
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
-        .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .video-container iframe { width: 100%; max-width: 450px; height: 250px; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-        /* استاد پورٹل کا نچلا حصہ */
         .login-portal {
             margin-top: 40px; background: #f8bbd0; border: 3px dashed #ad1457;
             padding: 15px; border-radius: 15px; text-align: center;
@@ -102,7 +104,8 @@
 
 <div class="container">
     <div class="header-section">
-        <img src="https://i.ibb.co/bM6X77Y/header-banner.jpg" alt="Header" class="banner-img" onerror="this.src='https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ'">
+        <img src="header-banner.jpg" alt="" class="banner-img" onerror="this.style.display='none'; document.getElementById('headerFallbackText').style.display='block';">
+        <div id="headerFallbackText" class="banner-placeholder" style="display:none;">جامعہ مسجد امام حسینؓ و مدرسہ عائشہ صدیقہؓ</div>
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -197,29 +200,25 @@
 </div>
 
 <script>
-    // 27 طلباء کے مکمل اور درست نام جو مستقل نظر آئیں گے
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
+    // یوٹیوب پلے لسٹ کے ایمبیڈ لنکس درست فارمیٹ میں کر دیے ہیں
     const videoLinks = {
-        "0": "https://www.youtube.com/embed/videoseries?list=PLxyz1", 
-        "1": "https://www.youtube.com/embed/videoseries?list=PLxyz2", 
-        "11": "https://www.youtube.com/embed/videoseries?list=PLxyz3" 
+        "0": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6", 
+        "1": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6", 
+        "11": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6" 
     };
 
     const storageKey = 'hussain_masjid_final_v6';
     let isTeacherMode = false;
 
-    // کوڈ کے اندر پکا پرانا ڈیٹا (تاکہ والدین کو پہلی بار بھی خالی نظر نہ آئے)
-    const initialPermanentData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
+    const initialPermanentData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
 
     window.onload = function() {
-        // اگر لوکل اسٹوریج خالی ہے تو اس میں پکا ڈیٹا ڈال دو تاکہ پہلی بار بھی ریکارڈ نظر آئے
         if(!localStorage.getItem(storageKey)) {
             localStorage.setItem(storageKey, JSON.stringify(initialPermanentData));
         }
-        
         if(!document.getElementById('mainDate').value) {
-            // ڈیفالٹ تاریخ 2026-05-14 سیٹ کریں تاکہ ریکارڈ سامنے دیکھے
             document.getElementById('mainDate').value = "2026-05-14";
         }
         updateAll();
@@ -376,7 +375,10 @@
     function toggleVideo(i) {
         const row = document.getElementById(`videoRow-${i}`);
         const area = document.getElementById(`videoArea-${i}`);
-        const link = videoLinks[i] || "https://www.youtube.com/embed/dQw4w9WgXcQ";
+        
+        // یہ یوٹیوب کا پکا اوپن لنک ہے جو لوڈ ہوگا
+        const defaultLink = "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6";
+        const link = videoLinks[i] || defaultLink;
 
         if (row && row.style.display === "table-row") {
             row.style.display = "none";
@@ -384,7 +386,7 @@
         } else if(row) {
             document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
             row.style.display = "table-row";
-            if(area) area.innerHTML = `<iframe height="250" src="${link}" frameborder="0" allowfullscreen></iframe>`;
+            if(area) area.innerHTML = `<iframe src="${link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         }
     }
 
