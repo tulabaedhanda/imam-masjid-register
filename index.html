@@ -3,295 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رجسٹر - امام حسین مسجد</title>
+    <title>امام حسین مسجد - پورٹل</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
-        
-        * { font-family: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', serif !important; }
-
-        :root { 
-            --primary: #ad1457; 
-            --present-clr: #1b5e20;
-            --absent-clr: #b71c1c;
-            --leave-clr: #ef6c00;
+        :root {
+            --primary-color: #800000;
+            --secondary-color: #ffd700;
+            --bg-light: #fffdf0;
+            --accent-blue: #0f4c81;
+            --btn-purple: #4a2c91;
         }
-
-        body { 
-            background-color: #ad1457;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M50 50c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10z'/%3E%3C/g%3E%3C/svg%3E");
-            padding: 10px; margin: 0; 
-        }
-
-        .container { 
-            max-width: 100%; margin: auto; background: #fff9e5; 
-            padding: 15px; border-radius: 20px; border: 3px solid #880e4f;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .header-section { text-align: center; margin: -15px -15px 20px -15px; }
-        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; }
-        
-        .urdu-date { 
-            background: #ad1457; color: white; padding: 5px 20px; 
-            border-radius: 50px; display: inline-block; margin-top: -20px;
-            position: relative; border: 2px solid #ffd700; font-size: 18px;
-        }
-
-        .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
-        .tab-btn { 
-            flex: 1; min-width: 70px; padding: 10px 2px; cursor: pointer; 
-            border: 2px solid var(--primary); background: white; 
-            font-size: 16px; font-weight: bold; color: var(--primary); border-radius: 10px;
-        }
-        .tab-btn.active { background: var(--primary); color: white; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
-        th, td { padding: 10px 5px; border: 1px solid #ddd; text-align: center; font-size: 18px; }
-        th { background-color: #0d47a1; color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        
-        .student-name { text-align: right !important; padding-right: 10px; font-weight: bold; width: 40%; }
-        
-        .status-btn { 
-            width: 90px; padding: 6px 0; font-weight: bold; 
-            border-radius: 6px; background: #eee; border: 1px solid #ccc; 
-            display: inline-block; font-size: 16px;
-        }
-        
-        .present { background-color: var(--present-clr) !important; color: white !important; }
-        .absent { background-color: var(--absent-clr) !important; color: white !important; }
-        .leave { background-color: var(--leave-clr) !important; color: white !important; }
-        
-        .num-present { color: var(--present-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
-        .num-absent { color: var(--absent-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
-        .num-leave { color: var(--leave-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
-
-        .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; background: #fafafa; }
-
-        /* ویڈیوز کے لیے خاص ڈیزائن */
-        .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
-        .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-
-        /* یوٹیوب ایپ بٹن کا ڈیزائن */
-        .app-btn-container { margin-top: 10px; text-align: center; }
-        .open-app-btn { display: inline-block; background: #2e7d32; color: white; text-decoration: none; padding: 8px 15px; border-radius: 8px; font-size: 15px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-        .footer-tools { margin-top: 20px; display: flex; gap: 10px; }
-        .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; font-weight: bold; }
-        
-        @media print {
-            .tabs, .footer-tools, input[type="date"] { display: none !important; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #bc1a5f; padding: 10px; display: flex; justify-content: center; }
+        .app-container { background-color: var(--bg-light); width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 4px solid var(--secondary-color); padding-bottom: 20px; }
+        .banner { background: linear-gradient(135deg, #4a0000, #800000); padding: 20px; text-align: center; border-bottom: 4px solid var(--secondary-color); }
+        .banner h1 { color: var(--secondary-color); font-size: 2.2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; }
+        .nav-btn { background: white; border: 2px solid var(--primary-color); border-radius: 10px; padding: 10px 5px; text-align: center; font-weight: bold; color: var(--primary-color); cursor: pointer; font-size: 0.95rem; }
+        .nav-btn.active { background: var(--accent-blue); border-color: var(--secondary-color); color: white; }
+        .nav-grid-row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 0 15px 15px 15px; }
+        .stats-filter-row { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 15px 20px; }
+        .student-count { color: var(--primary-color); font-weight: bold; font-size: 1.2rem; }
+        .date-select { padding: 6px 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; width: 60%; background: white; font-weight: bold; }
+        .table-header { display: grid; grid-template-columns: 1.5fr 4fr 2.5fr; background-color: var(--accent-blue); color: white; text-align: center; font-weight: bold; padding: 10px 5px; font-size: 1.1rem; margin: 0 15px; border-top-left-radius: 8px; border-top-right-radius: 8px; }
+        .data-list { margin: 0 15px; max-height: 400px; overflow-y: auto; background: white; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; border: 1px solid #ddd; }
+        .data-row { display: grid; grid-template-columns: 1.5fr 4fr 2.5fr; text-align: center; padding: 8px 5px; border-bottom: 1px solid #eee; align-items: center; font-size: 1rem; }
+        .data-row:nth-child(even) { background-color: #f9f9f9; }
+        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 0.85rem; font-weight: bold; display: inline-block; width: 90%; text-align: center; }
+        .present { background-color: #d4edda; color: #155724; }
+        .absent { background-color: #f8d7da; color: #721c24; }
+        .leave { background-color: #fff3cd; color: #856404; }
+        .none { background-color: #e2e3e5; color: #383d41; }
+        .footer-action { padding: 15px; text-align: center; }
+        .action-btn { background-color: var(--btn-purple); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 1.2rem; font-weight: bold; width: 90%; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-section">
-        <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="Header" class="banner-img">
-        <div id="displayUrduDate" class="urdu-date"></div>
+<div class="app-container">
+    <div class="banner">
+        <h1>امام حسین مسجد</h1>
     </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('dailyAtt', event)">حاضری</button>
-        <button class="tab-btn" onclick="openTab('dailyLesson', event)">سبق</button>
-        <button class="tab-btn" onclick="openTab('diary', event)">ڈائری</button>
-        <button class="tab-btn" onclick="openTab('videoTab', event)">ویڈیوز</button>
-        <button class="tab-btn" onclick="openTab('attReport', event)">حاضری رپورٹ</button>
-        <button class="tab-btn" onclick="openTab('lessReport', event)">سبق رپورٹ</button>
+    <div class="nav-grid">
+        <div class="nav-btn active" id="btn-attendance" onclick="switchTab('attendance')">حاضری</div>
+        <div class="nav-btn" id="btn-lesson" onclick="switchTab('lesson')">سبق</div>
+        <div class="nav-btn" id="btn-diary" onclick="switchTab('diary')">ڈائری</div>
+        <div class="nav-btn" id="btn-videos" onclick="switchTab('videos')">ویڈیوز</div>
+    </div>
+    <div class="nav-grid-row2">
+        <div class="nav-btn" id="btn-report_attendance" onclick="switchTab('report_attendance')">حاضری رپورٹ</div>
+        <div class="nav-btn" id="btn-report_lesson" onclick="switchTab('report_lesson')">سبق رپورٹ</div>
     </div>
 
-    <div id="dailyAtt" class="tab-content active">
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <input type="date" id="mainDate" onchange="updateAll()">
-            <div style="color:var(--primary); font-weight:bold;">تعداد: 27</div>
-        </div>
-        <table>
-            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
-            <tbody id="attTableBody"></tbody>
-        </table>
+    <div class="stats-filter-row">
+        <div class="student-count">تعداد: <span>27</span></div>
+        <select class="date-select" id="date-picker" onchange="loadDataForDate()"></select>
     </div>
 
-    <div id="dailyLesson" class="tab-content">
-        <table>
-            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>کیفیت</th></tr></thead>
-            <tbody id="lessTableBody"></tbody>
-        </table>
+    <div class="table-header">
+        <div>نمبر</div>
+        <div>نام طالب علم</div>
+        <div id="dynamic-header">حاضری</div>
     </div>
 
-    <div id="diary" class="tab-content">
-        <table>
-            <thead><tr><th>نمبر</th><th>نام</th><th>آج کا سبق</th></tr></thead>
-            <tbody id="diaryTableBody"></tbody>
-        </table>
-    </div>
+    <div class="data-list" id="students-list"></div>
 
-    <div id="videoTab" class="tab-content">
-        <table>
-            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>ویڈیوز دیکھیں</th></tr></thead>
-            <tbody id="videoTableBody"></tbody>
-        </table>
-    </div>
-
-    <div id="attReport" class="tab-content">
-        <div style="text-align:center; padding:10px; font-weight:bold; font-size:24px; color:#ad1457;" class="monthTitle"></div>
-        <table>
-            <thead>
-                <tr>
-                    <th>نام</th>
-                    <th style="background:var(--present-clr)">حاضر</th>
-                    <th style="background:var(--absent-clr)">غیر حاضر</th>
-                    <th style="background:var(--leave-clr)">رخصت</th>
-                </tr>
-            </thead>
-            <tbody id="attReportBody"></tbody>
-        </table>
-    </div>
-
-    <div id="lessReport" class="tab-content">
-        <div style="text-align:center; padding:10px; font-weight:bold; font-size:24px; color:#ad1457;" class="monthTitle"></div>
-        <table>
-            <thead>
-                <tr>
-                    <th>نام</th>
-                    <th style="background:var(--present-clr)">سنایا</th>
-                    <th style="background:var(--absent-clr)">یاد نہیں</th>
-                    <th style="background:var(--leave-clr)">نہیں سنایا</th>
-                </tr>
-            </thead>
-            <tbody id="lessReportBody"></tbody>
-        </table>
-    </div>
-
-    <div class="footer-tools">
-        <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
+    <div class="footer-action">
+        <button class="action-btn" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
     </div>
 </div>
 
 <script>
-    const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
-    
-    const videoLinks = {
-        "0": "PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF", "1": "PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG", 
-        "2": "PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ", "3": "PL3-aVTBoE-114ez2v-su_1RK46bVns8sd", 
-        "4": "PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo", "5": "PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ", 
-        "6": "PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK", "7": "PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu", 
-        "8": "PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl", "9": "PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy", 
-        "10": "PL3-aVTBoE-11d-65cVValCeAfDHo46HaK", "11": "PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS", 
-        "12": "PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr", "13": "PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK", 
-        "14": "PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL", "15": "PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH", 
-        "16": "PL3-aVTBoE-13NbwY9qlqURI14HdArML2-", "17": "PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO", 
-        "18": "PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky", "19": "PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks", 
-        "20": "PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC", "21": "PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_", 
-        "22": "PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-", "23": "PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n", 
-        "24": "PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd", "25": "PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F", 
-        "26": "PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
+    const studentNames = Array.from({length: 27}, (_, i) => `طالب علم ${i + 1}`);
+
+    // آپ کی فائل کا مکمل ڈیٹا (یکم/2 مئی سے لے کر 17 مئی تک)
+    const attendanceData = {
+        "2026-05-02": {"0":{"aS":"رخصت"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"غیر حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-03": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"غیر حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-05": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"غیر حاضر"},"3":{"aS":"غیر حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"غیر حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"غیر حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-07": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"غیر حاضر"},"3":{"aS":"غیر حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"غیر حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"غیر حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"رخصت"}},
+        "2026-05-09": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"غیر حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-10": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"رخصت"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-11": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"غیر حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-12": {"0":{"aS":"حاضر"},"1":{"aS":"غیر حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"غیر حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"رخصت"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"غیر حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"غیر حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"غیر حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"غیر حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-13": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-14": {"0":{"aS":"حاضر","w":"قاعدہ"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"غیر حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-16": {"0":{"aS":"رخصت"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"رخصت"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
+        "2026-05-17": {"0":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"1":{"aS":"حاضر","w":"دعائے قنوت (ان عذابک)"},"2":{"aS":"غیر حاضر","w":""},"3":{"aS":"حاضر","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"غیر حاضر","w":""},"7":{"aS":"غیر حاضر","w":""},"8":{"aS":"حاضر","w":"اھدنالصرا"},"9":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","w":""},"13":{"aS":"حاضر","w":"ولا نکفرک"},"14":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","w":""},"21":{"aS":"حاضر","w":"دوسرا کلمہ "},"22":{"aS":"حاضر","w":"ج ح"},"23":{"aS":"حاضر","w":"دعائے قنوت مکمل "},"24":{"aS":"حاضر","w":"دکھتی آنکھ ، وضو ٹوٹنا"},"25":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}
     };
+
+    let currentTab = 'attendance';
+
+    // تاریخوں کو شروع سے آخر تک ترتیب (Sort) دینے کا فنکشن
+    function initDatePicker() {
+        const picker = document.getElementById('date-picker');
+        picker.innerHTML = '';
+        
+        // تاریخوں کو اسینڈنگ آرڈر (Purani se Nayi) میں ترتیب دینا
+        const sortedDates = Object.keys(attendanceData).sort((a, b) => new Date(a) - new Date(b));
+        
+        sortedDates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            picker.appendChild(option);
+        });
+    }
+
+    function switchTab(tabName) {
+        currentTab = tabName;
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${tabName}`).classList.add('active');
+
+        const header = document.getElementById('dynamic-header');
+        header.textContent = (tabName === 'lesson') ? 'سبق / دعا' : 'حاضری';
+
+        loadDataForDate();
+    }
+
+    function loadDataForDate() {
+        const selectedDate = document.getElementById('date-picker').value;
+        const listContainer = document.getElementById('students-list');
+        listContainer.innerHTML = '';
+
+        if (!selectedDate || !attendanceData[selectedDate]) return;
+
+        const dayData = attendanceData[selectedDate];
+
+        studentNames.forEach((name, index) => {
+            const row = document.createElement('div');
+            row.className = 'data-row';
+
+            const numDiv = document.createElement('div');
+            numDiv.textContent = index + 1;
+
+            const nameDiv = document.createElement('div');
+            nameDiv.style.textAlign = 'right';
+            nameDiv.style.paddingRight = '15px';
+            nameDiv.textContent = name;
+
+            const statusDiv = document.createElement('div');
+            const record = dayData[index];
+
+            if (currentTab === 'lesson') {
+                statusDiv.textContent = (record && record.w) ? record.w : "---";
+                statusDiv.style.fontSize = "0.9rem";
+                statusDiv.style.color = "var(--accent-blue)";
+            } else {
+                const badge = document.createElement('span');
+                const statusStr = record ? record.aS : "---";
+                badge.textContent = statusStr;
+
+                if (statusStr === 'حاضر') badge.className = 'status-badge present';
+                else if (statusStr === 'غیر حاضر') badge.className = 'status-badge absent';
+                else if (statusStr === 'رخصت') badge.className = 'status-badge leave';
+                else badge.className = 'status-badge none';
+
+                statusDiv.appendChild(badge);
+            }
+
+            row.appendChild(numDiv);
+            row.appendChild(nameDiv);
+            row.appendChild(statusDiv);
+            listContainer.appendChild(row);
+        });
+    }
 
     window.onload = function() {
-        if(!document.getElementById('mainDate').value) document.getElementById('mainDate').valueAsDate = new Date();
-        updateAll();
+        initDatePicker();
+        loadDataForDate();
     };
-
-    function openTab(id, e) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        e.currentTarget.classList.add('active');
-        if(id.includes('Report')) loadReports();
-    }
-
-    function updateAll() {
-        const date = document.getElementById('mainDate').value;
-        const dObj = new Date(date);
-        document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
-
-        const dayData = dataData[date] || {};
-
-        const b1 = document.getElementById('attTableBody'), 
-              b2 = document.getElementById('lessTableBody'), 
-              b3 = document.getElementById('diaryTableBody'),
-              b4 = document.getElementById('videoTableBody');
-              
-        b1.innerHTML = ''; b2.innerHTML = ''; b3.innerHTML = ''; b4.innerHTML = '';
-
-        names.forEach((n, i) => {
-            const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
-            b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}">${s.aS}</div></td></tr>`;
-            b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}">${s.lS}</div></td></tr>`;
-            b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" readonly></td></tr>`;
-            
-            b4.innerHTML += `
-                <tr>
-                    <td>${i+1}</td>
-                    <td class="student-name">${n}</td>
-                    <td><button class="video-btn" onclick="toggleVideo(${i})">ویڈیوز</button></td>
-                </tr>
-                <tr id="videoRow-${i}" class="video-container">
-                    <td colspan="3">
-                        <div id="videoArea-${i}"></div>
-                    </td>
-                </tr>`;
-        });
-    }
-
-    function toggleVideo(i) {
-        const row = document.getElementById(`videoRow-${i}`);
-        const area = document.getElementById(`videoArea-${i}`);
-        const playlistId = videoLinks[i];
-
-        if (row.style.display === "table-row") {
-            row.style.display = "none";
-            area.innerHTML = "";
-        } else {
-            document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
-            row.style.display = "table-row";
-            
-            if(playlistId) {
-                const embedLink = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
-                const appLink = `https://youtube.com/playlist?list=${playlistId}`;
-                
-                area.innerHTML = `
-                    <iframe height="250" src="${embedLink}" frameborder="0" allowfullscreen></iframe>
-                    <div class="app-btn-container">
-                        <a href="${appLink}" target="_blank" class="open-app-btn">تمام ویڈیوز یوٹیوب ایپ میں دیکھیں 📱</a>
-                    </div>`;
-            } else {
-                area.innerHTML = `<iframe height="250" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>`;
-            }
-        }
-    }
-
-    function loadReports() {
-        const selDate = new Date(document.getElementById('mainDate').value);
-        const mName = selDate.toLocaleDateString('ur-PK', {month:'long', year:'numeric'});
-        const mKey = document.getElementById('mainDate').value.substring(0, 7);
-        
-        document.querySelectorAll('.monthTitle').forEach(el => el.innerText = "رپورٹ برائے: " + mName);
-        
-        const bA = document.getElementById('attReportBody'), bL = document.getElementById('lessReportBody');
-        bA.innerHTML = ''; bL.innerHTML = '';
-
-        names.forEach((n, i) => {
-            let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
-            for(let d in dataData) {
-                if(d.startsWith(mKey) && dataData[d][i]) {
-                    const r = dataData[d][i];
-                    if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
-                    if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
-                }
-            }
-            bA.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${p}</td><td class="num-absent">${ab}</td><td class="num-leave">${lv}</td></tr>`;
-            bL.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${sn}</td><td class="num-absent">${yn}</td><td class="num-leave">${ns}</td></tr>`;
-        });
-    }
-
-    // آپ کی فائل کا اصل بیک اپ ڈیٹا مستقل طور پر یہاں فٹ کر دیا گیا ہے
-    const dataData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},"2026-05-13":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-15":{"0":{"aS":"---","aC":"status-btn","lS":"---","lC":"status-btn","w":""},"1":{"aS":"---","aC":"status-btn","lS":"---","lC":"status-btn","w":""}},"2026-05-16":{"0":{"aS":"---","aC":"status-btn","lS":"---","lC":"status-btn","w":""}},"2026-05-12":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-11":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-10":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-09":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضer","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-07":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""}},"2026-05-05":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-03":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}}};
 </script>
+
 </body>
 </html>
