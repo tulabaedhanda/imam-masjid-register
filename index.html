@@ -28,8 +28,8 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        .header-section { text-align: center; margin: -15px -15px 20px -15px; background: #880e4f; border-radius: 15px 15px 0 0; min-height: 100px; }
-        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; }
+        .header-section { text-align: center; margin: -15px -15px 20px -15px; background: #880e4f; border-radius: 15px 15px 0 0; min-height: 120px; position: relative; }
+        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; height: auto; min-height: 120px; }
 
         .urdu-date { 
             background: #ad1457; color: white; padding: 5px 20px; 
@@ -101,7 +101,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img id="masjidHeaderBanner" src="https://docs.google.com/uc?export=view&id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img" onerror="this.onerror=null; this.src='https://docs.google.com/uc?id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ';">
+        <img id="masjidHeaderBanner" src="https://docs.google.com/uc?export=view&id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img" onerror="fallbackImage()">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -181,8 +181,8 @@
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
         <input type="file" id="fileImportHandler" style="display:none;" accept=".txt" onchange="handleFileSelect(event)">
-        <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
-        <button class="btn-tool" style="background:#ad1457; display:none;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
+        <button class="btn-tool" style="background:#e65100;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
+        <button class="btn-tool" style="background:#ad1457;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
 
     <div class="login-portal" id="loginPortalSection">
@@ -232,6 +232,7 @@
     const storageKey = 'hussain_masjid_final_v6';
     let isTeacherMode = false;
 
+    // بنیادی ڈیٹا محفوظ رکھا گیا ہے
     const initialPermanentData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
 
     window.onload = function() {
@@ -248,6 +249,11 @@
         
         updateAll();
     };
+
+    function fallbackImage() {
+        // اگر پہلا لنک فیل ہو تو متبادل اوپن لنک امیج لوڈ کرے گا
+        document.getElementById('masjidHeaderBanner').src = "https://docs.google.com/uc?id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ";
+    }
 
     function checkTeacherLogin() {
         const u = document.getElementById('uName').value;
@@ -268,8 +274,6 @@
         document.getElementById('loginFormInputs').style.display = "none";
         document.getElementById('logoutBtn').style.display = "inline-block";
         document.getElementById('portalTitle').innerText = "🧔 ناصر علی (استاد)";
-        document.getElementById('importBtn').style.display = "inline-block";
-        document.getElementById('exportBtn').style.display = "inline-block";
         updateAll();
     }
 
@@ -280,8 +284,6 @@
         document.getElementById('loginFormInputs').style.display = "block";
         document.getElementById('logoutBtn').style.display = "none";
         document.getElementById('portalTitle').innerText = "🔐 استاد پورٹل لاگ ان";
-        document.getElementById('importBtn').style.display = "none";
-        document.getElementById('exportBtn').style.display = "none";
         document.getElementById('uName').value = "";
         document.getElementById('pWord').value = "";
         alert("لاگ آؤٹ ہو گئے۔ رجسٹر صرف دیکھنے کے موڈ پر ہے۔");
