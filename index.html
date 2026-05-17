@@ -180,7 +180,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
-        <input type="file" id="fileImportHandler" style="display:none;" accept=".txt" onchange="handleFileSelect(this)">
+        <input type="file" id="fileImportHandler" style="display:none;" accept=".txt">
         <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
         <button class="btn-tool" style="background:#ad1457; display:none;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
@@ -199,7 +199,6 @@
 <script>
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
-    // آپ کی فراہم کردہ تمام 27 یوٹیوب پلے لسٹس کے بالکل درست ایمبیڈ لنکس
     const videoLinks = {
         "0": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
         "1": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG",
@@ -242,6 +241,15 @@
         if(!document.getElementById('mainDate').value) {
             document.getElementById('mainDate').value = "2026-05-14";
         }
+        
+        // ریفریش کرنے پر چیک کریں کہ کیا سیشن میں لاگ ان موجود ہے
+        if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
+            activateTeacherMode();
+        }
+        
+        // فائل اپلوڈ ہینڈلر ایونٹ کو پکا جوڑیں
+        document.getElementById('fileImportHandler').addEventListener('change', handleFileSelect, false);
+        
         updateAll();
     };
 
@@ -250,22 +258,28 @@
         const p = document.getElementById('pWord').value;
 
         if(u === "nasirali258" && p === "merayquaidjalali") {
-            isTeacherMode = true;
-            document.getElementById('teacherBadge').style.display = "block";
-            document.getElementById('loginFormInputs').style.display = "none";
-            document.getElementById('logoutBtn').style.display = "inline-block";
-            document.getElementById('portalTitle').innerText = "🧔 نصیر علی (استاد)";
-            document.getElementById('importBtn').style.display = "inline-block";
-            document.getElementById('exportBtn').style.display = "inline-block";
+            sessionStorage.setItem('isTeacherLoggedIn', 'true');
+            activateTeacherMode();
             alert("لاگ ان کامیاب! اب آپ ترمیم کر سکتے ہیں۔");
-            updateAll();
         } else {
             alert("غلط یوزر نیم یا پاس ورڈ!");
         }
     }
 
+    function activateTeacherMode() {
+        isTeacherMode = true;
+        document.getElementById('teacherBadge').style.display = "block";
+        document.getElementById('loginFormInputs').style.display = "none";
+        document.getElementById('logoutBtn').style.display = "inline-block";
+        document.getElementById('portalTitle').innerText = "🧔 ناصر علی (استاد)";
+        document.getElementById('importBtn').style.display = "inline-block";
+        document.getElementById('exportBtn').style.display = "inline-block";
+        updateAll();
+    }
+
     function teacherLogout() {
         isTeacherMode = false;
+        sessionStorage.removeItem('isTeacherLoggedIn');
         document.getElementById('teacherBadge').style.display = "none";
         document.getElementById('loginFormInputs').style.display = "block";
         document.getElementById('logoutBtn').style.display = "none";
@@ -412,14 +426,12 @@
         }
     }
 
-    // فائل سلیکٹر کو متحرک کرنے کا فنکشن
     function triggerFileInput() {
         document.getElementById('fileImportHandler').click();
     }
 
-    // فائل سلیکٹ ہونے پر ڈیٹا ریڈ کرنے کا فنکشن
-    function handleFileSelect(input) {
-        const file = input.files;
+    function handleFileSelect(event) {
+        const file = event.target.files;
         if (!file) return;
 
         const reader = new FileReader();
@@ -428,14 +440,14 @@
             try {
                 const parsed = JSON.parse(contents);
                 localStorage.setItem(storageKey, JSON.stringify(parsed));
-                alert("مبارک ہو نصیر بھائی! بیک اپ فائل سے سارا ریکارڈ کامیابی سے اپلوڈ ہو گیا ہے۔");
+                alert("مبارک ہو ناصر بھائی! بیک اپ فائل سے سارا ریکارڈ کامیابی سے اپلوڈ ہو گیا ہے۔");
                 updateAll();
             } catch(err) {
                 alert("غلط فائل فارمیٹ! براہ کرم درست ڈاؤن لوڈ کردہ بیک اپ (.txt) فائل سلیکٹ کریں۔");
             }
         };
         reader.readAsText(file);
-        input.value = ''; // انپٹ ری سیٹ کریں تاکہ دوبارہ بھی اپلوڈ ہو سکے
+        event.target.value = ''; // انپٹ ری سیٹ کریں
     }
 
     function downloadBackup() {
