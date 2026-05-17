@@ -101,7 +101,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img src="header-banner.jpg" alt="Header Banner" class="banner-img">
+        <img src="https://docs.google.com/uc?export=view&id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="Header Banner" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -180,7 +180,8 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
-        <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="importBackup()">پرانا بیک اپ اپلوڈ کریں</button>
+        <input type="file" id="fileImportHandler" style="display:none;" accept=".txt" onchange="handleFileSelect(this)">
+        <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
         <button class="btn-tool" style="background:#ad1457; display:none;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
 
@@ -198,11 +199,35 @@
 <script>
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
-    // یوٹیوب پلے لسٹ کے ایمبیڈ لنکس درست فارمیٹ میں کام کریں گے
+    // آپ کی فراہم کردہ تمام 27 یوٹیوب پلے لسٹس کے بالکل درست ایمبیڈ لنکس
     const videoLinks = {
-        "0": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6", 
-        "1": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6", 
-        "11": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6" 
+        "0": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
+        "1": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG",
+        "2": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ",
+        "3": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd",
+        "4": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo",
+        "5": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ",
+        "6": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK",
+        "7": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu",
+        "8": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl",
+        "9": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy",
+        "10": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK",
+        "11": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS",
+        "12": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr",
+        "13": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK",
+        "14": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL",
+        "15": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH",
+        "16": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-",
+        "17": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO",
+        "18": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky",
+        "19": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks",
+        "20": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC",
+        "21": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_",
+        "22": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-",
+        "23": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n",
+        "24": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd",
+        "25": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F",
+        "26": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
 
     const storageKey = 'hussain_masjid_final_v6';
@@ -371,9 +396,7 @@
     function toggleVideo(i) {
         const row = document.getElementById(`videoRow-${i}`);
         const area = document.getElementById(`videoArea-${i}`);
-        
-        const defaultLink = "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6";
-        const link = videoLinks[i] || defaultLink;
+        const link = videoLinks[i];
 
         if (row && row.style.display === "table-row") {
             row.style.display = "none";
@@ -381,22 +404,38 @@
         } else if(row) {
             document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
             row.style.display = "table-row";
-            if(area) area.innerHTML = `<iframe src="${link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            if(area && link) {
+                area.innerHTML = `<iframe src="${link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else if(area) {
+                area.innerHTML = `<p style="color:red; font-weight:bold;">اس طالب علم کا لنک دستیاب نہیں ہے</p>`;
+            }
         }
     }
 
-    function importBackup() {
-        let txt = prompt("اپنی بیک اپ فائل کا ٹیکسٹ یہاں پیسٹ کریں:");
-        if(txt) {
+    // فائل سلیکٹر کو متحرک کرنے کا فنکشن
+    function triggerFileInput() {
+        document.getElementById('fileImportHandler').click();
+    }
+
+    // فائل سلیکٹ ہونے پر ڈیٹا ریڈ کرنے کا فنکشن
+    function handleFileSelect(input) {
+        const file = input.files;
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const contents = e.target.result;
             try {
-                let parsed = JSON.parse(txt);
+                const parsed = JSON.parse(contents);
                 localStorage.setItem(storageKey, JSON.stringify(parsed));
-                alert("مبارک ہو نصیر بھائی! سارا ریکارڈ کامیابی سے لوڈ ہو گیا ہے۔");
+                alert("مبارک ہو نصیر بھائی! بیک اپ فائل سے سارا ریکارڈ کامیابی سے اپلوڈ ہو گیا ہے۔");
                 updateAll();
-            } catch(e) {
-                alert("غلط فارمیٹ! ٹیکسٹ درست کاپی کریں۔");
+            } catch(err) {
+                alert("غلط فائل فارمیٹ! براہ کرم درست ڈاؤن لوڈ کردہ بیک اپ (.txt) فائل سلیکٹ کریں۔");
             }
-        }
+        };
+        reader.readAsText(file);
+        input.value = ''; // انپٹ ری سیٹ کریں تاکہ دوبارہ بھی اپلوڈ ہو سکے
     }
 
     function downloadBackup() {
