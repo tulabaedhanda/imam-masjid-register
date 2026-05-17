@@ -101,7 +101,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img src="https://docs.google.com/uc?export=view&id=1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="Header Banner" class="banner-img">
+        <img src="https://i.imgur.com/GisLhU1.jpeg" alt="Header Banner" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -180,7 +180,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
-        <input type="file" id="fileImportHandler" style="display:none;" accept=".txt">
+        <input type="file" id="fileImportHandler" style="display:none;" accept=".txt" onchange="handleFileSelect(event)">
         <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="triggerFileInput()">پرانا بیک اپ اپلوڈ کریں</button>
         <button class="btn-tool" style="background:#ad1457; display:none;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
@@ -242,13 +242,9 @@
             document.getElementById('mainDate').value = "2026-05-14";
         }
         
-        // ریفریش کرنے پر چیک کریں کہ کیا سیشن میں لاگ ان موجود ہے
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
             activateTeacherMode();
         }
-        
-        // فائل اپلوڈ ہینڈلر ایونٹ کو پکا جوڑیں
-        document.getElementById('fileImportHandler').addEventListener('change', handleFileSelect, false);
         
         updateAll();
     };
@@ -436,8 +432,8 @@
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            const contents = e.target.result;
             try {
+                const contents = e.target.result;
                 const parsed = JSON.parse(contents);
                 localStorage.setItem(storageKey, JSON.stringify(parsed));
                 alert("مبارک ہو ناصر بھائی! بیک اپ فائل سے سارا ریکارڈ کامیابی سے اپلوڈ ہو گیا ہے۔");
