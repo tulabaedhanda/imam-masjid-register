@@ -69,24 +69,24 @@
         .num-leave { color: var(--leave-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
 
         .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; background: #fff; }
-        .diary-input:disabled { background: #f5f5f5; color: #555; border: 1px solid #ddd; cursor: not-allowed; }
+        .diary-input:disabled { background: #f5f5f5; color: #333; border: 1px solid #ddd; cursor: not-allowed; }
 
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
         .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-        /* لاگ ان پورٹل کا اسٹائل */
+        /* استاد پورٹل کا نچلا حصہ */
         .login-portal {
-            margin-top: 30px; background: #f8bbd0; border: 2px dashed #ad1457;
+            margin-top: 40px; background: #f8bbd0; border: 3px dashed #ad1457;
             padding: 15px; border-radius: 15px; text-align: center;
         }
-        .login-portal h3 { margin-top: 0; color: #880e4f; }
+        .login-portal h3 { margin-top: 0; color: #880e4f; font-size: 20px; }
         .login-input { padding: 8px; margin: 5px; border: 1px solid #ad1457; border-radius: 5px; font-size: 16px; width: 80%; max-width: 200px; text-align: center; }
         .login-submit { background: #ad1457; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
         
         .teacher-badge {
-            background: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;
-            padding: 8px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px;
+            background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50;
+            padding: 10px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 18px;
         }
 
         .footer-tools { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
@@ -102,7 +102,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="Header" class="banner-img">
+        <img src="https://i.ibb.co/bM6X77Y/header-banner.jpg" alt="Header" class="banner-img" onerror="this.src='https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ'">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -120,7 +120,7 @@
     <div id="dailyAtt" class="tab-content active">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
             <input type="date" id="mainDate" onchange="updateAll()">
-            <div style="color:var(--primary); font-weight:bold;">تعداد: 27</div>
+            <div style="color:var(--primary); font-weight:bold; font-size:18px;">کل تعداد: 27</div>
         </div>
         <table>
             <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
@@ -180,7 +180,7 @@
     </div>
 
     <div class="footer-tools">
-        <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
+        <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
         <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="importBackup()">پرانا بیک اپ اپلوڈ کریں</button>
         <button class="btn-tool" style="background:#ad1457; display:none;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
@@ -197,6 +197,7 @@
 </div>
 
 <script>
+    // 27 طلباء کے مکمل اور درست نام جو مستقل نظر آئیں گے
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
     const videoLinks = {
@@ -206,17 +207,24 @@
     };
 
     const storageKey = 'hussain_masjid_final_v6';
-    let isTeacherMode = false; // والدین کے لیے ڈیفالٹ بند رہے گا
+    let isTeacherMode = false;
+
+    // کوڈ کے اندر پکا پرانا ڈیٹا (تاکہ والدین کو پہلی بار بھی خالی نظر نہ آئے)
+    const initialPermanentData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
 
     window.onload = function() {
+        // اگر لوکل اسٹوریج خالی ہے تو اس میں پکا ڈیٹا ڈال دو تاکہ پہلی بار بھی ریکارڈ نظر آئے
+        if(!localStorage.getItem(storageKey)) {
+            localStorage.setItem(storageKey, JSON.stringify(initialPermanentData));
+        }
+        
         if(!document.getElementById('mainDate').value) {
-            const today = new Date().toISOString().split('T');
-            document.getElementById('mainDate').value = today;
+            // ڈیفالٹ تاریخ 2026-05-14 سیٹ کریں تاکہ ریکارڈ سامنے دیکھے
+            document.getElementById('mainDate').value = "2026-05-14";
         }
         updateAll();
     };
 
-    // لاگ ان کی تصدیق
     function checkTeacherLogin() {
         const u = document.getElementById('uName').value;
         const p = document.getElementById('pWord').value;
@@ -229,7 +237,7 @@
             document.getElementById('portalTitle').innerText = "🧔 نصیر علی (استاد)";
             document.getElementById('importBtn').style.display = "inline-block";
             document.getElementById('exportBtn').style.display = "inline-block";
-            alert("لاگ ان کامیاب! اب آپ ڈیٹا تبدیل اور محفوظ کر سکتے ہیں۔");
+            alert("لاگ ان کامیاب! اب آپ ترمیم کر سکتے ہیں۔");
             updateAll();
         } else {
             alert("غلط یوزر نیم یا پاس ورڈ!");
@@ -246,7 +254,7 @@
         document.getElementById('exportBtn').style.display = "none";
         document.getElementById('uName').value = "";
         document.getElementById('pWord').value = "";
-        alert("آپ لاگ آؤٹ ہو چکے ہیں۔ رجسٹر دوبارہ دیکھنے کے موڈ پر چلا گیا ہے۔");
+        alert("لاگ آؤٹ ہو گئے۔ رجسٹر صرف دیکھنے کے موڈ پر ہے۔");
         updateAll();
     }
 
@@ -281,9 +289,8 @@
         names.forEach((n, i) => {
             const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
             
-            // اگر لاگ ان نہیں ہے تو الرٹ آئے گا اور ان پٹ لاک ہوگی
-            const clickA = isTeacherMode ? `onclick="tglA(this,${i})"` : `onclick="alert('محترم والدین! آپ حاضری تبدیل نہیں کر سکتے۔ یہ صرف دیکھنے کے لیے ہے۔')"`;
-            const clickL = isTeacherMode ? `onclick="tglL(this,${i})"` : `onclick="alert('محترم والدین! آپ سبق کی کیفیت تبدیل نہیں کر سکتے۔')"`;
+            const clickA = isTeacherMode ? `onclick="tglA(this,${i})"` : `onclick="alert('محترم والدین! آپ یہاں ترمیم نہیں کر سکتے۔ یہ صفحہ صرف دیکھنے کے لیے ہے۔')"`;
+            const clickL = isTeacherMode ? `onclick="tglL(this,${i})"` : `onclick="alert('محترم والدین! آپ یہاں ترمیم نہیں کر سکتے۔')"`;
             const disabledInput = isTeacherMode ? '' : 'disabled';
 
             if(b1) b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" ${clickA}>${s.aS}</div></td></tr>`;
@@ -387,10 +394,10 @@
             try {
                 let parsed = JSON.parse(txt);
                 localStorage.setItem(storageKey, JSON.stringify(parsed));
-                alert("ڈیٹا لوڈ ہو چکا ہے!");
+                alert("مبارک ہو نصیر بھائی! سارا ریکارڈ کامیابی سے لوڈ ہو گیا ہے۔");
                 updateAll();
             } catch(e) {
-                alert("غلط فارمیٹ!");
+                alert("غلط فارمیٹ! ٹیکسٹ درست کاپی کریں۔");
             }
         }
     }
