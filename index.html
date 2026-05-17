@@ -68,18 +68,21 @@
         .num-absent { color: var(--absent-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
         .num-leave { color: var(--leave-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
 
-        .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; }
+        .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; background: #fff; }
+        .diary-input:disabled { background: #f0f0f0; color: #333; border: 1px solid #eee; }
 
-        /* ویڈیوز کے لیے خاص ڈیزائن */
+        /* لاگ ان اسٹیٹس بار */
+        .status-bar { background: #e0f7fa; color: #006064; padding: 8px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 16px; border: 1px solid #00acc1; }
+
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
         .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-        .footer-tools { margin-top: 20px; display: flex; gap: 10px; }
-        .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; font-weight: bold; }
+        .footer-tools { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; min-width: 120px; font-weight: bold; }
         
         @media print {
-            .tabs, .footer-tools, input[type="date"] { display: none !important; }
+            .tabs, .footer-tools, input[type="date"], .status-bar { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
@@ -91,6 +94,8 @@
         <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="Header" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
+
+    <div id="loginStatus" class="status-bar">👀 صرف دیکھنے کا موڈ (والدین کے لیے)</div>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab('dailyAtt', event)">حاضری</button>
@@ -165,7 +170,9 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
-        <button class="btn-tool" style="background:#ad1457" onclick="downloadBackup()">بیک اپ لیں</button>
+        <button class="btn-tool" style="background:#00796b" id="loginBtn" onclick="toggleLogin()">استاد لاگ ان</button>
+        <button class="btn-tool" style="background:#e65100; display:none;" id="importBtn" onclick="importBackup()">پرانا بیک اپ لوڈ کریں</button>
+        <button class="btn-tool" style="background:#ad1457; display:none;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
 </div>
 
@@ -179,16 +186,53 @@
     };
 
     const storageKey = 'hussain_masjid_final_v6';
+    let isTeacher = false; // ڈیفالٹ طور پر ہر کوئی صرف دیکھنے والا ہے
 
-    // آپ کا پکا بیک اپ ڈیٹا یہاں جوڑ دیا ہے تاکہ گٹ ہب پر بلینک نہ ہو
+    // ابتدائی پکا ڈیٹا صرف پہلی بار کے لیے
     const backupData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
 
     window.onload = function() {
+        if(!localStorage.getItem(storageKey)) {
+            localStorage.setItem(storageKey, JSON.stringify(backupData));
+        }
+        
         if(!document.getElementById('mainDate').value) {
-            document.getElementById('mainDate').value = "2026-05-14";
+            // آج کی موجودہ تاریخ سیٹ کریں تاکہ کچھ نہ کچھ لکھا آئے
+            const today = new Date().toISOString().split('T');
+            document.getElementById('mainDate').value = today;
         }
         updateAll();
     };
+
+    // پاس ورڈ لاگ ان سسٹم
+    function toggleLogin() {
+        if(!isTeacher) {
+            let pass = prompt("استاد کا سیکیورٹی پاس ورڈ درج کریں:");
+            if(pass === "1234") { // آپ کا پاس ورڈ 1234 ہے
+                isTeacher = true;
+                document.getElementById('loginStatus').innerText = "🔓 استاد موڈ آن ہے (آپ ترمیم کر سکتے ہیں)";
+                document.getElementById('loginStatus').style.background = "#e8f5e9";
+                document.getElementById('loginStatus').style.color = "#2e7d32";
+                document.getElementById('loginStatus').style.borderColor = "#4caf50";
+                document.getElementById('loginBtn').innerText = "لاگ آؤٹ کریں";
+                document.getElementById('importBtn').style.display = "inline-block";
+                document.getElementById('exportBtn').style.display = "inline-block";
+                updateAll();
+            } else {
+                alert("غلط پاس ورڈ! آپ ایڈٹ نہیں کر سکتے۔");
+            }
+        } else {
+            isTeacher = false;
+            document.getElementById('loginStatus').innerText = "👀 صرف دیکھنے کا موڈ (والدین کے لیے)";
+            document.getElementById('loginStatus').style.background = "#e0f7fa";
+            document.getElementById('loginStatus').style.color = "#006064";
+            document.getElementById('loginStatus').style.borderColor = "#00acc1";
+            document.getElementById('loginBtn').innerText = "استاد لاگ ان";
+            document.getElementById('importBtn').style.display = "none";
+            document.getElementById('exportBtn').style.display = "none";
+            updateAll();
+        }
+    }
 
     function openTab(id, e) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -198,16 +242,6 @@
         if(id.includes('Report')) loadReports();
     }
 
-    // یہ فنکشن گٹ ہب پر خالی میموری ملنے پر فائل کو کریش ہونے سے بچائے گا
-    function getMergedData() {
-        let localData = {};
-        try {
-            localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
-        } catch(e) { localData = {}; }
-        
-        return Object.keys(localData).length === 0 ? backupData : localData;
-    }
-
     function updateAll() {
         const date = document.getElementById('mainDate').value;
         if(!date) return;
@@ -215,7 +249,7 @@
         const dObj = new Date(date);
         document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
 
-        const data = getMergedData();
+        const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
         const dayData = data[date] || {};
 
         const b1 = document.getElementById('attTableBody'), 
@@ -230,9 +264,15 @@
 
         names.forEach((n, i) => {
             const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
-            if(b1) b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" onclick="tglA(this,${i})">${s.aS}</div></td></tr>`;
-            if(b2) b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}" onclick="tglL(this,${i})">${s.lS}</div></td></tr>`;
-            if(b3) b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" onchange="saveW(${i},this.value)"></td></tr>`;
+            
+            // اگر استاد لاگ ان نہیں ہے تو کلک کام نہیں کرے گا اور ان پٹ ڈس ایبل ہوگی
+            const clickA = isTeacher ? `onclick="tglA(this,${i})"` : `onclick="alert('تبدیلی کرنے کے لیے نیچے استاد لاگ ان کریں!')"`;
+            const clickL = isTeacher ? `onclick="tglL(this,${i})"` : `onclick="alert('تبدیلی کرنے کے لیے نیچے استاد لاگ ان کریں!')"`;
+            const disabledInput = isTeacher ? '' : 'disabled';
+
+            if(b1) b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" ${clickA}>${s.aS}</div></td></tr>`;
+            if(b2) b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}" ${clickL}>${s.lS}</div></td></tr>`;
+            if(b3) b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" ${disabledInput} onchange="saveW(${i},this.value)"></td></tr>`;
             
             if(b4) b4.innerHTML += `
                 <tr>
@@ -246,21 +286,6 @@
                     </td>
                 </tr>`;
         });
-    }
-
-    function toggleVideo(i) {
-        const row = document.getElementById(`videoRow-${i}`);
-        const area = document.getElementById(`videoArea-${i}`);
-        const link = videoLinks[i] || "https://www.youtube.com/embed/dQw4w9WgXcQ";
-
-        if (row && row.style.display === "table-row") {
-            row.style.display = "none";
-            area.innerHTML = "";
-        } else if(row) {
-            document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
-            row.style.display = "table-row";
-            if(area) area.innerHTML = `<iframe height="250" src="${link}" frameborder="0" allowfullscreen></iframe>`;
-        }
     }
 
     function tglA(el, i) {
@@ -285,14 +310,7 @@
 
     function save(i, k, v, c) {
         const d = document.getElementById('mainDate').value;
-        let data = {};
-        try {
-            data = JSON.parse(localStorage.getItem(storageKey) || '{}');
-        } catch(e) { data = {}; }
-
-        if(Object.keys(data).length === 0) {
-            data = JSON.parse(JSON.stringify(backupData));
-        }
+        let data = JSON.parse(localStorage.getItem(storageKey) || '{}');
 
         if(!data[d]) data[d] = {};
         if(!data[d][i]) data[d][i] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:''};
@@ -304,7 +322,7 @@
     }
 
     function loadReports() {
-        const data = getMergedData();
+        const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
         const mainDateEl = document.getElementById('mainDate');
         if(!mainDateEl || !mainDateEl.value) return;
 
@@ -332,9 +350,39 @@
         });
     }
 
+    function toggleVideo(i) {
+        const row = document.getElementById(`videoRow-${i}`);
+        const area = document.getElementById(`videoArea-${i}`);
+        const link = videoLinks[i] || "https://www.youtube.com/embed/dQw4w9WgXcQ";
+
+        if (row && row.style.display === "table-row") {
+            row.style.display = "none";
+            area.innerHTML = "";
+        } else if(row) {
+            document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
+            row.style.display = "table-row";
+            if(area) area.innerHTML = `<iframe height="250" src="${link}" frameborder="0" allowfullscreen></iframe>`;
+        }
+    }
+
+    // پرانا ڈیٹا لوڈ کرنے کا فنکشن
+    function importBackup() {
+        let txt = prompt("اپنی بیک اپ فائل (hussain_masjid_data.txt) کا سارا ٹیکسٹ یہاں پیسٹ کریں:");
+        if(txt) {
+            try {
+                let parsed = JSON.parse(txt);
+                localStorage.setItem(storageKey, JSON.stringify(parsed));
+                alert("مبارک ہو! سارا پرانا ڈیٹا کامیابی سے لوڈ ہو گیا ہے۔");
+                updateAll();
+            } catch(e) {
+                alert("غلط ٹیکسٹ! براہ کرم فائل کا درست ٹیکسٹ پیسٹ کریں۔");
+            }
+        }
+    }
+
     function downloadBackup() {
-        const data = getMergedData();
-        const blob = new Blob([JSON.stringify(data)], {type:'text/plain'});
+        const data = localStorage.getItem(storageKey) || '{}';
+        const blob = new Blob([data], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = 'hussain_masjid_data.txt'; a.click();
     }
