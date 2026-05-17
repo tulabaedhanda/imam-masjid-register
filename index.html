@@ -28,11 +28,8 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        .header-section { text-align: center; margin: -15px -15px 20px -15px; background: #880e4f; border-radius: 15px 15px 0 0; min-height: 80px; position: relative; }
-        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; min-height: 80px; background: #880e4f; }
-        
-        /* اگر امیج لوڈ نہ ہو تو یہ خوبصورت ٹیکسٹ ہیڈر نظر آئے گا */
-        .banner-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ffd700; font-size: 24px; font-weight: bold; width: 100%; text-align: center; pointer-events: none; }
+        .header-section { text-align: center; margin: -15px -15px 20px -15px; background: #880e4f; border-radius: 15px 15px 0 0; }
+        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; }
 
         .urdu-date { 
             background: #ad1457; color: white; padding: 5px 20px; 
@@ -104,8 +101,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img src="header-banner.jpg" alt="" class="banner-img" onerror="this.style.display='none'; document.getElementById('headerFallbackText').style.display='block';">
-        <div id="headerFallbackText" class="banner-placeholder" style="display:none;">جامعہ مسجد امام حسینؓ و مدرسہ عائشہ صدیقہؓ</div>
+        <img src="header-banner.jpg" alt="Header Banner" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
@@ -202,7 +198,7 @@
 <script>
     const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
-    // یوٹیوب پلے لسٹ کے ایمبیڈ لنکس درست فارمیٹ میں کر دیے ہیں
+    // یوٹیوب پلے لسٹ کے ایمبیڈ لنکس درست فارمیٹ میں کام کریں گے
     const videoLinks = {
         "0": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6", 
         "1": "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6", 
@@ -376,7 +372,6 @@
         const row = document.getElementById(`videoRow-${i}`);
         const area = document.getElementById(`videoArea-${i}`);
         
-        // یہ یوٹیوب کا پکا اوپن لنک ہے جو لوڈ ہوگا
         const defaultLink = "https://www.youtube.com/embed/videoseries?list=PL3vT979G_428G96Z6n9-Z8SjQ_wXF-7s6";
         const link = videoLinks[i] || defaultLink;
 
