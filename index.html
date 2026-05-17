@@ -3,175 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امام حسین مسجد - پورٹل</title>
+    <title>رجسٹر - امام حسین مسجد (ویو اونلی)</title>
     <style>
-        :root {
-            --primary-color: #800000;
-            --secondary-color: #ffd700;
-            --bg-light: #fffdf0;
-            --accent-blue: #0f4c81;
-            --btn-purple: #4a2c91;
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+        
+        * { font-family: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', serif !important; }
+
+        :root { 
+            --primary: #ad1457; 
+            --present-clr: #1b5e20;
+            --absent-clr: #b71c1c;
+            --leave-clr: #ef6c00;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #bc1a5f; padding: 10px; display: flex; justify-content: center; }
-        .app-container { background-color: var(--bg-light); width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 4px solid var(--secondary-color); padding-bottom: 20px; }
-        .banner { background: linear-gradient(135deg, #4a0000, #800000); padding: 20px; text-align: center; border-bottom: 4px solid var(--secondary-color); }
-        .banner h1 { color: var(--secondary-color); font-size: 2.2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; }
-        .nav-btn { background: white; border: 2px solid var(--primary-color); border-radius: 10px; padding: 10px 5px; text-align: center; font-weight: bold; color: var(--primary-color); cursor: pointer; font-size: 0.95rem; }
-        .nav-btn.active { background: var(--accent-blue); border-color: var(--secondary-color); color: white; }
-        .nav-grid-row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 0 15px 15px 15px; }
-        .stats-filter-row { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 15px 20px; }
-        .student-count { color: var(--primary-color); font-weight: bold; font-size: 1.2rem; }
-        .date-select { padding: 6px 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; width: 60%; background: white; font-weight: bold; }
-        .table-header { display: grid; grid-template-columns: 1.5fr 4fr 2.5fr; background-color: var(--accent-blue); color: white; text-align: center; font-weight: bold; padding: 10px 5px; font-size: 1.1rem; margin: 0 15px; border-top-left-radius: 8px; border-top-right-radius: 8px; }
-        .data-list { margin: 0 15px; max-height: 400px; overflow-y: auto; background: white; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; border: 1px solid #ddd; }
-        .data-row { display: grid; grid-template-columns: 1.5fr 4fr 2.5fr; text-align: center; padding: 8px 5px; border-bottom: 1px solid #eee; align-items: center; font-size: 1rem; }
-        .data-row:nth-child(even) { background-color: #f9f9f9; }
-        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 0.85rem; font-weight: bold; display: inline-block; width: 90%; text-align: center; }
-        .present { background-color: #d4edda; color: #155724; }
-        .absent { background-color: #f8d7da; color: #721c24; }
-        .leave { background-color: #fff3cd; color: #856404; }
-        .none { background-color: #e2e3e5; color: #383d41; }
-        .footer-action { padding: 15px; text-align: center; }
-        .action-btn { background-color: var(--btn-purple); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 1.2rem; font-weight: bold; width: 90%; cursor: pointer; }
+
+        body { 
+            background-color: #ad1457;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M50 50c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zm-40 0c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zm80 0c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zM50 10c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zm0 80c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10z'/%3E%3C/g%3E%3C/svg%3E");
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            background-color: #fffdf0;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 4px solid #ffd700;
+            overflow: hidden;
+            padding-bottom: 20px;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #4a001f, #880e4f);
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 4px solid #ffd700;
+            position: relative;
+        }
+
+        .header-banner h1 {
+            color: #ffd700;
+            margin: 0;
+            font-size: 26px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .nav-tabs-row2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            padding: 0 10px 10px 10px;
+        }
+
+        .tab-btn {
+            background-color: #ffffff;
+            border: 2px solid #ad1457;
+            color: #ad1457;
+            padding: 8px 2px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn.active {
+            background-color: #ad1457;
+            color: #ffffff;
+        }
+
+        .filter-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 15px;
+            margin-bottom: 10px;
+        }
+
+        .count-badge {
+            color: #ad1457;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .styled-select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 2px solid #ad1457;
+            background-color: white;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+            width: 55%;
+        }
+
+        .table-container {
+            margin: 0 10px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #ad1457;
+            overflow: hidden;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .main-table th {
+            background-color: #0f4c81;
+            color: white;
+            padding: 10px 5px;
+            font-size: 15px;
+        }
+
+        .main-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .main-table tr:nth-child(even) {
+            background-color: #fffde8;
+        }
+
+        .status-text {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            width: 80%;
+        }
+
+        .status-present { background-color: #c8e6c9; color: var(--present-clr); }
+        .status-absent { background-color: #ffcdd2; color: var(--absent-clr); }
+        .status-leave { background-color: #ffe0b2; color: var(--leave-clr); }
+
+        .report-section {
+            display: none;
+            margin: 0 10px;
+        }
+
+        .report-title {
+            text-align: center;
+            color: #0f4c81;
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 2px solid #0f4c81;
+            text-align: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .report-table th {
+            background-color: #0f4c81;
+            color: white;
+            padding: 8px 2px;
+            font-size: 13px;
+        }
+
+        .report-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .print-btn-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .print-btn {
+            background-color: #4a2c91;
+            color: white;
+            border: none;
+            padding: 10px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="banner">
+<div class="main-container">
+    <div class="header-banner">
         <h1>امام حسین مسجد</h1>
     </div>
 
-    <div class="nav-grid">
-        <div class="nav-btn active" id="btn-attendance" onclick="switchTab('attendance')">حاضری</div>
-        <div class="nav-btn" id="btn-lesson" onclick="switchTab('lesson')">سبق</div>
-        <div class="nav-btn" id="btn-diary" onclick="switchTab('diary')">ڈائری</div>
-        <div class="nav-btn" id="btn-videos" onclick="switchTab('videos')">ویڈیوز</div>
+    <div class="nav-tabs">
+        <div class="tab-btn active" id="tab-attendance" onclick="switchView('attendance')">حاضری</div>
+        <div class="tab-btn" id="tab-lesson" onclick="switchView('lesson')">سبق</div>
+        <div class="tab-btn" id="tab-diary" onclick="switchView('diary')">ڈائری</div>
+        <div class="tab-btn" id="tab-videos" onclick="switchView('videos')">ویڈیوز</div>
     </div>
-    <div class="nav-grid-row2">
-        <div class="nav-btn" id="btn-report_attendance" onclick="switchTab('report_attendance')">حاضری رپورٹ</div>
-        <div class="nav-btn" id="btn-report_lesson" onclick="switchTab('report_lesson')">سبق رپورٹ</div>
-    </div>
-
-    <div class="stats-filter-row">
-        <div class="student-count">تعداد: <span>27</span></div>
-        <select class="date-select" id="date-picker" onchange="loadDataForDate()"></select>
+    <div class="nav-tabs-row2">
+        <div class="tab-btn" id="tab-rep-att" onclick="switchView('rep-att')">حاضری رپورٹ</div>
+        <div class="tab-btn" id="tab-rep-les" onclick="switchView('rep-les')">سبق رپورٹ</div>
     </div>
 
-    <div class="table-header">
-        <div>نمبر</div>
-        <div>نام طالب علم</div>
-        <div id="dynamic-header">حاضری</div>
+    <div class="filter-row">
+        <div class="count-badge">تعداد: <span>27</span></div>
+        <select class="styled-select" id="mainDate" onchange="renderData()"></select>
     </div>
 
-    <div class="data-list" id="students-list"></div>
+    <div id="daily-section" class="table-container">
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">نمبر</th>
+                    <th style="width: 50%;">نام طالب علم</th>
+                    <th style="width: 35%;" id="dynamic-column-header">حاضری</th>
+                </tr>
+            </thead>
+            <tbody id="daily-table-body">
+                </tbody>
+        </table>
+    </div>
 
-    <div class="footer-action">
-        <button class="action-btn" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
+    <div id="report-att-section" class="report-section">
+        <div class="report-title monthTitle">رپورٹ برائے: مئی</div>
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>نام طالب علم</th>
+                    <th style="color:var(--present-clr)">حاضر</th>
+                    <th style="color:var(--absent-clr)">غیر</th>
+                    <th style="color:var(--leave-clr)">رخصت</th>
+                </tr>
+            </thead>
+            <tbody id="attReportBody"></tbody>
+        </table>
+    </div>
+
+    <div id="report-les-section" class="report-section">
+        <div class="report-title monthTitle">رپورٹ برائے: مئی</div>
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>نام طالب علم</th>
+                    <th style="color:var(--present-clr)">سنایا</th>
+                    <th style="color:var(--absent-clr)">یاد نہیں</th>
+                    <th style="color:orange">نہیں سنایا</th>
+                </tr>
+            </thead>
+            <tbody id="lessReportBody"></tbody>
+        </table>
+    </div>
+
+    <div class="print-btn-container">
+        <button class="print-btn" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
     </div>
 </div>
 
 <script>
-    const studentNames = Array.from({length: 27}, (_, i) => `طالب علم ${i + 1}`);
+    // 27 طالبعلموں کے آفیشل ناموں کی لسٹ
+    const names = Array.from({length: 27}, (_, i) => `طالب علم ${i + 1}`);
 
-    // آپ کی فائل کا مکمل ڈیٹا (یکم/2 مئی سے لے کر 17 مئی تک)
-    const attendanceData = {
-        "2026-05-02": {"0":{"aS":"رخصت"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"غیر حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-03": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"غیر حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-05": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"غیر حاضر"},"3":{"aS":"غیر حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"غیر حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"غیر حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-07": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"غیر حاضر"},"3":{"aS":"غیر حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"غیر حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"غیر حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"رخصت"}},
-        "2026-05-09": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"غیر حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-10": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"رخصت"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-11": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"غیر حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-12": {"0":{"aS":"حاضر"},"1":{"aS":"غیر حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"غیر حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"رخصت"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"غیر حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"غیر حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"غیر حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"غیر حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-13": {"0":{"aS":"حاضر"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-14": {"0":{"aS":"حاضر","w":"قاعدہ"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"حاضر"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"غیر حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-16": {"0":{"aS":"رخصت"},"1":{"aS":"حاضر"},"2":{"aS":"حاضر"},"3":{"aS":"حاضر"},"4":{"aS":"حاضر"},"5":{"aS":"حاضر"},"6":{"aS":"حاضر"},"7":{"aS":"غیر حاضر"},"8":{"aS":"حاضر"},"9":{"aS":"حاضر"},"10":{"aS":"حاضر"},"11":{"aS":"حاضر"},"12":{"aS":"رخصت"},"13":{"aS":"حاضر"},"14":{"aS":"حاضر"},"15":{"aS":"حاضر"},"16":{"aS":"حاضر"},"17":{"aS":"حاضر"},"18":{"aS":"حاضر"},"19":{"aS":"حاضر"},"20":{"aS":"غیر حاضر"},"21":{"aS":"حاضر"},"22":{"aS":"حاضر"},"23":{"aS":"حاضر"},"24":{"aS":"حاضر"},"25":{"aS":"حاضر"},"26":{"aS":"حاضر"}},
-        "2026-05-17": {"0":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"1":{"aS":"حاضر","w":"دعائے قنوت (ان عذابک)"},"2":{"aS":"غیر حاضر","w":""},"3":{"aS":"حاضر","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"غیر حاضر","w":""},"7":{"aS":"غیر حاضر","w":""},"8":{"aS":"حاضر","w":"اھدنالصرا"},"9":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","w":""},"13":{"aS":"حاضر","w":"ولا نکفرک"},"14":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","w":""},"21":{"aS":"حاضر","w":"دوسرا کلمہ "},"22":{"aS":"حاضر","w":"ج ح"},"23":{"aS":"حاضر","w":"دعائے قنوت مکمل "},"24":{"aS":"حاضر","w":"دکھتی آنکھ ، وضو ٹوٹنا"},"25":{"aS":"حاضر","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}
+    // آپ کی ٹیکسٹ فائل کا مکمل لائیو ڈیٹا
+    const data = {
+        "2026-05-02": {"0":{"aS":"رخصت","lS":"---\","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"غیر حاضر","lS":"---\","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-03": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"غیر حاضر","lS":"---\","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-05": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"غیر حاضر","lS":"---\","w":""},"3":{"aS":"غیر حاضر","lS":"---\","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"غیر حاضر","lS":"---\","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"غیر حاضر","lS":"---\","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-07": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"غیر حاضر","lS":"---\","w":""},"3":{"aS":"غیر حاضر","lS":"---\","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"غیر حاضر","lS":"---\","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"غیر حاضر","lS":"---\","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"رخصت","lS":"---\","w":""}},
+        "2026-05-09": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"غیر حاضر","lS":"---\","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-10": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"رخصت","lS":"---\","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-11": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"غیر حاضر","lS":"---\","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-12": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"غیر حاضر","lS":"---\","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"غیر حاضر","lS":"---\","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"رخصت","lS":"---\","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"غیر حاضر","lS":"---\","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"غیر حاضر","lS":"---\","w":""},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"غیر حاضر","lS":"---\","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"غیر حاضر","lS":"---\","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-13": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-14": {"0":{"aS":"حاضر","lS":"سنایا","w":"قاعدہ"},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"غیر حاضر","lS":"---\","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-16": {"0":{"aS":"رخصت","lS":"---\","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"رخصت","lS":"---\","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
+        "2026-05-17": {"0":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"1":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت (ان عذابک)"},"2":{"aS":"غیر حاضر","lS":"---\","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","lS":"سنایا","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"غیر حاضر","lS":"---\","w":""},"7":{"aS":"غیر حاضر","lS":"---\","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":"اھدنالصرا"},"9":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","lS":"---\","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":"ولا نکفرک"},"14":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","lS":"سنایا","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","lS":"سنایا","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","lS":"سنایا","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","lS":"یاد نہیں","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","lS":"---\","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":"دوسرا کلمہ "},"22":{"aS":"حاضر","lS":"سنایا","w":"ج ح"},"23":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل "},"24":{"aS":"حاضر","lS":"سنایا","w":"دکھتی آنکھ ، وضو ٹوٹنا"},"25":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","lS":"سنایا","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}
     };
 
-    let currentTab = 'attendance';
+    let currentMode = 'attendance';
 
-    // تاریخوں کو شروع سے آخر تک ترتیب (Sort) دینے کا فنکشن
+    // ڈراپ ڈاؤن میں تاریخیں ترتیب دینا
     function initDatePicker() {
-        const picker = document.getElementById('date-picker');
+        const picker = document.getElementById('mainDate');
         picker.innerHTML = '';
-        
-        // تاریخوں کو اسینڈنگ آرڈر (Purani se Nayi) میں ترتیب دینا
-        const sortedDates = Object.keys(attendanceData).sort((a, b) => new Date(a) - new Date(b));
-        
+        const sortedDates = Object.keys(data).sort((a, b) => new Date(a) - new Date(b));
         sortedDates.forEach(date => {
             const option = document.createElement('option');
             option.value = date;
             option.textContent = date;
             picker.appendChild(option);
         });
+        if(sortedDates.length > 0) {
+            picker.value = sortedDates[sortedDates.length - 1]; // فائنل تاریخ سیٹ کریں
+        }
     }
 
-    function switchTab(tabName) {
-        currentTab = tabName;
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`btn-${tabName}`).classList.add('active');
+    // ٹیب تبدیل کرنا (ویو اونلی)
+    function switchView(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // ایکٹو بٹن ہائی لائٹ کریں
+        const activeBtn = document.getElementById(`tab-${mode}`);
+        if(activeBtn) activeBtn.classList.add('active');
 
-        const header = document.getElementById('dynamic-header');
-        header.textContent = (tabName === 'lesson') ? 'سبق / دعا' : 'حاضری';
+        // سیکشنز کو چھپانا اور دکھانا
+        document.getElementById('daily-section').style.display = (mode === 'attendance' || mode === 'lesson' || mode === 'diary' || mode === 'videos') ? 'block' : 'none';
+        document.getElementById('report-att-section').style.display = (mode === 'rep-att') ? 'block' : 'none';
+        document.getElementById('report-les-section').style.display = (mode === 'rep-les') ? 'block' : 'none';
 
-        loadDataForDate();
+        renderData();
     }
 
-    function loadDataForDate() {
-        const selectedDate = document.getElementById('date-picker').value;
-        const listContainer = document.getElementById('students-list');
-        listContainer.innerHTML = '';
+    // فائنل ڈیٹا شو کرنے کا فنکشن
+    function renderData() {
+        const selectedDate = document.getElementById('mainDate').value;
+        const tbody = document.getElementById('daily-table-body');
+        const colHeader = document.getElementById('dynamic-column-header');
+        
+        if (!selectedDate || !data[selectedDate]) return;
 
-        if (!selectedDate || !attendanceData[selectedDate]) return;
+        // رپورٹ والے سیکشنز رینڈر کریں
+        if (currentMode === 'rep-att') {
+            renderAttendanceReport();
+            return;
+        } else if (currentMode === 'rep-les') {
+            renderLessonReport();
+            return;
+        }
 
-        const dayData = attendanceData[selectedDate];
+        // ڈیلی ٹیبل کالم ہیڈر اپ ڈیٹ کریں
+        if (currentMode === 'attendance') colHeader.textContent = 'حاضری';
+        else if (currentMode === 'lesson') colHeader.textContent = 'سبق / دعا';
+        else if (currentMode === 'diary') colHeader.textContent = 'ڈائری';
+        else if (currentMode === 'videos') colHeader.textContent = 'ویڈیو اسٹیٹس';
 
-        studentNames.forEach((name, index) => {
-            const row = document.createElement('div');
-            row.className = 'data-row';
+        tbody.innerHTML = '';
+        const dayData = data[selectedDate];
 
-            const numDiv = document.createElement('div');
-            numDiv.textContent = index + 1;
+        names.forEach((name, index) => {
+            const tr = document.createElement('tr');
+            const studentRecord = dayData[index];
 
-            const nameDiv = document.createElement('div');
-            nameDiv.style.textAlign = 'right';
-            nameDiv.style.paddingRight = '15px';
-            nameDiv.textContent = name;
+            // رول نمبر کالم
+            const tdNum = document.createElement('td');
+            tdNum.textContent = index + 1;
 
-            const statusDiv = document.createElement('div');
-            const record = dayData[index];
+            // نام کالم
+            const tdName = document.createElement('td');
+            tdName.style.textAlign = 'right';
+            tdName.style.paddingRight = '15px';
+            tdName.textContent = name;
 
-            if (currentTab === 'lesson') {
-                statusDiv.textContent = (record && record.w) ? record.w : "---";
-                statusDiv.style.fontSize = "0.9rem";
-                statusDiv.style.color = "var(--accent-blue)";
-            } else {
-                const badge = document.createElement('span');
-                const statusStr = record ? record.aS : "---";
-                badge.textContent = statusStr;
-
-                if (statusStr === 'حاضر') badge.className = 'status-badge present';
-                else if (statusStr === 'غیر حاضر') badge.className = 'status-badge absent';
-                else if (statusStr === 'رخصت') badge.className = 'status-badge leave';
-                else badge.className = 'status-badge none';
-
-                statusDiv.appendChild(badge);
+            // تیسرا کالم (ویو اونلی ڈیٹا موڈ کے حساب سے)
+            const tdData = document.createElement('td');
+            
+            if (currentMode === 'attendance') {
+                const span = document.createElement('span');
+                const status = studentRecord ? studentRecord.aS : '---';
+                span.textContent = status;
+                span.className = 'status-text';
+                if (status === 'حاضر') span.classList.add('status-present');
+                else if (status === 'غیر حاضر') span.classList.add('status-absent');
+                else if (status === 'رخصت') span.classList.add('status-leave');
+                tdData.appendChild(span);
+            } else if (currentMode === 'lesson') {
+                tdData.textContent = (studentRecord && studentRecord.w) ? studentRecord.w : '---';
+                tdData.style.color = '#0f4c81';
+                tdData.style.fontWeight = 'bold';
+            } else if (currentMode === 'diary') {
+                tdData.textContent = (studentRecord && studentRecord.lS === 'سنایا') ? 'مکمل سبق محفوظ' : '---';
+                tdData.style.fontSize = '12px';
+            } else if (currentMode === 'videos') {
+                tdData.textContent = (studentRecord && studentRecord.aS === 'حاضر') ? 'دیکھی گئی' : '---';
             }
 
-            row.appendChild(numDiv);
-            row.appendChild(nameDiv);
-            row.appendChild(statusDiv);
-            listContainer.appendChild(row);
+            tr.appendChild(tdNum);
+            tr.appendChild(tdName);
+            tr.appendChild(tdData);
+            tbody.appendChild(tr);
+        });
+    }
+
+    // حاضری رپورٹ فنکشن
+    function renderAttendanceReport() {
+        const body = document.getElementById('attReportBody');
+        body.innerHTML = '';
+        names.forEach((n, i) => {
+            let p=0, ab=0, lv=0;
+            for(let d in data) {
+                if(data[d][i]) {
+                    const r = data[d][i];
+                    if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
+                }
+            }
+            body.innerHTML += `<tr><td style="text-align:right; padding-right:15px;">${n}</td><td style="color:var(--present-clr); font-weight:bold;">${p}</td><td style="color:var(--absent-clr); font-weight:bold;">${ab}</td><td style="color:var(--leave-clr); font-weight:bold;">${lv}</td></tr>`;
+        });
+    }
+
+    // سبق رپورٹ فنکشن
+    function renderLessonReport() {
+        const body = document.getElementById('lessReportBody');
+        body.innerHTML = '';
+        names.forEach((n, i) => {
+            let sn=0, yn=0, ns=0;
+            for(let d in data) {
+                if(data[d][i]) {
+                    const r = data[d][i];
+                    if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
+                }
+            }
+            body.innerHTML += `<tr><td style="text-align:right; padding-right:15px;">${n}</td><td style="color:var(--present-clr); font-weight:bold;">${sn}</td><td style="color:var(--absent-clr); font-weight:bold;">${yn}</td><td style="color:orange; font-weight:bold;">${ns}</td></tr>`;
         });
     }
 
     window.onload = function() {
         initDatePicker();
-        loadDataForDate();
+        renderData();
     };
 </script>
 
