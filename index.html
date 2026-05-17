@@ -18,429 +18,336 @@
 
         body { 
             background-color: #ad1457;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M50 50c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zm-40 0c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zm80 0c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zM50 10c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10zm0 80c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10z'/%3E%3C/g%3E%3C/svg%3E");
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M50 50c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10z'/%3E%3C/g%3E%3C/svg%3E");
+            padding: 10px; margin: 0; 
         }
 
-        .main-container {
-            background-color: #fffdf0;
-            width: 100%;
-            max-width: 480px;
-            border-radius: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            border: 4px solid #ffd700;
-            overflow: hidden;
-            padding-bottom: 20px;
+        .container { 
+            max-width: 100%; margin: auto; background: #fff9e5; 
+            padding: 15px; border-radius: 20px; border: 3px solid #880e4f;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        .header-banner {
-            background: linear-gradient(135deg, #4a001f, #880e4f);
-            padding: 15px 10px;
-            text-align: center;
-            border-bottom: 4px solid #ffd700;
+        .header-section { text-align: center; margin: -15px -15px 20px -15px; }
+        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; }
+        
+        .urdu-date { 
+            background: #ad1457; color: white; padding: 5px 20px; 
+            border-radius: 50px; display: inline-block; margin-top: -20px;
+            position: relative; border: 2px solid #ffd700; font-size: 18px;
         }
 
-        .header-banner h1 {
-            color: #ffd700;
-            margin: 0;
-            font-size: 26px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
+        .tab-btn { 
+            flex: 1; min-width: 70px; padding: 10px 2px; cursor: pointer; 
+            border: 2px solid var(--primary); background: white; 
+            font-size: 16px; font-weight: bold; color: var(--primary); border-radius: 10px;
         }
-
-        .nav-tabs {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            padding: 10px;
+        .tab-btn.active { background: var(--primary); color: white; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 10px 5px; border: 1px solid #ddd; text-align: center; font-size: 18px; }
+        th { background-color: #0d47a1; color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        
+        .student-name { text-align: right !important; padding-right: 10px; font-weight: bold; width: 40%; }
+        
+        .status-btn { 
+            width: 90px; padding: 6px 0; cursor: pointer; font-weight: bold; 
+            border-radius: 6px; background: #eee; border: 1px solid #ccc; 
+            display: inline-block; font-size: 16px;
         }
+        
+        .present { background-color: var(--present-clr) !important; color: white !important; }
+        .absent { background-color: var(--absent-clr) !important; color: white !important; }
+        .leave { background-color: var(--leave-clr) !important; color: white !important; }
+        
+        .num-present { color: var(--present-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
+        .num-absent { color: var(--absent-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
+        .num-leave { color: var(--leave-clr); font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
 
-        .nav-tabs-row2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 5px;
-            padding: 0 10px 10px 10px;
-        }
+        .diary-input { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 17px; background-color: #fafafa; }
 
-        .tab-btn {
-            background-color: #ffffff;
-            border: 2px solid #ad1457;
-            color: #ad1457;
-            padding: 8px 2px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        /* ویڈیوز کے لیے خاص ڈیزائن */
+        .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
+        .video-container iframe { width: 100%; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-        .tab-btn.active {
-            background-color: #0f4c81;
-            border-color: #0f4c81;
-            color: #ffffff;
-        }
-
-        .filter-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 15px;
-            margin-bottom: 10px;
-        }
-
-        .count-badge {
-            color: #ad1457;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .styled-select {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 2px solid #ad1457;
-            background-color: white;
-            color: #333;
-            font-weight: bold;
-            font-size: 14px;
-            width: 55%;
-        }
-
-        .table-container {
-            margin: 0 10px;
-            background: white;
-            border-radius: 10px;
-            border: 2px solid #ad1457;
-            overflow: hidden;
-        }
-
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-        }
-
-        .main-table th {
-            background-color: #0f4c81;
-            color: white;
-            padding: 10px 5px;
-            font-size: 15px;
-        }
-
-        .main-table td {
-            padding: 10px 4px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        .main-table tr:nth-child(even) {
-            background-color: #fffde8;
-        }
-
-        .status-btn {
-            display: inline-block;
-            width: 85%;
-            padding: 5px 2px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 13px;
-            text-align: center;
-            border: 2px solid #ccc;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        .status-btn.present { background-color: #c8e6c9; border-color: var(--present-clr); color: var(--present-clr); }
-        .status-btn.absent { background-color: #ffcdd2; border-color: var(--absent-clr); color: var(--absent-clr); }
-        .status-btn.leave { background-color: #ffe0b2; border-color: var(--leave-clr); color: var(--leave-clr); }
-
-        .report-section {
-            display: none;
-            margin: 0 10px;
-        }
-
-        .report-title {
-            text-align: center;
-            color: #0f4c81;
-            font-weight: bold;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border: 2px solid #0f4c81;
-            text-align: center;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .report-table th {
-            background-color: #0f4c81;
-            color: white;
-            padding: 8px 2px;
-            font-size: 13px;
-        }
-
-        .report-table td {
-            padding: 8px 4px;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-        }
-
-        .student-name { text-align: right; padding-right: 15px; font-weight: bold; }
-        .num-present { background-color: #e8f5e9; color: var(--present-clr); font-weight: bold; }
-        .num-absent { background-color: #ffebee; color: var(--absent-clr); font-weight: bold; }
-        .num-leave { background-color: #fff3e0; color: var(--leave-clr); font-weight: bold; }
-
-        .print-btn-container {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .print-btn {
-            background-color: #4a2c91;
-            color: white;
-            border: none;
-            padding: 10px 40px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 90%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        .footer-tools { margin-top: 20px; display: flex; gap: 10px; }
+        .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; font-weight: bold; }
+        
+        @media print {
+            .tabs, .footer-tools, input[type="date"] { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div class="header-banner">
-        <h1>امام حسین مسجد</h1>
+<div class="container">
+    <div class="header-section">
+        <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="Header" class="banner-img">
+        <div id="displayUrduDate" class="urdu-date"></div>
     </div>
 
-    <div class="nav-tabs">
-        <div class="tab-btn active" id="tab-attendance" onclick="switchView('attendance')">حاضری</div>
-        <div class="tab-btn" id="tab-lesson" onclick="switchView('lesson')">سبق</div>
-        <div class="tab-btn" id="tab-diary" onclick="switchView('diary')">ڈائری</div>
-        <div class="tab-btn" id="tab-videos" onclick="switchView('videos')">ویڈیوز</div>
-    </div>
-    <div class="nav-tabs-row2">
-        <div class="tab-btn" id="tab-rep-att" onclick="switchView('rep-att')">حاضری رپورٹ</div>
-        <div class="tab-btn" id="tab-rep-les" onclick="switchView('rep-les')">سبق رپورٹ</div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('dailyAtt', event)">حاضری</button>
+        <button class="tab-btn" onclick="openTab('dailyLesson', event)">سبق</button>
+        <button class="tab-btn" onclick="openTab('diary', event)">ڈائری</button>
+        <button class="tab-btn" onclick="openTab('videoTab', event)">ویڈیوز</button>
+        <button class="tab-btn" onclick="openTab('attReport', event)">حاضری رپورٹ</button>
+        <button class="tab-btn" onclick="openTab('lessReport', event)">سبق رپورٹ</button>
     </div>
 
-    <div class="filter-row">
-        <div class="count-badge">تعداد: <span>27</span></div>
-        <select class="styled-select" id="mainDate" onchange="renderData()"></select>
-    </div>
-
-    <div id="daily-section" class="table-container">
-        <table class="main-table">
-            <thead>
-                <tr>
-                    <th style="width: 15%;">نمبر</th>
-                    <th style="width: 45%;">نام طالب علم</th>
-                    <th style="width: 40%;" id="dynamic-column-header">حاضری</th>
-                </tr>
-            </thead>
-            <tbody id="daily-table-body"></tbody>
+    <div id="dailyAtt" class="tab-content active">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <input type="date" id="mainDate" onchange="updateAll()">
+            <div style="color:var(--primary); font-weight:bold;">تعداد: 27</div>
+        </div>
+        <table>
+            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
+            <tbody id="attTableBody"></tbody>
         </table>
     </div>
 
-    <div id="report-att-section" class="report-section">
-        <div class="report-title monthTitle">رپورٹ برائے: مئی</div>
-        <table class="report-table">
+    <div id="dailyLesson" class="tab-content">
+        <table>
+            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>کیفیت</th></tr></thead>
+            <tbody id="lessTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="diary" class="tab-content">
+        <table>
+            <thead><tr><th>نمبر</th><th>نام</th><th>آج کا سبق</th></tr></thead>
+            <tbody id="diaryTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="videoTab" class="tab-content">
+        <table>
+            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>ویڈیوز دیکھیں</th></tr></thead>
+            <tbody id="videoTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="attReport" class="tab-content">
+        <div style="text-align:center; padding:10px; font-weight:bold; font-size:24px; color:#ad1457;" class="monthTitle"></div>
+        <table>
             <thead>
                 <tr>
-                    <th>نام طالب علم</th>
-                    <th style="color:var(--present-clr)">حاضر</th>
-                    <th style="color:var(--absent-clr)">غیر</th>
-                    <th style="color:var(--leave-clr)">رخصت</th>
+                    <th>نام</th>
+                    <th style="background:var(--present-clr)">حاضر</th>
+                    <th style="background:var(--absent-clr)">غیر حاضر</th>
+                    <th style="background:var(--leave-clr)">رخصت</th>
                 </tr>
             </thead>
             <tbody id="attReportBody"></tbody>
         </table>
     </div>
 
-    <div id="report-les-section" class="report-section">
-        <div class="report-title monthTitle">رپورٹ برائے: مئی</div>
-        <table class="report-table">
+    <div id="lessReport" class="tab-content">
+        <div style="text-align:center; padding:10px; font-weight:bold; font-size:24px; color:#ad1457;" class="monthTitle"></div>
+        <table>
             <thead>
                 <tr>
-                    <th>نام طالب علم</th>
-                    <th style="color:var(--present-clr)">سنایا</th>
-                    <th style="color:var(--absent-clr)">یاد نہیں</th>
-                    <th style="color:orange">نہیں سنایا</th>
+                    <th>نام</th>
+                    <th style="background:var(--present-clr)">سنایا</th>
+                    <th style="background:var(--absent-clr)">یاد نہیں</th>
+                    <th style="background:var(--leave-clr)">نہیں سنایا</th>
                 </tr>
             </thead>
             <tbody id="lessReportBody"></tbody>
         </table>
     </div>
 
-    <div class="print-btn-container">
-        <button class="print-btn" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
+    <div class="footer-tools">
+        <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ</button>
+        <button class="btn-tool" style="background:#ad1457" onclick="downloadBackup()">بیک اپ لیں</button>
     </div>
 </div>
 
 <script>
-    const names = ["طالب علم 1","طالب علم 2","طالب علم 3","طالب علم 4","طالب علم 5","طالب علم 6","طالب علم 7","طالب علم 8","طالب علم 9","طالب علم 10","طالب علم 11","طالب علم 12","طالب علم 13","طالب علم 14","طالب علم 15","طالب علم 16","طالب علم 17","طالب علم 18","طالب علم 19","طالب علم 20","طالب علم 21","طالب علم 22","طالب علم 23","طالب علم 24","طالب علم 25","طالب علم 26","طالب علم 27"];
-
-    const data = {
-        "2026-05-02": {"0":{"aS":"رخصت","lS":"---","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"غیر حاضر","lS":"---","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-03": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"غیر حاضر","lS":"---","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-05": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"غیر حاضر","lS":"---","w":""},"3":{"aS":"غیر حاضر","lS":"---","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"غیر حاضر","lS":"---","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"غیر حاضر","lS":"---","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-07": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"غیر حاضر","lS":"---","w":""},"3":{"aS":"غیر حاضر","lS":"---","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"غیر حاضر","lS":"---","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"غیر حاضر","lS":"---","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"رخصت","lS":"---","w":""}},
-        "2026-05-09": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"غیر حاضر","lS":"---","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-10": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"رخصت","lS":"---","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-11": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"غیر حاضر","lS":"---","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-12": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"غیر حاضر","lS":"---","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"حاضر","lS":"سنایا","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"غیر حاضر","lS":"---","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"رخصت","lS":"---","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"غیر حاضر","lS":"---","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"غیر حاضر","lS":"---","w":""},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"غیر حاضر","lS":"---","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"غیر حاضر","lS":"---","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-13": {"0":{"aS":"حاضر","lS":"سنایا","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-14": {"0":{"aS":"حاضر","lS":"سنایا","w":"قاعدہ"},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"حاضر","lS":"سنایا","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"حاضر","lS":"سنایا","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"غیر حاضر","lS":"---","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-16": {"0":{"aS":"رخصت","lS":"---","w":""},"1":{"aS":"حاضر","lS":"سنایا","w":""},"2":{"aS":"حاضر","lS":"سنایا","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":""},"4":{"aS":"حاضر","lS":"سنایا","w":""},"5":{"aS":"حاضر","lS":"سنایا","w":""},"6":{"aS":"حاضر","lS":"سنایا","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":""},"9":{"aS":"حاضر","lS":"سنایا","w":""},"10":{"aS":"حاضر","lS":"سنایا","w":""},"11":{"aS":"حاضر","lS":"سنایا","w":""},"12":{"aS":"رخصت","lS":"---","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":""},"14":{"aS":"حاضر","lS":"سنایا","w":""},"15":{"aS":"حاضر","lS":"سنایا","w":""},"16":{"aS":"حاضر","lS":"سنایا","w":""},"17":{"aS":"حاضر","lS":"سنایا","w":""},"18":{"aS":"حاضر","lS":"سنایا","w":""},"19":{"aS":"حاضر","lS":"سنایا","w":""},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":""},"22":{"aS":"حاضر","lS":"سنایا","w":""},"23":{"aS":"حاضر","lS":"سنایا","w":""},"24":{"aS":"حاضر","lS":"سنایا","w":""},"25":{"aS":"حاضر","lS":"سنایا","w":""},"26":{"aS":"حاضر","lS":"سنایا","w":""}},
-        "2026-05-17": {"0":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"1":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت (ان عذابک)"},"2":{"aS":"غیر حاضر","lS":"---","w":""},"3":{"aS":"حاضر","lS":"سنایا","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","lS":"سنایا","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"غیر حاضر","lS":"---","w":""},"7":{"aS":"غیر حاضر","lS":"---","w":""},"8":{"aS":"حاضر","lS":"سنایا","w":"اھدنالصرا"},"9":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","lS":"---","w":""},"13":{"aS":"حاضر","lS":"سنایا","w":"ولا نکفرک"},"14":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","lS":"سنایا","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","lS":"سنایا","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","lS":"سنایا","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","lS":"یاد نہیں","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","lS":"---","w":""},"21":{"aS":"حاضر","lS":"سنایا","w":"دوسرا کلمہ "},"22":{"aS":"حاضر","lS":"سنایا","w":"ج ح"},"23":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل "},"24":{"aS":"حاضر","lS":"سنایا","w":"دکھتی آنکھ ، وضو ٹوٹنا"},"25":{"aS":"حاضر","lS":"سنایا","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","lS":"سنایا","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}
+    const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
+    
+    const videoLinks = {
+        "0": "https://www.youtube.com/embed/videoseries?list=PLxyz1", 
+        "1": "https://www.youtube.com/embed/videoseries?list=PLxyz2", 
+        "11": "https://www.youtube.com/embed/videoseries?list=PLxyz3" 
     };
 
-    let currentMode = 'attendance';
+    const storageKey = 'hussain_masjid_final_v6';
 
-    function initDatePicker() {
-        const picker = document.getElementById('mainDate');
-        picker.innerHTML = '';
-        const sortedDates = Object.keys(data).sort((a, b) => new Date(a) - new Date(b));
-        sortedDates.forEach(date => {
-            const option = document.createElement('option');
-            option.value = date;
-            option.textContent = date;
-            picker.appendChild(option);
-        });
-        if(sortedDates.length > 0) {
-            picker.value = sortedDates[sortedDates.length - 1];
+    // مئی کا پکا ڈیٹا گٹ ہب کے لیے
+    const fallbackData = {
+        "2026-05-02": {"0":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-03": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-05": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-07": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""}},
+        "2026-05-09": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-10": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-11": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-12": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-13": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-14": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-16": {"0":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},
+        "2026-05-17": {"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ "},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل "},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}
+    };
+
+    window.onload = function() {
+        if(!document.getElementById('mainDate').value) {
+            // گٹ ہب پر مئی کی آخری تاریخ سیٹ کریں تاکہ ڈیٹا نظر آئے
+            document.getElementById('mainDate').value = "2026-05-17";
         }
+        updateAll();
+    };
+
+    function openTab(id, e) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(e) e.currentTarget.classList.add('active');
+        if(id.includes('Report')) loadReports();
     }
 
-    function switchView(mode) {
-        currentMode = mode;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        
-        const activeBtn = document.getElementById(`tab-${mode}`);
-        if(activeBtn) activeBtn.classList.add('active');
-
-        document.getElementById('daily-section').style.display = (mode === 'attendance' || mode === 'lesson' || mode === 'diary' || mode === 'videos') ? 'block' : 'none';
-        document.getElementById('report-att-section').style.display = (mode === 'rep-att') ? 'block' : 'none';
-        document.getElementById('report-les-section').style.display = (mode === 'rep-les') ? 'block' : 'none';
-
-        renderData();
-    }
-
-    function renderData() {
-        const selectedDate = document.getElementById('mainDate').value;
-        const tbody = document.getElementById('daily-table-body');
-        const colHeader = document.getElementById('dynamic-column-header');
-        
-        if (!selectedDate || !data[selectedDate]) return;
-
-        if (currentMode === 'rep-att') {
-            renderAttendanceReport();
-            return;
-        } else if (currentMode === 'rep-les') {
-            renderLessonReport();
-            return;
+    function getData() {
+        let localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        // اگر لوکل سٹوریج بالکل خالی ہے (جیسے گٹ ہب پر والدین کے پاس ہوتا ہے) تو پکا ڈیٹا استعمال کریں
+        if (Object.keys(localData).length === 0) {
+            return fallbackData;
         }
-
-        if (currentMode === 'attendance') colHeader.textContent = 'حاضری';
-        else if (currentMode === 'lesson') colHeader.textContent = 'سبق / دعا';
-        else if (currentMode === 'diary') colHeader.textContent = 'ڈائری';
-        else if (currentMode === 'videos') colHeader.textContent = 'ویڈیو اسٹیٹس';
-
-        tbody.innerHTML = '';
-        const dayData = data[selectedDate];
-
-        names.forEach((name, index) => {
-            const tr = document.createElement('tr');
-            const studentRecord = dayData[index];
-
-            const tdNum = document.createElement('td');
-            tdNum.textContent = index + 1;
-
-            const tdName = document.createElement('td');
-            tdName.style.textAlign = 'right';
-            tdName.style.paddingRight = '15px';
-            tdName.textContent = name;
-
-            const tdData = document.createElement('td');
-            
-            if (currentMode === 'attendance') {
-                const btn = document.createElement('span');
-                const status = studentRecord ? studentRecord.aS : '---';
-                btn.textContent = status;
-                btn.className = 'status-btn';
-                if (status === 'حاضر') btn.classList.add('present');
-                else if (status === 'غیر حاضر') btn.classList.add('absent');
-                else if (status === 'رخصت') btn.classList.add('leave');
-                tdData.appendChild(btn);
-            } 
-            else if (currentMode === 'lesson') {
-                tdData.textContent = (studentRecord && studentRecord.w) ? studentRecord.w : '---';
-                tdData.style.color = '#0f4c81';
-                tdData.style.fontWeight = 'bold';
-            } 
-            else if (currentMode === 'diary') {
-                tdData.textContent = (studentRecord && studentRecord.lS === 'سنایا') ? 'مکمل سبق محفوظ' : '---';
-                tdData.style.fontSize = '12px';
-            } 
-            else if (currentMode === 'videos') {
-                tdData.textContent = (studentRecord && studentRecord.aS === 'حاضر') ? 'دیکھی گئی' : '---';
-            }
-
-            tr.appendChild(tdNum);
-            tr.appendChild(tdName);
-            tr.appendChild(tdData);
-            tbody.appendChild(tr);
-        });
+        return localData;
     }
 
-    function renderAttendanceReport() {
-        const body = document.getElementById('attReportBody');
-        body.innerHTML = '';
+    function updateAll() {
+        const date = document.getElementById('mainDate').value;
+        if(!date) return;
+        
+        const dObj = new Date(date);
+        document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
+
+        const data = getData();
+        const dayData = data[date] || {};
+
+        const b1 = document.getElementById('attTableBody'), 
+              b2 = document.getElementById('lessTableBody'), 
+              b3 = document.getElementById('diaryTableBody'),
+              b4 = document.getElementById('videoTableBody');
+              
+        if(b1) b1.innerHTML = ''; 
+        if(b2) b2.innerHTML = ''; 
+        if(b3) b3.innerHTML = ''; 
+        if(b4) b4.innerHTML = '';
+
         names.forEach((n, i) => {
-            let p=0, ab=0, lv=0;
+            const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
+            if(b1) b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" onclick="tglA(this,${i})">${s.aS}</div></td></tr>`;
+            if(b2) b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}" onclick="tglL(this,${i})">${s.lS}</div></td></tr>`;
+            if(b3) b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" onchange="saveW(${i},this.value)"></td></tr>`;
+            
+            if(b4) b4.innerHTML += `
+                <tr>
+                    <td>${i+1}</td>
+                    <td class="student-name">${n}</td>
+                    <td><button class="video-btn" onclick="toggleVideo(${i})">ویڈیوز</button></td>
+                </tr>
+                <tr id="videoRow-${i}" class="video-container">
+                    <td colspan="3">
+                        <div id="videoArea-${i}"></div>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function toggleVideo(i) {
+        const row = document.getElementById(`videoRow-${i}`);
+        const area = document.getElementById(`videoArea-${i}`);
+        const link = videoLinks[i] || "https://www.youtube.com/embed/dQw4w9WgXcQ";
+
+        if (row.style.display === "table-row") {
+            row.style.display = "none";
+            area.innerHTML = "";
+        } else {
+            document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none');
+            row.style.display = "table-row";
+            area.innerHTML = `<iframe height="250" src="${link}" frameborder="0" allowfullscreen></iframe>`;
+        }
+    }
+
+    function tglA(el, i) {
+        let s, c;
+        if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
+        else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
+        else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
+        else {s="---"; c="status-btn";}
+        el.innerText=s; el.className=c; save(i,'aS',s,c);
+    }
+
+    function tglL(el, i) {
+        let s, c;
+        if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
+        else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
+        else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
+        else {s="---"; c="status-btn";}
+        el.innerText=s; el.className=c; save(i,'lS',s,c);
+    }
+
+    function saveW(i, v) { save(i, 'w', v); }
+
+    function save(i, k, v, c) {
+        const d = document.getElementById('mainDate').value;
+        let data = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        // اگر پہلی بار ڈیٹا ایڈٹ کر رہے ہیں تو فال بیک ڈیٹا کو لوکل سٹوریج میں کاپی کر لیں
+        if(Object.keys(data).length === 0) {
+            data = JSON.parse(JSON.stringify(fallbackData));
+        }
+        if(!data[d]) data[d] = {};
+        if(!data[d][i]) data[d][i] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:''};
+        
+        if(k==='aS'){ data[d][i].aS=v; data[d][i].aC=c; }
+        else if(k==='lS'){ data[d][i].lS=v; data[d][i].lC=c; }
+        else { data[d][i].w=v; }
+        localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    function loadReports() {
+        const data = getData();
+        const mainDateEl = document.getElementById('mainDate');
+        if(!mainDateEl || !mainDateEl.value) return;
+
+        const selDate = new Date(mainDateEl.value);
+        const mName = selDate.toLocaleDateString('ur-PK', {month:'long', year:'numeric'});
+        const mKey = mainDateEl.value.substring(0, 7);
+        
+        document.querySelectorAll('.monthTitle').forEach(el => el.innerText = "رپورٹ برائے: " + mName);
+        
+        const bA = document.getElementById('attReportBody'), bL = document.getElementById('lessReportBody');
+        if(bA) bA.innerHTML = ''; 
+        if(bL) bL.innerHTML = '';
+
+        names.forEach((n, i) => {
+            let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
             for(let d in data) {
-                if(data[d][i]) {
+                if(d.startsWith(mKey) && data[d][i]) {
                     const r = data[d][i];
                     if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
-                }
-            }
-            body.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${p}</td><td class="num-absent">${ab}</td><td class="num-leave">${lv}</td></tr>`;
-        });
-    }
-
-    function renderLessonReport() {
-        const body = document.getElementById('lessReportBody');
-        body.innerHTML = '';
-        names.forEach((n, i) => {
-            let sn=0, yn=0, ns=0;
-            for(let d in data) {
-                if(data[d][i]) {
-                    const r = data[d][i];
                     if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
                 }
             }
-            body.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${sn}</td><td class="num-absent">${yn}</td><td class="num-leave">${ns}</td></tr>`;
+            if(bA) bA.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${p}</td><td class="num-absent">${ab}</td><td class="num-leave">${lv}</td></tr>`;
+            if(bL) bL.innerHTML += `<tr><td class="student-name">${n}</td><td class="num-present">${sn}</td><td class="num-absent">${yn}</td><td class="num-leave">${ns}</td></tr>`;
         });
     }
 
-    window.onload = function() {
-        initDatePicker();
-        renderData();
-    };
+    function downloadBackup() {
+        let localData = localStorage.getItem(storageKey);
+        if(!localData) localData = JSON.stringify(fallbackData);
+        const blob = new Blob([localData], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'hussain_masjid_data.txt'; a.click();
+    }
 </script>
-
 </body>
 </html>
