@@ -205,7 +205,7 @@
 </div>
 
 <script>
-    const names = ["آذان منصور", "آیان ولید", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
+    const names = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
     const videoLinks = {
         "0": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
@@ -237,35 +237,35 @@
         "26": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
 
-    // موبائل ڈائریکٹ اوپننگ کے لیے یونیورسل اور محفوظ فارمیٹ کا استعمال
+    // حتمی حل: اینڈرائیڈ ڈیپ لنک 'intent://' فارمیٹ جو براؤزر کو بائی پاس کر کے براہ راست یوٹیوب ایپ کھولتا ہے
     const directPlaylistLinks = {
-        "0": "https://m.youtube.com/playlist?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
-        "1": "https://m.youtube.com/playlist?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG",
-        "2": "https://m.youtube.com/playlist?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ",
-        "3": "https://m.youtube.com/playlist?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd",
-        "4": "https://m.youtube.com/playlist?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo",
-        "5": "https://m.youtube.com/playlist?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ",
-        "6": "https://m.youtube.com/playlist?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK",
-        "7": "https://m.youtube.com/playlist?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu",
-        "8": "https://m.youtube.com/playlist?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl",
-        "9": "https://m.youtube.com/playlist?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy",
-        "10": "https://m.youtube.com/playlist?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK",
-        "11": "https://m.youtube.com/playlist?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS",
-        "12": "https://m.youtube.com/playlist?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr",
-        "13": "https://m.youtube.com/playlist?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK",
-        "14": "https://m.youtube.com/playlist?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL",
-        "15": "https://m.youtube.com/playlist?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH",
-        "16": "https://m.youtube.com/playlist?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-",
-        "17": "https://m.youtube.com/playlist?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO",
-        "18": "https://m.youtube.com/playlist?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky",
-        "19": "https://m.youtube.com/playlist?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks",
-        "20": "https://m.youtube.com/playlist?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC",
-        "21": "https://m.youtube.com/playlist?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_",
-        "22": "https://m.youtube.com/playlist?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-",
-        "23": "https://m.youtube.com/playlist?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n",
-        "24": "https://m.youtube.com/playlist?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd",
-        "25": "https://m.youtube.com/playlist?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F",
-        "26": "https://m.youtube.com/playlist?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
+        "0": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF#Intent;package=com.google.android.youtube;scheme=https;end",
+        "1": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG#Intent;package=com.google.android.youtube;scheme=https;end",
+        "2": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ#Intent;package=com.google.android.youtube;scheme=https;end",
+        "3": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd#Intent;package=com.google.android.youtube;scheme=https;end",
+        "4": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo#Intent;package=com.google.android.youtube;scheme=https;end",
+        "5": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ#Intent;package=com.google.android.youtube;scheme=https;end",
+        "6": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK#Intent;package=com.google.android.youtube;scheme=https;end",
+        "7": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu#Intent;package=com.google.android.youtube;scheme=https;end",
+        "8": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl#Intent;package=com.google.android.youtube;scheme=https;end",
+        "9": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy#Intent;package=com.google.android.youtube;scheme=https;end",
+        "10": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK#Intent;package=com.google.android.youtube;scheme=https;end",
+        "11": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS#Intent;package=com.google.android.youtube;scheme=https;end",
+        "12": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr#Intent;package=com.google.android.youtube;scheme=https;end",
+        "13": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK#Intent;package=com.google.android.youtube;scheme=https;end",
+        "14": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL#Intent;package=com.google.android.youtube;scheme=https;end",
+        "15": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH#Intent;package=com.google.android.youtube;scheme=https;end",
+        "16": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-#Intent;package=com.google.android.youtube;scheme=https;end",
+        "17": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO#Intent;package=com.google.android.youtube;scheme=https;end",
+        "18": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky#Intent;package=com.google.android.youtube;scheme=https;end",
+        "19": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks#Intent;package=com.google.android.youtube;scheme=https;end",
+        "20": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC#Intent;package=com.google.android.youtube;scheme=https;end",
+        "21": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_#Intent;package=com.google.android.youtube;scheme=https;end",
+        "22": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-#Intent;package=com.google.android.youtube;scheme=https;end",
+        "23": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n#Intent;package=com.google.android.youtube;scheme=https;end",
+        "24": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd#Intent;package=com.google.android.youtube;scheme=https;end",
+        "25": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F#Intent;package=com.google.android.youtube;scheme=https;end",
+        "26": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr#Intent;package=com.google.android.youtube;scheme=https;end"
     };
 
     const activeKey = 'hussain_masjid_final_v6';
@@ -463,7 +463,7 @@
                 area.innerHTML = `
                     <iframe src="${embedLink}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     <br>
-                    <a href="${directLink}" target="_blank" class="yt-playlist-link-btn">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>
+                    <a href="${directLink}" class="yt-playlist-link-btn">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>
                 `;
             } else if(area) {
                 area.innerHTML = `<p style="color:red; font-weight:bold;">اس طالب علم کا لنک دستیاب نہیں ہے</p>`;
