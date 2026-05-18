@@ -99,11 +99,10 @@
         .footer-tools { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
         .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; min-width: 120px; font-weight: bold; }
         
-        /* نیا کنٹرول پینل سیکشن */
         .admin-controls { display: none; margin-top: 20px; padding: 15px; background: #fff; border: 2px dashed #ad1457; border-radius: 12px; }
-        .form-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .form-input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; text-align: right; }
-        .btn-add { background: #1b5e20; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; white-space: nowrap; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .form-input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; text-align: right; box-sizing: border-box; }
+        .btn-add { background: #1b5e20; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; text-align: center; width: 100%; }
         .btn-delete { background: #b71c1c; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
 
         .teacher-only-btn { display: none; }
@@ -198,7 +197,9 @@
     <div id="adminPanelSection" class="admin-controls">
         <div style="font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 10px; text-align: center;">🧔 داخلہ و اخراج فارم (قائداعظم ایڈمن)</div>
         <div class="form-group">
-            <input type="text" id="newStudentName" class="form-input" placeholder="نئے بچے کا نام لکھیں...">
+            <input type="text" id="newStudentName" class="form-input" placeholder="طالب علم کا نام...">
+            <input type="text" id="newStudentEmbed" class="form-input" placeholder="یوٹیوب ایمبیڈ پلے لسٹ لنک (Embed Link)..." dir="ltr" style="text-align:left;">
+            <input type="text" id="newStudentDirect" class="form-input" placeholder="یوٹیوب ڈائریکٹ ایپ لنک (Direct App Link)..." dir="ltr" style="text-align:left;">
             <button class="btn-add" onclick="addStudent()">داخلہ کریں</button>
         </div>
         <table style="background: #fff2cc; margin-top: 10px;">
@@ -215,6 +216,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
+        <button class="btn-tool teacher-only-btn" style="background:#2e7d32;" id="restoreBtn" onclick="restoreEmbeddedData()">ڈیٹا لوڈ کریں (Restore)</button>
         <button class="btn-tool teacher-only-btn" style="background:#ad1457;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
     </div>
 
@@ -232,8 +234,7 @@
 <script>
     const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
-    // ویڈیو لنکس کے انڈیکس اب ہمیشہ فکسڈ رہیں گے تاکہ نام اوپر نیچے ہونے سے لنک خراب نہ ہوں
-    const videoLinks = {
+    const defaultVideoLinks = {
         "آذان منصور": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
         "آيان وليد": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG",
         "امیر حمزه": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ",
@@ -263,7 +264,7 @@
         "ہبہ نور": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
 
-    const directPlaylistLinks = {
+    const defaultDirectLinks = {
         "آذان منصور": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF#Intent;package=com.google.android.youtube;scheme=https;end",
         "آيان وليد": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG#Intent;package=com.google.android.youtube;scheme=https;end",
         "امیر حمزه": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ#Intent;package=com.google.android.youtube;scheme=https;end",
@@ -295,8 +296,15 @@
 
     const activeKey = 'hussain_masjid_final_v6';
     const namesKey = 'hussain_masjid_students_list';
+    const embedLinksKey = 'hussain_masjid_embed_links';
+    const directLinksKey = 'hussain_masjid_direct_links';
+
     let isTeacherMode = false;
     let names = [];
+    let videoLinks = {};
+    let directPlaylistLinks = {};
+
+    const embeddedData = {"2026-05-18":{"سميع نذير":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"بقرہ آیت 12"},"ایمان فاروق":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"بقرہ آیت 12"},"ایشال مظہر":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"تختی 4 حرکات "},"حلیمہ آصف":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"قاعدہ 3"},"محمد عیسی":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"خ د ذ"},"ایمان عمران":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"بقرہ 29"},"آذان منصور":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"اَلَم"},"آيان وليد":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ 9"},"سفيان وليد":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ 9"},"عبد الرافع":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"بَ تَ"},"امیر حمزه":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"سیرت نور":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"عبد الرحمن":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"بقرہ 144"},"کاشان حیدر":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پارہ 4 نساء 10"},"عبدالمنان":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پارہ 4 آل عمران 140"},"عثمان وليد":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پارہ 16 کھف 99"},"محمد صائم":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پارہ 13 ابراہیم 21"},"مريم نور":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پارہ 8 انعام 145"},"ہبہ نور":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پارہ 30قارعہ"},"محمد عبداللّٰه":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"بقرہ 126"},"حراء زينب":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":""},"شہباز شریف":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":"بقرہ 25"},"مشال عمران":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"محمد كيف":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"محمد طيب":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"ثانیہ مظہر":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"جنت فاطمہ":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""}}};
 
     window.onload = function() {
         const today = new Date();
@@ -305,7 +313,6 @@
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('mainDate').value = `${yyyy}-${mm}-${dd}`;
         
-        // ناموں کی لسٹ لوڈ کرنا
         const savedNames = localStorage.getItem(namesKey);
         if(savedNames) {
             names = JSON.parse(savedNames);
@@ -314,21 +321,31 @@
             localStorage.setItem(namesKey, JSON.stringify(names));
         }
 
-        // پرانے ڈیٹا کو انڈیکس کی بجائے نام پر منتقل کرنے کا فنکشن (تاکہ بیک اپ محفوظ رہے)
-        let data = JSON.parse(localStorage.getItem(activeKey) || '{}');
-        let dataChanged = false;
-        for(let date in data) {
-            for(let key in data[date]) {
-                if(!isNaN(key) && defaultNames[key]) {
-                    const studentName = defaultNames[key];
-                    data[date][studentName] = data[date][key];
-                    delete data[date][key];
-                    dataChanged = true;
+        const savedEmbeds = localStorage.getItem(embedLinksKey);
+        videoLinks = savedEmbeds ? JSON.parse(savedEmbeds) : {...defaultVideoLinks};
+
+        const savedDirects = localStorage.getItem(directLinksKey);
+        directPlaylistLinks = savedDirects ? JSON.parse(savedDirects) : {...defaultDirectLinks};
+
+        let existingData = localStorage.getItem(activeKey);
+        if (!existingData || existingData === '{}') {
+            localStorage.setItem(activeKey, JSON.stringify(embeddedData));
+        } else {
+            let data = JSON.parse(existingData);
+            let dataChanged = false;
+            for(let date in data) {
+                for(let key in data[date]) {
+                    if(!isNaN(key) && defaultNames[key]) {
+                        const studentName = defaultNames[key];
+                        data[date][studentName] = data[date][key];
+                        delete data[date][key];
+                        dataChanged = true;
+                    }
                 }
             }
-        }
-        if(dataChanged) {
-            localStorage.setItem(activeKey, JSON.stringify(data));
+            if(dataChanged) {
+                localStorage.setItem(activeKey, JSON.stringify(data));
+            }
         }
 
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
@@ -378,6 +395,18 @@
         document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'none');
         alert("لاگ آؤٹ ہو گئے۔ رجسٹر صرف دیکھنے کے موڈ پر ہے۔");
         updateAll();
+    }
+
+    function restoreEmbeddedData() {
+        if(confirm("کیا آپ کوڈ کے اندر موجود فکسڈ ڈیٹا کو دوبارہ لوکل اسٹوریج میں لوڈ کرنا چاہتے ہیں؟")) {
+            let currentData = JSON.parse(localStorage.getItem(activeKey) || '{}');
+            for(let date in embeddedData) {
+                currentData[date] = embeddedData[date];
+            }
+            localStorage.setItem(activeKey, JSON.stringify(currentData));
+            updateAll();
+            alert("ڈیٹا کامیابی سے ری سٹور کر دیا گیا ہے!");
+        }
     }
 
     function openTab(id, e) {
@@ -519,7 +548,7 @@
                 area.innerHTML = `
                     <iframe src="${embedLink}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     <br>
-                    <a href="${directLink}" class="yt-playlist-link-btn">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>
+                    <a href="${directLink || '#'}" class="yt-playlist-link-btn" target="_blank">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>
                 `;
             } else if(area) {
                 area.innerHTML = `<p style="color:red; font-weight:bold;">اس طالب علم کا لنک دستیاب نہیں ہے</p>`;
@@ -527,7 +556,6 @@
         }
     }
 
-    // ایڈمن پینل میں بچوں کی لسٹ دکھانا
     function loadAdminStudentList() {
         const body = document.getElementById('adminStudentListBody');
         if(!body) return;
@@ -542,24 +570,48 @@
         });
     }
 
-    // نیا بچہ شامل کرنا (ہمیشہ لاسٹ میں جائے گا)
     function addStudent() {
-        const input = document.getElementById('newStudentName');
-        const name = input.value.trim();
+        const inputName = document.getElementById('newStudentName');
+        const inputEmbed = document.getElementById('newStudentEmbed');
+        const inputDirect = document.getElementById('newStudentDirect');
+
+        const name = inputName.value.trim();
+        const embedLink = inputEmbed.value.trim();
+        const directLink = inputDirect.value.trim();
+
         if(!name) return alert("براہ کرم بچے کا نام لکھیں!");
         if(names.includes(name)) return alert("یہ نام پہلے سے لسٹ میں موجود ہے!");
         
         names.push(name);
         localStorage.setItem(namesKey, JSON.stringify(names));
-        input.value = '';
+
+        if(embedLink) {
+            videoLinks[name] = embedLink;
+            localStorage.setItem(embedLinksKey, JSON.stringify(videoLinks));
+        }
+        if(directLink) {
+            directPlaylistLinks[name] = directLink;
+            localStorage.setItem(directLinksKey, JSON.stringify(directPlaylistLinks));
+        }
+
+        inputName.value = '';
+        inputEmbed.value = '';
+        inputDirect.value = '';
+        
         updateAll();
+        alert(`طالب علم "${name}" پلے لسٹ سمیت کامیابی سے رجسٹر ہو گیا ہے!`);
     }
 
-    // بچہ خارج کرنا (درمیان سے خارج کرنے پر بھی باقیوں کا ریکارڈ خراب نہیں ہوگا)
     function deleteStudent(studentName) {
         if(confirm(`کیا آپ واقعی "${studentName}" کا نام لسٹ سے خارج کرنا چاہتے ہیں؟ اس سے پرانا ریکارڈ ڈیٹا بیس میں رہے گا لیکن لسٹ سے نام ہٹ جائے گا۔`)) {
             names = names.filter(n => n !== studentName);
             localStorage.setItem(namesKey, JSON.stringify(names));
+            
+            delete videoLinks[studentName];
+            delete directPlaylistLinks[studentName];
+            localStorage.setItem(embedLinksKey, JSON.stringify(videoLinks));
+            localStorage.setItem(directLinksKey, JSON.stringify(directPlaylistLinks));
+
             updateAll();
         }
     }
