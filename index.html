@@ -99,10 +99,17 @@
         .footer-tools { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
         .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; min-width: 120px; font-weight: bold; }
         
+        /* نیا کنٹرول پینل سیکشن */
+        .admin-controls { display: none; margin-top: 20px; padding: 15px; background: #fff; border: 2px dashed #ad1457; border-radius: 12px; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .form-input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; text-align: right; }
+        .btn-add { background: #1b5e20; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; white-space: nowrap; }
+        .btn-delete { background: #b71c1c; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
+
         .teacher-only-btn { display: none; }
 
         @media print {
-            .tabs, .footer-tools, input[type="date"], .login-portal, .teacher-badge { display: none !important; }
+            .tabs, .footer-tools, input[type="date"], .login-portal, .teacher-badge, .admin-controls { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
@@ -129,7 +136,7 @@
     <div id="dailyAtt" class="tab-content active">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
             <input type="date" id="mainDate" onchange="updateAll()">
-            <div style="color:var(--primary); font-weight:bold; font-size:18px;">کل تعداد: 27</div>
+            <div style="color:var(--primary); font-weight:bold; font-size:18px;">کل تعداد: <span id="totalStudentsCount">27</span></div>
         </div>
         <table>
             <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
@@ -188,6 +195,24 @@
         </table>
     </div>
 
+    <div id="adminPanelSection" class="admin-controls">
+        <div style="font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 10px; text-align: center;">🧔 داخلہ و اخراج فارم (قائداعظم ایڈمن)</div>
+        <div class="form-group">
+            <input type="text" id="newStudentName" class="form-input" placeholder="نئے بچے کا نام لکھیں...">
+            <button class="btn-add" onclick="addStudent()">داخلہ کریں</button>
+        </div>
+        <table style="background: #fff2cc; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th width="15%" style="background:#ad1457;">نمبر</th>
+                    <th style="background:#ad1457;">نام طالب علم</th>
+                    <th width="25%" style="background:#ad1457;">خارج کریں</th>
+                </tr>
+            </thead>
+            <tbody id="adminStudentListBody"></tbody>
+        </table>
+    </div>
+
     <div class="footer-tools">
         <button class="btn-tool" style="background:#4527a0" onclick="window.print()">پی ڈی ایف / پرنٹ کریں</button>
         <button class="btn-tool teacher-only-btn" style="background:#ad1457;" id="exportBtn" onclick="downloadBackup()">بیک اپ ڈاؤن لوڈ کریں</button>
@@ -205,71 +230,73 @@
 </div>
 
 <script>
-    const names = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
+    const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     
+    // ویڈیو لنکس کے انڈیکس اب ہمیشہ فکسڈ رہیں گے تاکہ نام اوپر نیچے ہونے سے لنک خراب نہ ہوں
     const videoLinks = {
-        "0": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
-        "1": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG",
-        "2": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ",
-        "3": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd",
-        "4": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo",
-        "5": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ",
-        "6": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK",
-        "7": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu",
-        "8": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl",
-        "9": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy",
-        "10": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK",
-        "11": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS",
-        "12": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr",
-        "13": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK",
-        "14": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL",
-        "15": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH",
-        "16": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-",
-        "17": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO",
-        "18": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky",
-        "19": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks",
-        "20": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC",
-        "21": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_",
-        "22": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-",
-        "23": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n",
-        "24": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd",
-        "25": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F",
-        "26": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
+        "آذان منصور": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF",
+        "آيان وليد": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG",
+        "امیر حمزه": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ",
+        "ایشال مظہر": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd",
+        "ایمان عمران": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo",
+        "ایمان فاروق": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ",
+        "ثانیہ مظہر": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK",
+        "جنت فاطمہ": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu",
+        "حراء زينب": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl",
+        "حلیمہ آصف": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy",
+        "سفيان وليد": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK",
+        "سميع نذير": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS",
+        "سیرت نور": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr",
+        "شہباز شریف": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK",
+        "عبد الرافع": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL",
+        "عبد الرحمن": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH",
+        "عبدالمنان": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-",
+        "عثمان وليد": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO",
+        "کاشان حیدر": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky",
+        "محمد صائم": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks",
+        "محمد طيب": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC",
+        "محمد عبداللّٰه": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_",
+        "محمد عیسی": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-",
+        "محمد كيف": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n",
+        "مريم نور": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd",
+        "مشال عمران": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F",
+        "ہبہ نور": "https://www.youtube.com/embed/videoseries?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"
     };
 
-    // حتمی حل: اینڈرائیڈ ڈیپ لنک 'intent://' فارمیٹ جو براؤزر کو بائی پاس کر کے براہ راست یوٹیوب ایپ کھولتا ہے
     const directPlaylistLinks = {
-        "0": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF#Intent;package=com.google.android.youtube;scheme=https;end",
-        "1": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG#Intent;package=com.google.android.youtube;scheme=https;end",
-        "2": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ#Intent;package=com.google.android.youtube;scheme=https;end",
-        "3": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd#Intent;package=com.google.android.youtube;scheme=https;end",
-        "4": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo#Intent;package=com.google.android.youtube;scheme=https;end",
-        "5": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ#Intent;package=com.google.android.youtube;scheme=https;end",
-        "6": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK#Intent;package=com.google.android.youtube;scheme=https;end",
-        "7": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu#Intent;package=com.google.android.youtube;scheme=https;end",
-        "8": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl#Intent;package=com.google.android.youtube;scheme=https;end",
-        "9": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy#Intent;package=com.google.android.youtube;scheme=https;end",
-        "10": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK#Intent;package=com.google.android.youtube;scheme=https;end",
-        "11": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS#Intent;package=com.google.android.youtube;scheme=https;end",
-        "12": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr#Intent;package=com.google.android.youtube;scheme=https;end",
-        "13": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK#Intent;package=com.google.android.youtube;scheme=https;end",
-        "14": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL#Intent;package=com.google.android.youtube;scheme=https;end",
-        "15": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH#Intent;package=com.google.android.youtube;scheme=https;end",
-        "16": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-#Intent;package=com.google.android.youtube;scheme=https;end",
-        "17": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO#Intent;package=com.google.android.youtube;scheme=https;end",
-        "18": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky#Intent;package=com.google.android.youtube;scheme=https;end",
-        "19": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks#Intent;package=com.google.android.youtube;scheme=https;end",
-        "20": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC#Intent;package=com.google.android.youtube;scheme=https;end",
-        "21": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_#Intent;package=com.google.android.youtube;scheme=https;end",
-        "22": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-#Intent;package=com.google.android.youtube;scheme=https;end",
-        "23": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n#Intent;package=com.google.android.youtube;scheme=https;end",
-        "24": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd#Intent;package=com.google.android.youtube;scheme=https;end",
-        "25": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F#Intent;package=com.google.android.youtube;scheme=https;end",
-        "26": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr#Intent;package=com.google.android.youtube;scheme=https;end"
+        "آذان منصور": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF#Intent;package=com.google.android.youtube;scheme=https;end",
+        "آيان وليد": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG#Intent;package=com.google.android.youtube;scheme=https;end",
+        "امیر حمزه": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ#Intent;package=com.google.android.youtube;scheme=https;end",
+        "ایشال مظہر": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-114ez2v-su_1RK46bVns8sd#Intent;package=com.google.android.youtube;scheme=https;end",
+        "ایمان عمران": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo#Intent;package=com.google.android.youtube;scheme=https;end",
+        "ایمان فاروق": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ#Intent;package=com.google.android.youtube;scheme=https;end",
+        "ثانیہ مظہر": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK#Intent;package=com.google.android.youtube;scheme=https;end",
+        "جنت فاطمہ": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu#Intent;package=com.google.android.youtube;scheme=https;end",
+        "حراء زينب": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl#Intent;package=com.google.android.youtube;scheme=https;end",
+        "حلیمہ آصف": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy#Intent;package=com.google.android.youtube;scheme=https;end",
+        "سفيان وليد": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11d-65cVValCeAfDHo46HaK#Intent;package=com.google.android.youtube;scheme=https;end",
+        "سميع نذير": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS#Intent;package=com.google.android.youtube;scheme=https;end",
+        "سیرت نور": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr#Intent;package=com.google.android.youtube;scheme=https;end",
+        "شہباز شریف": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK#Intent;package=com.google.android.youtube;scheme=https;end",
+        "عبد الرافع": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL#Intent;package=com.google.android.youtube;scheme=https;end",
+        "عبد الرحمن": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH#Intent;package=com.google.android.youtube;scheme=https;end",
+        "عبدالمنان": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13NbwY9qlqURI14HdArML2-#Intent;package=com.google.android.youtube;scheme=https;end",
+        "عثمان وليد": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO#Intent;package=com.google.android.youtube;scheme=https;end",
+        "کاشان حیدر": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky#Intent;package=com.google.android.youtube;scheme=https;end",
+        "محمد صائم": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks#Intent;package=com.google.android.youtube;scheme=https;end",
+        "محمد طيب": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC#Intent;package=com.google.android.youtube;scheme=https;end",
+        "محمد عبداللّٰه": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_#Intent;package=com.google.android.youtube;scheme=https;end",
+        "محمد عیسی": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-#Intent;package=com.google.android.youtube;scheme=https;end",
+        "محمد كيف": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n#Intent;package=com.google.android.youtube;scheme=https;end",
+        "مريم نور": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd#Intent;package=com.google.android.youtube;scheme=https;end",
+        "مشال عمران": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F#Intent;package=com.google.android.youtube;scheme=https;end",
+        "ہبہ نور": "intent://www.youtube.com/playlist?list=PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr#Intent;package=com.google.android.youtube;scheme=https;end"
     };
 
     const activeKey = 'hussain_masjid_final_v6';
+    const namesKey = 'hussain_masjid_students_list';
     let isTeacherMode = false;
+    let names = [];
 
     window.onload = function() {
         const today = new Date();
@@ -278,12 +305,32 @@
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('mainDate').value = `${yyyy}-${mm}-${dd}`;
         
-        const savedBackupData = {"2026-05-14":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"قاعدہ"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"24":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":""}},"2026-05-13":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-15":{"0":{"aS":"---","aC":"status-btn","lS":"---","lC":"status-btn","w":""},"1":{"aS":"---","aC":"status-btn","lS":"---","lC":"status-btn","w":""}},"2026-05-16":{"0":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-12":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-11":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-10":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-09":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-07":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""}},"2026-05-05":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضr","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-03":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"23":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-02":{"0":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"1":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"2":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"4":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"5":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"6":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"9":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"10":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"11":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"12":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"14":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"15":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"16":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"17":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"18":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"19":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"20":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"22":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"23":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"24":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"25":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""},"26":{"aS":"حاضر","aC":"status-btn present","lS":"---","lC":"status-btn","w":""}},"2026-05-17":{"0":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"1":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"2":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"3":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"اللّٰه الصمد"},"4":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ"},"5":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"6":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"7":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"8":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"اھدنالصرا"},"9":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"10":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت (ان عذابک)"},"11":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"12":{"aS":"رخصت","aC":"status-btn leave","lS":"---","lC":"status-btn","w":""},"13":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ولا نکفرک"},"14":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"15":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"16":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"17":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"پانچواں کلمہ"},"18":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"ہنسنے کا احکام"},"19":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"سفر کی دعا"},"20":{"aS":"غیر حاضر","aC":"status-btn absent","lS":"---","lC":"status-btn","w":""},"21":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دوسرا کلمہ "},"22":{"aS":"حاضر","aC":"status-btn present","lS":"یاد نہیں","lC":"status-btn absent","w":"ج ح"},"23":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل "},"24":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"},"25":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دعائے قنوت مکمل"},"26":{"aS":"حاضر","aC":"status-btn present","lS":"سنایا","lC":"status-btn present","w":"دکھتی آنکھ ، وضو ٹوٹنا"}}};
-        
-        if(!localStorage.getItem(activeKey) || localStorage.getItem(activeKey) === '{}') {
-            localStorage.setItem(activeKey, JSON.stringify(savedBackupData));
+        // ناموں کی لسٹ لوڈ کرنا
+        const savedNames = localStorage.getItem(namesKey);
+        if(savedNames) {
+            names = JSON.parse(savedNames);
+        } else {
+            names = [...defaultNames];
+            localStorage.setItem(namesKey, JSON.stringify(names));
         }
-        
+
+        // پرانے ڈیٹا کو انڈیکس کی بجائے نام پر منتقل کرنے کا فنکشن (تاکہ بیک اپ محفوظ رہے)
+        let data = JSON.parse(localStorage.getItem(activeKey) || '{}');
+        let dataChanged = false;
+        for(let date in data) {
+            for(let key in data[date]) {
+                if(!isNaN(key) && defaultNames[key]) {
+                    const studentName = defaultNames[key];
+                    data[date][studentName] = data[date][key];
+                    delete data[date][key];
+                    dataChanged = true;
+                }
+            }
+        }
+        if(dataChanged) {
+            localStorage.setItem(activeKey, JSON.stringify(data));
+        }
+
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
             activateTeacherMode();
         }
@@ -307,11 +354,13 @@
     function activateTeacherMode() {
         isTeacherMode = true;
         document.getElementById('teacherBadge').style.display = "block";
+        document.getElementById('adminPanelSection').style.display = "block";
         document.getElementById('loginFormInputs').style.display = "none";
         document.getElementById('logoutBtn').style.display = "inline-block";
         document.getElementById('portalTitle').innerText = "🧔 ناصر علی (استاد)";
         
         document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'inline-block');
+        loadAdminStudentList();
         updateAll();
     }
 
@@ -319,6 +368,7 @@
         isTeacherMode = false;
         sessionStorage.removeItem('isTeacherLoggedIn');
         document.getElementById('teacherBadge').style.display = "none";
+        document.getElementById('adminPanelSection').style.display = "none";
         document.getElementById('loginFormInputs').style.display = "block";
         document.getElementById('logoutBtn').style.display = "none";
         document.getElementById('portalTitle').innerText = "🔐 استاد پورٹل لاگ ان";
@@ -344,6 +394,7 @@
 
         const dObj = new Date(date);
         document.getElementById('displayUrduDate').innerText = dObj.toLocaleDateString('ur-PK', {day:'numeric', month:'long', year:'numeric'});
+        document.getElementById('totalStudentsCount').innerText = names.length;
 
         const data = JSON.parse(localStorage.getItem(activeKey) || '{}');
         const dayData = data[date] || {};
@@ -359,62 +410,66 @@
         if(b4) b4.innerHTML = '';
 
         names.forEach((n, i) => {
-            const s = dayData[i] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
+            const s = dayData[n] || { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '' };
             
-            const clickA = `onclick="tglA(this,${i})"`;
-            const clickL = `onclick="tglL(this,${i})"`;
+            const clickA = `onclick="tglA(this,'${n}')"`;
+            const clickL = `onclick="tglL(this,'${n}')"`;
             const disabledInput = isTeacherMode ? '' : 'disabled';
 
             if(b1) b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" ${clickA}>${s.aS}</div></td></tr>`;
             if(b2) b2.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.lC}" ${clickL}>${s.lS}</div></td></tr>`;
-            if(b3) b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" ${disabledInput} onchange="saveW(${i},this.value)"></td></tr>`;
+            if(b3) b3.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><input type="text" class="diary-input" value="${s.w}" ${disabledInput} onchange="saveW('${n}',this.value)"></td></tr>`;
             
-            if(b4) b4.innerHTML += `
-                <tr>
-                    <td>${i+1}</td>
-                    <td class="student-name">${n}</td>
-                    <td><button class="video-btn" onclick="toggleVideo(${i})">ویڈیوز</button></td>
-                </tr>
-                <tr id="videoRow-${i}" class="video-container">
-                    <td colspan="3">
-                        <div id="videoArea-${i}"></div>
-                    </td>
-                </tr>`;
+            if(b4) {
+                const embedLink = videoLinks[n] || "";
+                b4.innerHTML += `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td class="student-name">${n}</td>
+                        <td><button class="video-btn" onclick="toggleVideo('${n}')" ${embedLink ? '' : 'disabled style="background:#ccc; cursor:not-allowed;"'}>ویڈیوز</button></td>
+                    </tr>
+                    <tr id="videoRow-${n.replace(/\s+/g, '')}" class="video-container">
+                        <td colspan="3">
+                            <div id="videoArea-${n.replace(/\s+/g, '')}"></div>
+                        </td>
+                    </tr>`;
+            }
         });
+        if(isTeacherMode) loadAdminStudentList();
     }
 
-    function tglA(el, i) {
+    function tglA(el, studentName) {
         if (!isTeacherMode) return; 
         let s, c;
         if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
         else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
         else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
         else {s="---"; c="status-btn";}
-        el.innerText=s; el.className=c; save(i,'aS',s,c);
+        el.innerText=s; el.className=c; save(studentName,'aS',s,c);
     }
 
-    function tglL(el, i) {
+    function tglL(el, studentName) {
         if (!isTeacherMode) return; 
         let s, c;
         if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
         else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
         else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
         else {s="---"; c="status-btn";}
-        el.innerText=s; el.className=c; save(i,'lS',s,c);
+        el.innerText=s; el.className=c; save(studentName,'lS',s,c);
     }
 
-    function saveW(i, v) { save(i, 'w', v); }
+    function saveW(studentName, v) { save(studentName, 'w', v); }
 
-    function save(i, k, v, c) {
+    function save(studentName, k, v, c) {
         const d = document.getElementById('mainDate').value;
         let data = JSON.parse(localStorage.getItem(activeKey) || '{}');
 
         if(!data[d]) data[d] = {};
-        if(!data[d][i]) data[d][i] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:''};
+        if(!data[d][studentName]) data[d][studentName] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:''};
         
-        if(k==='aS'){ data[d][i].aS=v; data[d][i].aC=c; }
-        else if(k==='lS'){ data[d][i].lS=v; data[d][i].lC=c; }
-        else { data[d][i].w=v; }
+        if(k==='aS'){ data[d][studentName].aS=v; data[d][studentName].aC=c; }
+        else if(k==='lS'){ data[d][studentName].lS=v; data[d][studentName].lC=c; }
+        else { data[d][studentName].w=v; }
         localStorage.setItem(activeKey, JSON.stringify(data));
     }
 
@@ -436,8 +491,8 @@
         names.forEach((n, i) => {
             let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
             for(let d in data) {
-                if(d.startsWith(mKey) && data[d][i]) {
-                    const r = data[d][i];
+                if(d.startsWith(mKey) && data[d][n]) {
+                    const r = data[d][n];
                     if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
                     if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
                 }
@@ -447,11 +502,12 @@
         });
     }
 
-    function toggleVideo(i) {
-        const row = document.getElementById(`videoRow-${i}`);
-        const area = document.getElementById(`videoArea-${i}`);
-        const embedLink = videoLinks[i];
-        const directLink = directPlaylistLinks[i];
+    function toggleVideo(studentName) {
+        const safeId = studentName.replace(/\s+/g, '');
+        const row = document.getElementById(`videoRow-${safeId}`);
+        const area = document.getElementById(`videoArea-${safeId}`);
+        const embedLink = videoLinks[studentName];
+        const directLink = directPlaylistLinks[studentName];
 
         if (row && row.style.display === "table-row") {
             row.style.display = "none";
@@ -468,6 +524,43 @@
             } else if(area) {
                 area.innerHTML = `<p style="color:red; font-weight:bold;">اس طالب علم کا لنک دستیاب نہیں ہے</p>`;
             }
+        }
+    }
+
+    // ایڈمن پینل میں بچوں کی لسٹ دکھانا
+    function loadAdminStudentList() {
+        const body = document.getElementById('adminStudentListBody');
+        if(!body) return;
+        body.innerHTML = '';
+        names.forEach((n, i) => {
+            body.innerHTML += `
+                <tr>
+                    <td>${i+1}</td>
+                    <td style="text-align:right; padding-right:10px; font-weight:bold;">${n}</td>
+                    <td><button class="btn-delete" onclick="deleteStudent('${n}')">خارج کریں ❌</button></td>
+                </tr>`;
+        });
+    }
+
+    // نیا بچہ شامل کرنا (ہمیشہ لاسٹ میں جائے گا)
+    function addStudent() {
+        const input = document.getElementById('newStudentName');
+        const name = input.value.trim();
+        if(!name) return alert("براہ کرم بچے کا نام لکھیں!");
+        if(names.includes(name)) return alert("یہ نام پہلے سے لسٹ میں موجود ہے!");
+        
+        names.push(name);
+        localStorage.setItem(namesKey, JSON.stringify(names));
+        input.value = '';
+        updateAll();
+    }
+
+    // بچہ خارج کرنا (درمیان سے خارج کرنے پر بھی باقیوں کا ریکارڈ خراب نہیں ہوگا)
+    function deleteStudent(studentName) {
+        if(confirm(`کیا آپ واقعی "${studentName}" کا نام لسٹ سے خارج کرنا چاہتے ہیں؟ اس سے پرانا ریکارڈ ڈیٹا بیس میں رہے گا لیکن لسٹ سے نام ہٹ جائے گا۔`)) {
+            names = names.filter(n => n !== studentName);
+            localStorage.setItem(namesKey, JSON.stringify(names));
+            updateAll();
         }
     }
 
