@@ -190,8 +190,8 @@
         .login-input { padding: 8px; margin: 5px; border: 1px solid var(--primary); border-radius: 5px; font-size: 16px; width: 80%; max-width: 200px; text-align: center; }
         .login-submit { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
 
-        /* بادل سنک انڈیکیٹر سٹائل */
-        .sync-status-bar { background: #ad1457; color: white; text-align: center; padding: 5px; font-weight: bold; font-size: 15px; }
+        /* بادل سنک انڈیکیٹر سٹائل (عام لوگوں کے لیے چھپا دیا گیا ہے) */
+        .sync-status-bar { display: none; background: #ad1457; color: white; text-align: center; padding: 5px; font-weight: bold; font-size: 15px; }
 
         @media print {
             .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .sync-status-bar { display: none !important; }
@@ -331,31 +331,43 @@
 
     window.onload = function() {
         if (!localStorage.getItem(storageKey)) {
-            const embeddedAttendance = {"2026-05-18":{"آذان فاروق":{"aS":"حاضر","aC":"status-btn present","lS":"نہیں سنایا","lC":"status-btn leave","w":"","wD":""}}};
+            const embeddedAttendance = {};
             localStorage.setItem(storageKey, JSON.stringify(embeddedAttendance));
         }
+        
+        // یہاں ہم نے آج کی تاریخ لگانے کا کوڈ اپڈیٹ کر دیا ہے
         if(!document.getElementById('mainDate').value) {
-            document.getElementById('mainDate').value = "2026-05-18";
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('mainDate').value = `${yyyy}-${mm}-${dd}`;
         }
+        
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
             activateTeacherMode();
         }
         populateStudentSelect();
         
-        // پورٹل کھلتے ہی لائیو بادل (گوگل شیٹ) سے ڈیٹا سنک کریں
+        // پورٹل کھلتے ہی لائیو بادل (گوگل شیٹ) سے ڈیٹا سنک کریں خاموشی کے ساتھ
         pullFromGoogleSheet();
     };
 
     // 1. گوگل شیٹ سے پیکج ڈیٹا کھینچنے اور لوڈ کرنے کا فنکشن
     function pullFromGoogleSheet() {
-        document.getElementById('cloudStatus').innerText = "⏳ بادل سے ڈیٹا لائیو سنک ہو رہا ہے...";
-        document.getElementById('cloudStatus').style.background = "#ef6c00";
+        if(isTeacherMode) {
+            document.getElementById('cloudStatus').style.display = "block";
+            document.getElementById('cloudStatus').innerText = "⏳ بادل سے ڈیٹا لائیو سنک ہو رہا ہے...";
+            document.getElementById('cloudStatus').style.background = "#ef6c00";
+        }
 
         fetch(SHEETDB_API_URL)
         .then(res => res.json())
         .then(data => {
             if (data && data.length > 0) {
-                const cloudRow = data; // پہلی رو کا ڈیٹا
+                // سب سے بڑی غلطی یہاں تھی جسے اب data سے فکس کر دیا گیا ہے
+                const cloudRow = data; 
+                
                 if(cloudRow.attendance_pack) localStorage.setItem(storageKey, cloudRow.attendance_pack);
                 if(cloudRow.names_pack) {
                     names = JSON.parse(cloudRow.names_pack);
@@ -369,11 +381,15 @@
                     timelinePosts = JSON.parse(cloudRow.timeline_pack);
                     localStorage.setItem(timelineStorageKey, cloudRow.timeline_pack);
                 }
-                document.getElementById('cloudStatus').innerText = "✅ بادل سے ڈیٹا کامیابی سے سنک ہو چکا ہے!";
-                document.getElementById('cloudStatus').style.background = "#1b5e20";
+                if(isTeacherMode) {
+                    document.getElementById('cloudStatus').innerText = "✅ بادل سے ڈیٹا کامیابی سے سنک ہو چکا ہے!";
+                    document.getElementById('cloudStatus').style.background = "#1b5e20";
+                }
             } else {
-                document.getElementById('cloudStatus').innerText = "🆕 گوگل شیٹ ابھی خالی ہے، ڈیٹا سیو ہونے کا انتظار ہے۔";
-                document.getElementById('cloudStatus').style.background = "#ad1457";
+                if(isTeacherMode) {
+                    document.getElementById('cloudStatus').innerText = "🆕 گوگل شیٹ ابھی خالی ہے، ڈیٹا سیو ہونے کا انتظار ہے۔";
+                    document.getElementById('cloudStatus').style.background = "#ad1457";
+                }
             }
             populateStudentSelect();
             if(isTeacherMode) renderRemovalList();
@@ -381,31 +397,33 @@
         })
         .catch(err => {
             console.error(err);
-            document.getElementById('cloudStatus').innerText = "❌ کلاؤڈ رابطہ فیل! لوکل سٹوریج کا پرانا ریکارڈ چل رہا ہے۔";
-            document.getElementById('cloudStatus').style.background = "#b71c1c";
+            if(isTeacherMode) {
+                document.getElementById('cloudStatus').innerText = "❌ کلاؤڈ رابطہ فیل! لوکل سٹوریج کا پرانا ریکارڈ چل رہا ہے۔";
+                document.getElementById('cloudStatus').style.background = "#b71c1c";
+            }
             updateAll();
         });
     }
 
     // 2. پورا ڈیٹا ایک کلاؤڈ پیکیج بنا کر شیٹ کی پہلی رو میں اوور رائیٹ کرنے کا فنکشن
     function pushToGoogleSheet() {
+        if(!isTeacherMode) return; // صرف استاد ڈیٹا بھیج سکتا ہے
+
         document.getElementById('cloudStatus').innerText = "⏳ تبدیلیاں گوگل شیٹ پر محفوظ کی جا رہی ہیں...";
         document.getElementById('cloudStatus').style.background = "#ef6c00";
 
         const cloudPayload = {
-            id: "masjid_database_row", // ایک ہی مقررہ آئی ڈی تاکہ مکسنگ نہ ہو
+            id: "masjid_database_row",
             attendance_pack: localStorage.getItem(storageKey) || '{}',
             names_pack: JSON.stringify(names),
             videos_pack: JSON.stringify(videoLists),
             timeline_pack: JSON.stringify(timelinePosts)
         };
 
-        // پہلے پرانی قطار ڈیلیٹ کریں تاکہ شیٹ لمبی نہ ہو
         fetch(`${SHEETDB_API_URL}/id/masjid_database_row`, {
             method: 'DELETE'
         })
         .then(() => {
-            // اب بالکل تازہ ڈیٹا پہلی قطار پر پوسٹ کریں
             return fetch(SHEETDB_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -431,8 +449,8 @@
     }
 
     function checkTeacherLogin() {
-        const u = document.getElementById('uName').value;
-        const p = document.getElementById('pWord').value;
+        const u = document.getElementById('uName').value.trim();
+        const p = document.getElementById('pWord').value.trim();
         if(u === "nasirali258" && p === "merayquaidjalali") {
             sessionStorage.setItem('isTeacherLoggedIn', 'true');
             activateTeacherMode();
@@ -444,6 +462,7 @@
         isTeacherMode = true;
         document.getElementById('teacherBadge').style.display = "block";
         document.getElementById('managementPanel').style.display = "block";
+        document.getElementById('cloudStatus').style.display = "block"; // صرف استاد کو سٹیٹس دکھائیں
         if(document.getElementById('dailyAtt').classList.contains('active')) {
             document.getElementById('removalSection').style.display = "block";
         }
@@ -463,6 +482,7 @@
         document.getElementById('managementPanel').style.display = "none";
         document.getElementById('removalSection').style.display = "none";
         document.getElementById('fbUploaderPanel').style.display = "none";
+        document.getElementById('cloudStatus').style.display = "none"; // استاد کے جاتے ہی سٹیٹس غائب
         document.getElementById('loginFormInputs').style.display = "block";
         document.getElementById('logoutBtn').style.display = "none";
         document.getElementById('portalTitle').innerText = "🔐 استاد پورٹل لاگ ان";
@@ -495,7 +515,7 @@
         populateStudentSelect();
         renderRemovalList();
         updateAll();
-        pushToGoogleSheet(); // شیٹ سنک کریں
+        pushToGoogleSheet(); 
     }
 
     function deleteStudent(index) {
@@ -510,7 +530,7 @@
         populateStudentSelect();
         renderRemovalList();
         updateAll();
-        pushToGoogleSheet(); // شیٹ سنک کریں
+        pushToGoogleSheet(); 
     }
 
     function renderRemovalList() {
@@ -569,7 +589,7 @@
 
         alert("پوسٹ کامیابی سے وال پر اپلوڈ ہو گئی ہے!");
         renderTimeline();
-        pushToGoogleSheet(); // شیٹ سنک کریں
+        pushToGoogleSheet(); 
     }
 
     function deleteTimelinePost(idx) {
@@ -577,7 +597,7 @@
         timelinePosts.splice(idx, 1);
         localStorage.setItem(timelineStorageKey, JSON.stringify(timelinePosts));
         renderTimeline();
-        pushToGoogleSheet(); // شیٹ سنک کریں
+        pushToGoogleSheet(); 
     }
 
     function formatMediaEmbed(url) {
@@ -704,7 +724,7 @@
         else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
         else {s="---"; c="status-btn";}
         el.innerText=s; el.className=c; save(name,'aS',s,c);
-        pushToGoogleSheet(); // کلاؤڈ سنک کریں
+        pushToGoogleSheet(); 
     }
 
     function tglL(el, name) {
@@ -715,7 +735,7 @@
         else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
         else {s="---"; c="status-btn";}
         el.innerText=s; el.className=c; save(name,'lS',s,c);
-        pushToGoogleSheet(); // کلاؤڈ سنک کریں
+        pushToGoogleSheet(); 
     }
 
     function saveW(name, v) { save(name, 'w', v); pushToGoogleSheet(); }
@@ -786,7 +806,7 @@
                     populateStudentSelect();
                     renderRemovalList();
                     updateAll();
-                    pushToGoogleSheet(); // بحال شدہ بیک اپ کلاؤڈ پر بھیجیں
+                    pushToGoogleSheet(); 
                 }
             } catch (err) { alert("فائل پڑھنے میں غلطی!"); }
         };
