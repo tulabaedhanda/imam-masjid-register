@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>رجسٹر - امام حسین مسجد</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
         
@@ -225,11 +224,8 @@
         .login-input { padding: 8px; margin: 5px; border: 1px solid var(--primary); border-radius: 5px; font-size: 16px; width: 80%; max-width: 200px; text-align: center; }
         .login-submit { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
 
-        /* لائیو کلاؤڈ انڈیکیٹر کا اسٹائل */
-        .sync-indicator { text-align: center; font-size: 15px; margin: 10px auto; padding: 6px; border-radius: 8px; font-weight: bold; display: none; max-width: 90%; }
-
         @media print {
-            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .sync-indicator { display: none !important; }
+            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
@@ -241,8 +237,6 @@
         <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
     </div>
-
-    <div id="syncStatus" class="sync-indicator"></div>
 
     <div class="date-picker-container">
         <label for="mainDate" style="color: var(--primary); font-weight: bold; font-size: 16px; margin-left: 5px;">تاریخ منتخب کریں:</label>
@@ -353,12 +347,6 @@
     const videoStorageKey = 'hussain_masjid_videos';
     const timelineStorageKey = 'hussain_masjid_timeline_posts';
 
-    // 🔗 سپابیس کنکشن کی مکمل فائنل چابیاں یہاں لگا دی گئی ہیں
-    const SUPABASE_URL = "https://gdfseeoohglnmjftkwg.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkZnNlZW9vaGdubWpmdGt3ZyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzY0MjEwOTE3LCJleHAiOjIwNzk3ODY5MTd9.aYclgWpYyCj3D2fT_6xG_H9y4hI5_P_h3X_r8z_k8_0";
-
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     let names = JSON.parse(localStorage.getItem(namesStorageKey)) || defaultNames;
     let videoLists = JSON.parse(localStorage.getItem(videoStorageKey)) || defaultVideoLists;
     let timelinePosts = JSON.parse(localStorage.getItem(timelineStorageKey)) || [];
@@ -367,114 +355,57 @@
     const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
 
-    // 🚀 سپابیس کلاؤڈ پر ڈیٹا آٹو سیو کرنے کا فنکشن
-    async function saveToCloud() {
-        const statusEl = document.getElementById('syncStatus');
-        if(statusEl) {
-            statusEl.style.display = 'block';
-            statusEl.style.backgroundColor = '#fff3e0';
-            statusEl.style.color = '#e65100';
-            statusEl.innerText = '🔄 کلاؤڈ پر لائیو ریکارڈ اپڈیٹ ہو رہا ہے...';
-        }
-
-        const fullBackup = {
-            attendance: JSON.parse(localStorage.getItem(storageKey) || '{}'),
-            names: names,
-            videos: videoLists,
-            timelinePosts: timelinePosts
-        };
-
-        const { error } = await supabase
-            .from('masjid_backup')
-            .upsert([{ id: 1, backup_text: JSON.stringify(fullBackup) }]);
-
-        if (error) {
-            console.error("کلاؤڈ سیونگ ایرر:", error);
-            if(statusEl) {
-                statusEl.style.backgroundColor = '#ffebee';
-                statusEl.style.color = '#c62828';
-                statusEl.innerText = '❌ کلاؤڈ پر ڈیٹا سیو نہیں ہو سکا! انٹرنیٹ چیک کریں۔';
-            }
-        } else {
-            if(statusEl) {
-                statusEl.style.backgroundColor = '#e8f5e9';
-                statusEl.style.color = '#2e7d32';
-                statusEl.innerText = '✅ رجسٹر کا تازہ ترین لائیو کلاؤڈ ڈیٹا محفوظ ہو گیا ہے!';
-                setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
-            }
-        }
-    }
-
-    // 📥 پیج کھلتے ہی کلاؤڈ سے تازہ ترین لائیو ڈیٹا لوڈ کرنے کا فنکشن
-    async function loadFromCloud() {
-        const statusEl = document.getElementById('syncStatus');
-        if(statusEl) {
-            statusEl.style.display = 'block';
-            statusEl.style.backgroundColor = '#e3f2fd';
-            statusEl.style.color = '#0d47a1';
-            statusEl.innerText = '📥 کلاؤڈ سے تازہ ترین ڈیٹا لوڈ ہو رہا ہے...';
-        }
-
-        const { data, error } = await supabase
-            .from('masjid_backup')
-            .select('backup_text')
-            .eq('id', 1)
-            .single();
-
-        if (error) {
-            console.error("کلاؤڈ لوڈنگ ایرر:", error);
-            if(statusEl) statusEl.style.display = 'none';
-            return;
-        }
-
-        if (data && data.backup_text) {
-            try {
-                const importedData = JSON.parse(data.backup_text);
-                if (importedData.names && importedData.attendance) {
-                    names = importedData.names;
-                    videoLists = importedData.videos || defaultVideoLists;
-                    timelinePosts = importedData.timelinePosts || [];
-                    
-                    localStorage.setItem(namesStorageKey, JSON.stringify(names));
-                    localStorage.setItem(videoStorageKey, JSON.stringify(videoLists));
-                    localStorage.setItem(timelineStorageKey, JSON.stringify(timelinePosts));
-                    localStorage.setItem(storageKey, JSON.stringify(importedData.attendance));
-                    
-                    populateStudentSelect();
-                    renderRemovalList();
-                    
-                    // پیج پر موجودہ تاریخ کی بنیاد پر یو آئی رینڈر کرنا
-                    const currentDate = document.getElementById('mainDate').value;
-                    renderWithData(currentDate);
-                }
-            } catch(e) { console.error("ڈیٹا پارسنگ میں غلطی:", e); }
-        }
-        if(statusEl) statusEl.style.display = 'none';
-    }
-
     window.onload = function() {
-        if (!localStorage.getItem(storageKey)) {
-            const embeddedAttendance = {"2026-05-18":{"آذان فاروق":{"aS":"حاضر","aC":"status-btn present","lS":"نہیں سنایا","lC":"status-btn leave","w":"","wD":""}}};
-            localStorage.setItem(storageKey, JSON.stringify(embeddedAttendance));
-        }
-        if(!document.getElementById('mainDate').value) {
-            document.getElementById('mainDate').value = "2026-05-18";
-        }
+        // آج کی لائیو تاریخ حاصل کرنا
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const formattedToday = `${yyyy}-${mm}-${dd}`;
+        
+        document.getElementById('mainDate').value = formattedToday;
+
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
             activateTeacherMode();
+        } else {
+            // اگر نارمل موڈ (والدین موڈ) ہے تو ڈائریکٹ گوگل ڈرائیو سے فلیش بیک اپ اٹھائے گا
+            fetchCloudBackup();
         }
         populateStudentSelect();
-        
-        // پہلے لوکل سٹوریج سے دکھائیں، پھر کلاؤڈ سے تازہ ترین ڈیٹا لا کر رینڈر کریں
         updateAll();
-        loadFromCloud();
     };
+
+    function fetchCloudBackup() {
+        // یہ آپ کے فولڈر سے 'rizwan_masjid_full_backup.txt' فائل کو لائیو پڑھے گا
+        const folderId = '1qTDQNSXg1oRS-9KbwMXhpiL4XAAO86Od';
+        // گوگل ڈرائیو فائل ایکسیس لنک فارمیٹ
+        const proxyUrl = `https://docs.google.com/uc?export=download&id=1qTDQNSXg1oRS-9KbwMXhpiL4XAAO86Od`;
+        
+        // یہاں ڈرائیو سے بیک اپ ریڈ کرنے کی کوشش کی جائے گی
+        fetch(`https://cors-anywhere.herokuapp.com/${proxyUrl}`)
+        .then(response => response.json())
+        .then(importedData => {
+            if (importedData.names && importedData.attendance) {
+                names = importedData.names;
+                videoLists = importedData.videos || defaultVideoLists;
+                timelinePosts = importedData.timelinePosts || [];
+                localStorage.setItem(namesStorageKey, JSON.stringify(names));
+                localStorage.setItem(videoStorageKey, JSON.stringify(videoLists));
+                localStorage.setItem(timelineStorageKey, JSON.stringify(timelinePosts));
+                localStorage.setItem(storageKey, JSON.stringify(importedData.attendance));
+                populateStudentSelect();
+                renderRemovalList();
+                updateAll();
+            }
+        }).catch(err => {
+            console.log("ڈرائیو بیک اپ لنک لوڈنگ یا سیکیورٹی پرمیشن کا انتظار ہے۔ لوکل کاپی استعمال ہو رہی ہے۔");
+        });
+    }
 
     function populateStudentSelect() {
         const select = document.getElementById('mediaStudentSelect');
-        if(!select) return;
         select.innerHTML = '<option value="">طالب علم کا انتخاب کریں (آپشنل)</option>';
-        names.forEach((n) => { select.innerHTML += `<option value="${n}">${n}</option>`; });
+        names.forEach((n) => { select.innerHTML += `<option value="${n}">${n}</option>'; });
     }
 
     function checkTeacherLogin() {
@@ -542,7 +473,6 @@
         populateStudentSelect();
         renderRemovalList();
         updateAll();
-        saveToCloud(); // کلاؤڈ پر سنک
     }
 
     function deleteStudent(index) {
@@ -557,12 +487,10 @@
         populateStudentSelect();
         renderRemovalList();
         updateAll();
-        saveToCloud(); // کلاؤڈ پر سنک
     }
 
     function renderRemovalList() {
         const container = document.getElementById('removalListBody');
-        if(!container) return;
         container.innerHTML = '';
         if(names.length === 0) {
             container.innerHTML = '<p style="padding:10px; color:#777;">کوئی طالب علم موجود نہیں ہے۔</p>';
@@ -617,7 +545,6 @@
 
         alert("پوسٹ کامیابی سے متفرق ٹائم لائن پر سب سے اوپر اپلوڈ کر دی گئی ہے!");
         renderTimeline();
-        saveToCloud(); // کلاؤڈ پر سنک
     }
 
     function deleteTimelinePost(idx) {
@@ -625,7 +552,6 @@
         timelinePosts.splice(idx, 1);
         localStorage.setItem(timelineStorageKey, JSON.stringify(timelinePosts));
         renderTimeline();
-        saveToCloud(); // کلاؤڈ پر سنک
     }
 
     function formatMediaEmbed(url) {
@@ -649,7 +575,6 @@
 
     function renderTimeline() {
         const feed = document.getElementById('fbFeedTimeline');
-        if(!feed) return;
         feed.innerHTML = '';
 
         if(timelinePosts.length === 0) {
@@ -684,12 +609,8 @@
 
     function updateAll() {
         const date = document.getElementById('mainDate').value;
-        renderWithData(date);
-    }
-
-    // کلاؤڈ ڈیٹا ملنے کے بعد رینڈر کرنے کا مخصوص فنکشن
-    function renderWithData(date) {
         const dObj = new Date(date);
+        
         const dayName = urduDays[dObj.getDay()];
         const dayNum = dObj.getDate();
         const monthName = urduMonths[dObj.getMonth()];
@@ -704,7 +625,6 @@
         const b1 = document.getElementById('attTableBody'), b4 = document.getElementById('videoTableBody');
         const lessCardsContainer = document.getElementById('lessCardsContainer');
         
-        if(!b1 || !b4 || !lessCardsContainer) return;
         b1.innerHTML = ''; b4.innerHTML = ''; lessCardsContainer.innerHTML = '';
 
         names.forEach((n, i) => {
@@ -783,21 +703,13 @@
         else if(k==='w'){ data[d][name].w=v; }
         else if(k==='wD'){ data[d][name].wD=v; }
         localStorage.setItem(storageKey, JSON.stringify(data));
-        saveToCloud(); // ہر کلک اور ان پٹ تبدیلی پر آٹو سیو کلاؤڈ ایکٹیو
     }
 
     function loadReports() {
         const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
         const mKey = document.getElementById('mainDate').value.substring(0, 7);
         const bA = document.getElementById('attReportBody'), bL = document.getElementById('lessReportBody');
-        if(!bA || !bL) return;
         bA.innerHTML = ''; bL.innerHTML = '';
-
-        document.querySelectorAll('.monthTitle').forEach(title => {
-            const currentYearMonth = document.getElementById('mainDate').value;
-            const dObj = new Date(currentYearMonth);
-            title.innerText = `${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()} رپورٹ`;
-        });
 
         names.forEach((n, i) => {
             let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
@@ -822,6 +734,7 @@
         };
         const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        // فائل کا نام ہمیشہ یہی رہے گا تاکہ ڈرائیو پر ریپلیس کرنا آسان ہو
         a.download = 'rizwan_masjid_full_backup.txt'; a.click();
     }
 
@@ -846,7 +759,6 @@
                     populateStudentSelect();
                     renderRemovalList();
                     updateAll();
-                    saveToCloud(); // کلاؤڈ پر بھی سنک کریں
                 }
             } catch (err) { alert("فائل پڑھنے میں غلطی!"); }
         };
