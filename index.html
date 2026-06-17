@@ -130,9 +130,11 @@
             font-weight: bold;
             background: rgba(255, 255, 255, 0.15); /* شفاف خانے */
         }
+        
+        /* یہاں ہم نے ہیڈرز کو رضوان کے رجسٹر کی طرح یکساں خوبصورت رنگ دیا ہے */
         th { 
             background: var(--primary) !important; 
-            color: white; 
+            color: white !important; 
             -webkit-print-color-adjust: exact; 
             print-color-adjust: exact;
             font-size: 21px;
@@ -397,7 +399,7 @@
     <div id="attReport" class="tab-content">
         <div style="text-align:center; padding:10px; font-weight:bold; font-size:24px; color:var(--primary);" class="monthTitle"></div>
         <table>
-            <thead><tr><th>نام</th><th style="background:var(--present-clr)">حاضر</th><th style="background:var(--absent-clr)">غیر حاضر</th><th style="background:var(--leave-clr)">رخصت</th></tr></thead>
+            <thead><tr><th class="name-header">نام</th><th style="background:var(--present-clr) !important; color: white !important;">حاضر</th><th style="background:var(--absent-clr) !important; color: white !important;">غیر حاضر</th><th style="background:var(--leave-clr) !important; color: white !important;">رخصت</th></tr></thead>
             <tbody id="attReportBody"></tbody>
         </table>
     </div>
@@ -405,7 +407,7 @@
     <div id="lessReport" class="tab-content">
         <div style="text-align:center; padding:10px; font-weight:bold; font-size:24px; color:var(--primary);" class="monthTitle"></div>
         <table>
-            <thead><tr><th>نام</th><th style="background:var(--present-clr)">سنایا</th><th style="background:var(--absent-clr)">یاد نہیں</th><th style="background:var(--leave-clr)">نہیں سنایا</th></tr></thead>
+            <thead><tr><th class="name-header">نام</th><th style="background:var(--present-clr) !important; color: white !important;">سنایا</th><th style="background:var(--absent-clr) !important; color: white !important;">یاد نہیں</th><th style="background:var(--leave-clr) !important; color: white !important;">نہیں سنایا</th></tr></thead>
             <tbody id="lessReportBody"></tbody>
         </table>
     </div>
@@ -989,3 +991,4 @@
 </script>
 </body>
 </html>
+
