@@ -14,18 +14,31 @@
             --present-clr: #1b5e20;
             --absent-clr: #b71c1c;
             --leave-clr: #ef6c00;
+            --purple-btn: #4a148c; /* امیج کے مطابق گہرا جامنی رنگ */
+            /* چمکدار گولڈن گریڈینٹ */
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --gold-glow: 0 0 10px rgba(212, 175, 55, 0.6), inset 0 0 5px rgba(212, 175, 55, 0.4);
         }
 
         body { 
-            background-color: var(--primary);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M50 50c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10-10-4.48-10-10z'/%3E%3Cg%3E%3C/svg%3E");
+            background-image: url("https://lh3.googleusercontent.com/d/1gDcwRn_tCIcik1x2wFoesEwdYC4HrlxF");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             padding: 10px; margin: 0; 
         }
 
+        /* مین فریم گولڈن چمکدار بارڈر اور گلاس ایفیکٹ کے ساتھ */
         .container { 
-            max-width: 100%; margin: auto; background: #fff9e5; 
-            padding: 15px; border-radius: 20px; border: 3px solid #880e4f;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            max-width: 100%; margin: auto; 
+            background: rgba(255, 248, 240, 0.65); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px; border-radius: 20px; 
+            border: 4px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), var(--gold-glow);
         }
 
         .header-section { text-align: center; margin: -15px -15px 20px -15px; position: relative; }
@@ -35,6 +48,7 @@
             background: var(--primary); color: white; padding: 5px 20px; 
             border-radius: 50px; display: inline-block; margin-top: -20px;
             position: relative; border: 2px solid #ffd700; font-size: 18px; z-index: 10;
+            box-shadow: var(--gold-glow);
         }
 
         .date-picker-container {
@@ -44,25 +58,28 @@
         .date-picker-container input[type="date"] {
             padding: 8px 15px; font-size: 16px; font-weight: bold;
             border: 2px solid var(--primary); border-radius: 10px;
-            color: var(--primary); background: white; outline: none; cursor: pointer;
+            color: var(--primary); background: rgba(255, 255, 255, 0.8); outline: none; cursor: pointer;
         }
 
         .parent-notice-bar {
-            background-color: #fff3e0; color: #e65100; border: 2px dashed #ffb74d;
+            background-color: rgba(255, 243, 224, 0.6); color: #e65100; border: 2px dashed #ffb74d;
             padding: 8px; border-radius: 10px; text-align: center; font-weight: bold;
-            font-size: 16px; margin-bottom: 12px;
+            font-size: 16px; margin-bottom: 12px; backdrop-filter: blur(5px);
         }
 
+        /* ٹیبز گولڈن فریم */
         .tabs { 
             display: flex; 
             flex-wrap: wrap; 
             gap: 6px; 
             margin-bottom: 20px; 
-            background: rgba(75, 0, 130, 0.06);
+            background: rgba(255, 255, 255, 0.3);
             padding: 6px;
             border-radius: 14px;
-            border: 1px solid rgba(75, 0, 130, 0.12);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+            border: 3px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            box-shadow: var(--gold-glow);
+            backdrop-filter: blur(5px);
         }
         .tab-btn { 
             flex: 1; 
@@ -73,92 +90,146 @@
             background: transparent; 
             font-size: 17px; 
             font-weight: bold; 
-            color: var(--primary); 
+            color: #5c0632; 
             border-radius: 10px;
             text-align: center;
             transition: all 0.25s ease;
         }
         .tab-btn:hover {
-            background: rgba(75, 0, 130, 0.08);
-            color: #880e4f;
+            background: rgba(255, 255, 255, 0.4);
         }
         .tab-btn.active { 
             background: var(--primary); 
             color: white !important; 
-            border-color: #880e4f;
-            box-shadow: 0 4px 12px rgba(75, 0, 130, 0.25);
+            box-shadow: 0 4px 12px rgba(173, 20, 87, 0.3);
+            border-radius: 8px;
         }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
-        th, td { padding: 10px 5px; border: 1px solid #ddd; text-align: center; font-size: 18px; }
-        th { background-color: var(--primary); color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        
-        .student-name { text-align: right !important; padding-right: 10px; font-weight: bold; width: 40%; }
-        
-        .status-btn { 
-            width: 90px; padding: 6px 0; cursor: pointer; font-weight: bold; 
-            border-radius: 6px; background: #eee; border: 1px solid #ccc; 
-            display: inline-block; text-align: center; font-size: 16px;
+        /* ٹیبل مکمل شفاف گلاس ایفیکٹ کے ساتھ */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: rgba(255, 255, 255, 0.25); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 3px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            box-shadow: var(--gold-glow);
+        }
+        th, td { 
+            padding: 12px 6px; 
+            border: 1px solid rgba(186, 149, 63, 0.4); /* بارڈرز پر ہلکا گولڈن ٹچ */
+            text-align: center; 
+            font-size: 20px; 
+            color: #000000; /* ٹیکسٹ بالکل واضح کالا */
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.15); /* شفاف خانے */
+        }
+        th { 
+            background: var(--primary) !important; 
+            color: white; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact;
+            font-size: 21px;
         }
         
-        .present { background-color: var(--present-clr) !important; color: white !important; }
-        .absent { background-color: var(--absent-clr) !important; color: white !important; }
-        .leave { background-color: var(--leave-clr) !important; color: white !important; }
+        /* طالب علم کا نام بالکل واضح اور گہرا */
+        .student-name { text-align: right !important; padding-right: 15px; font-weight: bold; color: #000000 !important; width: 45%; }
+        
+        /* 3 ڈاٹس مینو ڈیزائن */
+        .student-name-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .three-dots-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--primary);
+            padding: 0 8px;
+            display: none; /* صرف استاد موڈ میں نظر آئے گا */
+        }
+        .teacher-mode-active .three-dots-btn {
+            display: inline-block;
+        }
+
+        .status-btn { 
+            width: 95px; padding: 6px 0; cursor: pointer; font-weight: bold; 
+            border-radius: 8px; background: rgba(245, 245, 245, 0.85); border: 1px solid rgba(186, 149, 63, 0.5); 
+            display: inline-block; text-align: center; font-size: 16px; color: #000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .present { background-color: var(--present-clr) !important; color: white !important; border-color: var(--present-clr); }
+        .absent { background-color: var(--absent-clr) !important; color: white !important; border-color: var(--absent-clr); }
+        .leave { background-color: var(--leave-clr) !important; color: white !important; border-color: var(--leave-clr); }
         
         .report-count { font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
 
+        /* سبق کارڈز کا گلاس اور گولڈن لک */
         .student-lesson-card {
-            background: #ffffff; border: 2px solid #880e4f; border-radius: 12px;
-            padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.25); 
+            border: 2px solid transparent; 
+            border-image: var(--gold-gradient) 1;
+            border-radius: 12px;
+            padding: 12px; margin-bottom: 14px; 
+            box-shadow: var(--gold-glow), 0 4px 8px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .lesson-row-container {
             display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px;
         }
         .lesson-inputs-holder {
-            display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 5px; border-top: 1px dashed #ccc; padding-top: 5px;
+            display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 5px; border-top: 1px dashed rgba(186, 149, 63, 0.4); padding-top: 5px;
         }
         .lesson-box-label {
-            font-size: 14px; color: #ad1457; font-weight: bold; text-align: right; margin-top: 2px;
+            font-size: 15px; color: #880e4f; font-weight: bold; text-align: right; margin-top: 2px;
         }
         .diary-input { 
-            width: 95%; padding: 6px; border: 1px solid #ccc; border-radius: 5px; 
-            font-size: 17px; background: #fff; color: #000000 !important; font-weight: bold;
+            width: 95%; padding: 7px; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 6px; 
+            font-size: 17px; background: rgba(255, 255, 255, 0.75); color: #000000 !important; font-weight: bold;
         }
         .diary-input:disabled { 
-            background: transparent; color: #000000 !important; border: 1px solid #ddd; cursor: not-allowed; 
+            background: rgba(255, 255, 255, 0.4); color: #000000 !important; border: 1px solid rgba(0,0,0,0.1); cursor: not-allowed; 
         }
 
         .fb-uploader-card {
-            background: #fff; padding: 15px; border-radius: 12px; border: 2px solid var(--primary); margin-bottom: 20px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.4); padding: 15px; border-radius: 12px; border: 2px solid transparent; border-image: var(--gold-gradient) 1; margin-bottom: 20px; text-align: right; box-shadow: var(--gold-glow); backdrop-filter: blur(8px);
         }
         .fb-uploader-card select, .fb-uploader-card input {
-            width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box;
+            width: 100%; padding: 10px; margin: 6px 0; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 8px; font-size: 16px; box-sizing: border-box; background: rgba(255, 255, 255, 0.9);
         }
         .fb-feed-container {
             display: flex; flex-direction: column; gap: 20px; max-height: 700px; overflow-y: auto; padding: 5px;
         }
         .fb-post-card {
-            background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: right; position: relative;
+            background: rgba(255, 255, 255, 0.35); border: 2px solid transparent; border-image: var(--gold-gradient) 1; border-radius: 12px; padding: 15px; box-shadow: var(--gold-glow); text-align: right; position: relative; backdrop-filter: blur(8px);
         }
         .fb-post-header {
-            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(186, 149, 63, 0.3); padding-bottom: 8px; margin-bottom: 12px;
         }
         .fb-post-user { font-size: 18px; font-weight: bold; color: var(--primary); }
-        .fb-post-date { font-size: 13px; color: #777; font-family: Arial, sans-serif !important; }
+        .fb-post-date { font-size: 13px; color: #111; font-family: Arial, sans-serif !important; font-weight: bold; }
         .fb-post-title { font-size: 20px; font-weight: bold; color: #000000; margin-bottom: 12px; line-height: 1.5; }
         
         .fb-post-media { 
             width: 100%; 
             border-radius: 10px; 
-            border: 3px solid #880e4f; 
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.15); 
+            border: 3px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            box-shadow: var(--gold-glow); 
             overflow: hidden; 
             margin-bottom: 5px; 
             position: relative; 
-            background: #fdfbf7;
+            background: rgba(255, 255, 255, 0.5);
         }
         
         .fb-video-wrapper { 
@@ -181,25 +252,56 @@
         }
 
         .teacher-badge {
-            background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; padding: 10px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 18px;
+            background: rgba(232, 245, 233, 0.6); color: #2e7d32; border: 2px solid #4caf50; padding: 10px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 18px; backdrop-filter: blur(5px);
         }
 
-        .footer-tools { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .btn-tool { padding: 12px; font-size: 17px; cursor: pointer; border: none; border-radius: 10px; color: white; flex: 1; min-width: 120px; font-weight: bold; }
+        /* فیس بک طرز کے بڑے چورس بٹن امیج کے مطابق گرڈ سسٹم میں */
+        .footer-tools { 
+            margin-top: 20px; 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; 
+        }
+        .btn-tool { 
+            padding: 18px 10px; 
+            font-size: 20px; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 15px; 
+            color: white; 
+            font-weight: bold; 
+            text-align: center;
+            line-height: 1.4;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease;
+        }
+        .btn-tool:active {
+            transform: scale(0.97);
+        }
         
         .teacher-only-btn { display: none; }
 
         .management-panel {
-            background: #eef2f3; border: 2px solid var(--primary); padding: 15px; border-radius: 15px; margin-bottom: 15px; display: none;
+            background: rgba(255, 255, 255, 0.4); border: 2px solid transparent; border-image: var(--gold-gradient) 1; padding: 15px; border-radius: 15px; margin-bottom: 15px; display: none; backdrop-filter: blur(5px); box-shadow: var(--gold-glow);
         }
-        .mgmt-input { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 60%; max-width: 250px; }
+        .mgmt-input { padding: 8px; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 5px; font-size: 16px; width: 60%; max-width: 250px; background: rgba(255, 255, 255, 0.9); }
         .btn-mgmt { padding: 8px 15px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; }
 
+        /* مینو پاپ اپ (Modal) فارم فارمیٹ */
+        .edit-modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #fffdf9; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px;
+            border: 4px solid transparent; border-image: var(--gold-gradient) 1; text-align: right; box-shadow: var(--gold-glow);
+        }
+
         .removal-section {
-            background: #fff0f0; border: 2px solid #b71c1c; padding: 15px; border-radius: 15px; margin-top: 25px; display: none; text-align: right;
+            background: rgba(255, 240, 240, 0.5); border: 2px solid #b71c1c; padding: 15px; border-radius: 15px; margin-top: 25px; display: none; text-align: right; backdrop-filter: blur(5px);
         }
         .removal-list-container {
-            max-height: 200px; overflow-y: auto; margin-top: 10px; border: 1px solid #ffcdd2; background: #fff; border-radius: 8px; padding: 5px;
+            max-height: 200px; overflow-y: auto; margin-top: 10px; border: 1px solid #ffcdd2; background: rgba(255, 255, 255, 0.8); border-radius: 8px; padding: 5px;
         }
         .removal-item {
             display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid #ffebee;
@@ -210,29 +312,29 @@
         }
 
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        .video-container { display: none; padding: 10px; background: #f9f9f9; text-align: center; }
-        .video-container iframe { width: 100%; max-width: 450px; height: 250px; border-radius: 10px; border: 2px solid #ff0000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .video-container { display: none; padding: 10px; background: rgba(249, 249, 249, 0.3); text-align: center; backdrop-filter: blur(5px); }
+        .video-container iframe { width: 100%; max-width: 450px; height: 250px; border-radius: 10px; border: 2px solid transparent; border-image: var(--gold-gradient) 1; box-shadow: var(--gold-glow); }
         
         .yt-playlist-link-btn {
             display: inline-block; background: #ff0000; color: white !important; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 15px; font-weight: bold; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .login-portal {
-            margin-top: 40px; background: #fff9e5; border: 3px dashed var(--primary); padding: 15px; border-radius: 15px; text-align: center;
+            margin-top: 40px; background: rgba(255, 249, 229, 0.5); border: 3px dashed var(--primary); padding: 15px; border-radius: 15px; text-align: center; backdrop-filter: blur(5px);
         }
         .login-portal h3 { margin-top: 0; color: var(--primary); font-size: 20px; }
-        .login-input { padding: 8px; margin: 5px; border: 1px solid var(--primary); border-radius: 5px; font-size: 16px; width: 80%; max-width: 200px; text-align: center; }
+        .login-input { padding: 8px; margin: 5px; border: 1px solid var(--primary); border-radius: 5px; font-size: 16px; width: 80%; max-width: 200px; text-align: center; background: white; }
         .login-submit { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
 
         @media print {
-            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar { display: none !important; }
+            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
     <div class="header-section">
         <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
@@ -321,9 +423,12 @@
     </div>
 
     <div class="footer-tools">
-        <button class="btn-tool" style="background:#880e4f" onclick="window.print()">پرنٹ نکالیں</button>
-        <button class="btn-tool teacher-only-btn" style="background:var(--present-clr)" id="importBtn" onclick="triggerImport()">ڈیٹا لوڈ کریں (Restore)</button>
-        <button class="btn-tool teacher-only-btn" style="background:var(--primary)" id="exportBtn" onclick="downloadBackup()">بیک اپ (Backup)</button>
+        <button class="btn-tool" style="background: var(--purple-btn);" onclick="window.print()">پرنٹ نکالیں</button>
+        
+        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">سارا ریکارڈ آن لائن بھیجیں<br>🚀 (Sync)</button>
+        
+        <button class="btn-tool teacher-only-btn" style="background: var(--present-clr);" id="importBtn" onclick="triggerImport()">ڈیٹا لوڈ کریں<br>(Restore)</button>
+        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="exportBtn" onclick="downloadBackup()">بیک اپ<br>(Backup)</button>
         <input type="file" id="importFileInput" style="display:none" onchange="uploadBackup(event)">
     </div>
 
@@ -338,7 +443,27 @@
     </div>
 </div>
 
+<div id="editStudentModal" class="edit-modal">
+    <div class="modal-content">
+        <h3 style="color:var(--primary); margin-top:0;">✏️ طالب علم کا ڈیٹا اپڈیٹ کریں</h3>
+        <input type="hidden" id="editStudentIndex">
+        <label style="font-weight:bold;">طالب علم کا نام:</label>
+        <input type="text" id="editStudentNameInput" class="mgmt-input" style="width:100%; max-width:100%; margin:8px 0 15px 0;"><br>
+        <label style="font-weight:bold;">یوٹیوب پلے لسٹ آئی ڈی:</label>
+        <input type="text" id="editStudentYTInput" class="mgmt-input" style="width:100%; max-width:100%; margin:8px 0 20px 0;"><br>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-mgmt" style="background:var(--present-clr); flex:1;" onclick="saveStudentEdits()">محفوظ کریں</button>
+            <button class="btn-mgmt" style="background:var(--absent-clr); flex:1;" onclick="closeEditModal()">بند کریں</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // --- Supabase کنفیگریشن آپشن ---
+    const SUPABASE_URL = "https://fetygtmtqufoamyumjjy.supabase.co"; 
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEkeTcxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE"; 
+    const SUPABASE_TABLE = "masjid_attendance";
+
     const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     const defaultVideoLists = ["PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF","PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG","PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ","PL3-aVTBoE-114ez2v-su_1RK46bVns8sd","PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo","PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ","PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK","PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu","PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl","PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy","PL3-aVTBoE-11d-65cVValCeAfDHo46HaK","PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS","PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr","PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK","PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL","PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH","PL3-aVTBoE-13NbwY9qlqURI14HdArML2-","PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO","PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky","PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks","PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC","PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_","PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-","PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n","PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd","PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F","PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"];
 
@@ -356,56 +481,28 @@
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
 
     window.onload = function() {
-        // آج کی لائیو تاریخ حاصل کرنا
+        if (!localStorage.getItem(storageKey)) {
+            const embeddedAttendance = {"2026-05-18":{"آذان فاروق":{"aS":"حاضر","aC":"status-btn present","lS":"نہیں سنایا","lC":"status-btn leave","w":"","wD":""}}};
+            localStorage.setItem(storageKey, JSON.stringify(embeddedAttendance));
+        }
+        
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
-        const formattedToday = `${yyyy}-${mm}-${dd}`;
-        
-        document.getElementById('mainDate').value = formattedToday;
+        document.getElementById('mainDate').value = `${yyyy}-${mm}-${dd}`;
 
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
             activateTeacherMode();
-        } else {
-            // اگر نارمل موڈ (والدین موڈ) ہے تو ڈائریکٹ گوگل ڈرائیو سے فلیش بیک اپ اٹھائے گا
-            fetchCloudBackup();
         }
         populateStudentSelect();
         updateAll();
     };
 
-    function fetchCloudBackup() {
-        // یہ آپ کے فولڈر سے 'rizwan_masjid_full_backup.txt' فائل کو لائیو پڑھے گا
-        const folderId = '1qTDQNSXg1oRS-9KbwMXhpiL4XAAO86Od';
-        // گوگل ڈرائیو فائل ایکسیس لنک فارمیٹ
-        const proxyUrl = `https://docs.google.com/uc?export=download&id=1qTDQNSXg1oRS-9KbwMXhpiL4XAAO86Od`;
-        
-        // یہاں ڈرائیو سے بیک اپ ریڈ کرنے کی کوشش کی جائے گی
-        fetch(`https://cors-anywhere.herokuapp.com/${proxyUrl}`)
-        .then(response => response.json())
-        .then(importedData => {
-            if (importedData.names && importedData.attendance) {
-                names = importedData.names;
-                videoLists = importedData.videos || defaultVideoLists;
-                timelinePosts = importedData.timelinePosts || [];
-                localStorage.setItem(namesStorageKey, JSON.stringify(names));
-                localStorage.setItem(videoStorageKey, JSON.stringify(videoLists));
-                localStorage.setItem(timelineStorageKey, JSON.stringify(timelinePosts));
-                localStorage.setItem(storageKey, JSON.stringify(importedData.attendance));
-                populateStudentSelect();
-                renderRemovalList();
-                updateAll();
-            }
-        }).catch(err => {
-            console.log("ڈرائیو بیک اپ لنک لوڈنگ یا سیکیورٹی پرمیشن کا انتظار ہے۔ لوکل کاپی استعمال ہو رہی ہے۔");
-        });
-    }
-
     function populateStudentSelect() {
         const select = document.getElementById('mediaStudentSelect');
         select.innerHTML = '<option value="">طالب علم کا انتخاب کریں (آپشنل)</option>';
-        names.forEach((n) => { select.innerHTML += `<option value="${n}">${n}</option>'; });
+        names.forEach((n) => { select.innerHTML += `<option value="${n}">${n}</option>`; });
     }
 
     function checkTeacherLogin() {
@@ -420,6 +517,7 @@
 
     function activateTeacherMode() {
         isTeacherMode = true;
+        document.getElementById('mainContainer').classList.add('teacher-mode-active');
         document.getElementById('teacherBadge').style.display = "block";
         document.getElementById('managementPanel').style.display = "block";
         if(document.getElementById('dailyAtt').classList.contains('active')) {
@@ -436,7 +534,7 @@
 
     function teacherLogout() {
         isTeacherMode = false;
-        sessionStorage.removeItem('isTeacherLoggedIn');
+        document.getElementById('mainContainer').classList.remove('teacher-mode-active');
         document.getElementById('teacherBadge').style.display = "none";
         document.getElementById('managementPanel').style.display = "none";
         document.getElementById('removalSection').style.display = "none";
@@ -473,6 +571,60 @@
         populateStudentSelect();
         renderRemovalList();
         updateAll();
+        syncWithSupabase("names_update", { names, videoLists });
+    }
+
+    function openEditModal(index) {
+        if (!isTeacherMode) return;
+        document.getElementById('editStudentIndex').value = index;
+        document.getElementById('editStudentNameInput').value = names[index];
+        document.getElementById('editStudentYTInput').value = videoLists[index] || "";
+        document.getElementById('editStudentModal').style.display = "flex";
+    }
+
+    function closeEditModal() {
+        document.getElementById('editStudentModal').style.display = "none";
+    }
+
+    function saveStudentEdits() {
+        const idx = document.getElementById('editStudentIndex').value;
+        const oldName = names[idx];
+        const newName = document.getElementById('editStudentNameInput').value.trim();
+        const newYT = document.getElementById('editStudentYTInput').value.trim();
+
+        if(!newName) return alert("طالب علم کا نام خالی نہیں ہو سکتا!");
+
+        if(oldName !== newName) {
+            let attendanceData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            for (let date in attendanceData) {
+                if (attendanceData[date][oldName]) {
+                    attendanceData[date][newName] = attendanceData[date][oldName];
+                    delete attendanceData[date][oldName];
+                }
+            }
+            localStorage.setItem(storageKey, JSON.stringify(attendanceData));
+            names[idx] = newName;
+        }
+
+        if(newYT) {
+            if(newYT.includes('list=')) {
+                videoLists[idx] = newYT.split('list=').split('&');
+            } else {
+                videoLists[idx] = newYT;
+            }
+        } else {
+            videoLists[idx] = "";
+        }
+
+        localStorage.setItem(namesStorageKey, JSON.stringify(names));
+        localStorage.setItem(videoStorageKey, JSON.stringify(videoLists));
+        
+        closeEditModal();
+        populateStudentSelect();
+        renderRemovalList();
+        updateAll();
+        alert("طالب علم کا ڈیٹا کامیابی سے اپڈیٹ کر دیا گیا ہے!");
+        syncWithSupabase("student_edited", { names, videoLists });
     }
 
     function deleteStudent(index) {
@@ -487,6 +639,7 @@
         populateStudentSelect();
         renderRemovalList();
         updateAll();
+        syncWithSupabase("names_update", { names, videoLists });
     }
 
     function renderRemovalList() {
@@ -545,6 +698,7 @@
 
         alert("پوسٹ کامیابی سے متفرق ٹائم لائن پر سب سے اوپر اپلوڈ کر دی گئی ہے!");
         renderTimeline();
+        syncWithSupabase("timeline_update", timelinePosts);
     }
 
     function deleteTimelinePost(idx) {
@@ -552,6 +706,7 @@
         timelinePosts.splice(idx, 1);
         localStorage.setItem(timelineStorageKey, JSON.stringify(timelinePosts));
         renderTimeline();
+        syncWithSupabase("timeline_update", timelinePosts);
     }
 
     function formatMediaEmbed(url) {
@@ -563,7 +718,7 @@
             else videoId = url.split('/').pop();
             return `<div class="fb-video-wrapper"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
         } else if (url.includes('drive.google.com')) {
-            let embedUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
+            let embedUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview').replace('?usp=drivesdk', '');
             return `<div class="fb-video-wrapper"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
         } else if (isFb) {
             let encodedUrl = encodeURIComponent(url);
@@ -578,13 +733,13 @@
         feed.innerHTML = '';
 
         if(timelinePosts.length === 0) {
-            feed.innerHTML = `<p style="text-align:center; color:#777; font-size:18px; padding:30px;">ٹائم لائن ابھی خالی ہے۔ استاد موڈ میں لاگ ان ہو کر نئی ویڈیوز یا تصاویر یہاں اپلوڈ کریں۔</p>`;
+            feed.innerHTML = `<p style="text-align:center; color:#333; font-size:18px; padding:30px; font-weight:bold;">ٹائم لائن ابھی خالی ہے۔ استاد موڈ میں لاگ ان ہو کر نئی ویڈیوز یا تصاویر یہاں اپلوڈ کریں۔</p>`;
             return;
         }
 
         timelinePosts.forEach((post, idx) => {
             const deleteBtnHtml = isTeacherMode ? `<button class="fb-del-btn" onclick="deleteTimelinePost(${idx})">حذف کریں</button>` : '';
-            const tagStudentHtml = post.student ? `<span style="background:#e8eaf6; color:#1a237e; padding:2px 8px; border-radius:4px; font-size:14px; margin-right:8px;">👤 ${post.student}</span>` : '';
+            const tagStudentHtml = post.student ? `<span style="background:rgba(26, 35, 126, 0.15); color:#1a237e; padding:2px 8px; border-radius:4px; font-size:14px; margin-right:8px; font-weight:bold;">👤 ${post.student}</span>` : '';
 
             feed.innerHTML += `
                 <div class="fb-post-card">
@@ -609,8 +764,9 @@
 
     function updateAll() {
         const date = document.getElementById('mainDate').value;
-        const dObj = new Date(date);
+        if(!date) return;
         
+        const dObj = new Date(date);
         const dayName = urduDays[dObj.getDay()];
         const dayNum = dObj.getDate();
         const monthName = urduMonths[dObj.getMonth()];
@@ -633,7 +789,16 @@
             const clickL = `onclick="tglL(this,'${n}')"`;
             const disabledInput = isTeacherMode ? '' : 'disabled';
 
-            b1.innerHTML += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><div class="${s.aC}" ${clickA}>${s.aS}</div></td></tr>`;
+            b1.innerHTML += `<tr>
+                <td>${i+1}</td>
+                <td class="student-name">
+                    <div class="student-name-container">
+                        <span>${n}</span>
+                        <button class="three-dots-btn" onclick="openEditModal(${i})">⋮</button>
+                    </div>
+                </td>
+                <td><div class="${s.aC}" ${clickA}>${s.aS}</div></td>
+            </tr>`;
             
             lessCardsContainer.innerHTML += `
                 <div class="student-lesson-card">
@@ -703,6 +868,7 @@
         else if(k==='w'){ data[d][name].w=v; }
         else if(k==='wD'){ data[d][name].wD=v; }
         localStorage.setItem(storageKey, JSON.stringify(data));
+        syncWithSupabase("attendance_update", data);
     }
 
     function loadReports() {
@@ -725,6 +891,62 @@
         });
     }
 
+    // --- Supabase ڈیٹا کلاؤڈ سنک فنکشن ---
+    async function syncWithSupabase(type, payload) {
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates'
+                },
+                body: JSON.stringify({
+                    id: 1, 
+                    update_type: type,
+                    data_payload: payload,
+                    updated_at: new Date().toISOString()
+                })
+            });
+            if (!response.ok) console.error("Supabase Sync Failed:", await response.text());
+        } catch (error) {
+            console.error("Supabase Connection Error:", error);
+        }
+    }
+
+    // بٹن پر کلک کرنے سے پورا لوکل ریکارڈ ایک ساتھ کلاؤڈ پر بھیجنا
+    async function syncAllDataToCloud() {
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            alert("⚠️ کلاؤڈ انٹیگریشن ادھوری ہے! براہ کرم کوڈ کے اوپر SUPABASE_URL اور SUPABASE_ANON_KEY درج کریں۔");
+            return;
+        }
+
+        const btn = document.getElementById('syncAllBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "بھیجا جا رہا ہے...";
+        btn.disabled = true;
+
+        const fullBackupData = {
+            attendance: JSON.parse(localStorage.getItem(storageKey) || '{}'),
+            names: names,
+            videos: videoLists,
+            timelinePosts: timelinePosts
+        };
+
+        try {
+            await syncWithSupabase("full_manual_sync", fullBackupData);
+            alert("🚀 سارا ریکارڈ کامیابی کے ساتھ آن لائن کلاؤڈ (Supabase) پر محفوظ کر دیا گیا ہے!");
+        } catch (error) {
+            alert("❌ ریکارڈ بھیجنے میں کوئی مسئلہ پیش آیا ہے۔ دوبارہ کوشش کریں یا کنکشن چیک کریں۔");
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
     function downloadBackup() {
         const backupData = {
             attendance: JSON.parse(localStorage.getItem(storageKey) || '{}'),
@@ -734,8 +956,7 @@
         };
         const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        // فائل کا نام ہمیشہ یہی رہے گا تاکہ ڈرائیو پر ریپلیس کرنا آسان ہو
-        a.download = 'rizwan_masjid_full_backup.txt'; a.click();
+        a.download = 'hussain_masjid_full_backup.txt'; a.click();
     }
 
     function triggerImport() { document.getElementById('importFileInput').click(); }
@@ -759,6 +980,7 @@
                     populateStudentSelect();
                     renderRemovalList();
                     updateAll();
+                    syncWithSupabase("full_restore", importedData);
                 }
             } catch (err) { alert("فائل پڑھنے میں غلطی!"); }
         };
