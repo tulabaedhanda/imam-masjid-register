@@ -286,7 +286,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background: var(--purple-btn);" onclick="window.print()">پرنٹ نکالیں</button>
-        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">ڈیٹا ریفریش کریں<br>🚀 (Refresh)</button>
+        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">آن لائن ڈیٹا<br>بھیجیں 🚀</button>
         <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="exportBtn" onclick="downloadBackup()">بیک اپ<br>(Backup)</button>
     </div>
 
@@ -735,9 +735,9 @@
                     </div>
                     <div class="lesson-inputs-holder">
                         <span class="lesson-box-label">قرآن کا سبق:</span>
-                        <input type="text" class="diary-input" value="${currentW}" ${disabledInput} onchange="saveW('${n}',this.value)" placeholder="یہاں قرآن کا سبق لکھیں...">
+                        <input type="text" class="diary-input" value="${currentW}" ${disabledInput} onchange="saveW('${n}',this.value)" placeholder="قرآن کا سبق">
                         <span class="lesson-box-label">نماز / دعائیں:</span>
-                        <input type="text" class="diary-input" value="${currentWD}" ${disabledInput} onchange="saveWD('${n}',this.value)" placeholder="یہاں نماز یا دعا کا سبق لکھیں...">
+                        <input type="text" class="diary-input" value="${currentWD}" ${disabledInput} onchange="saveWD('${n}',this.value)" placeholder="نماز کا سبق">
                     </div>
                 </div>
             `;
@@ -842,14 +842,14 @@
     async function syncAllDataToCloud() {
         if (!isTeacherMode) return;
         const btn = document.getElementById('syncAllBtn');
-        btn.innerHTML = "ریفریش ہو رہا ہے... ⏳"; 
+        btn.innerHTML = "بھیجا جا رہا ہے... ⏳"; 
         btn.disabled = true;
 
         await fetchSupabaseData();
         
-        btn.innerHTML = "ڈیٹا ریفریش کریں<br>🚀 (Refresh)"; 
+        btn.innerHTML = "آن لائن ڈیٹا<br>بھیجیں 🚀"; 
         btn.disabled = false;
-        alert("ڈیٹا بیس سے تازہ ترین ریکارڈ لوڈ ہو گیا ہے!");
+        alert("ڈیٹا آن لائن اپڈیٹ ہو گیا ہے!");
     }
 
     function downloadBackup() {
