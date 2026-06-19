@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
@@ -287,7 +286,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background: var(--purple-btn);" onclick="window.print()">پرنٹ نکالیں</button>
-        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">آن لائن ڈیٹا بھیجیں<br>🚀 (Refresh)</button>
+        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">ڈیٹا ریفریش کریں<br>🚀 (Refresh)</button>
         <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="exportBtn" onclick="downloadBackup()">بیک اپ<br>(Backup)</button>
     </div>
 
@@ -343,6 +342,8 @@
 
         if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
             activateTeacherMode();
+        } else {
+            teacherLogout();
         }
         await fetchSupabaseData();
     };
@@ -841,15 +842,14 @@
     async function syncAllDataToCloud() {
         if (!isTeacherMode) return;
         const btn = document.getElementById('syncAllBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "ڈیٹا بھیجا جا رہا ہے... ⏳"; 
+        btn.innerHTML = "ریفریش ہو رہا ہے... ⏳"; 
         btn.disabled = true;
 
         await fetchSupabaseData();
         
-        btn.innerHTML = "آن لائن ڈیٹا بھیجیں<br>🚀 (Refresh)"; 
+        btn.innerHTML = "ڈیٹا ریفریش کریں<br>🚀 (Refresh)"; 
         btn.disabled = false;
-        alert("ڈیٹا آن لائن کلاؤڈ ڈیٹا بیس پر کامیابی سے بھیج دیا گیا ہے اور اپڈیٹ ہو چکا ہے!");
+        alert("ڈیٹا بیس سے تازہ ترین ریکارڈ لوڈ ہو گیا ہے!");
     }
 
     function downloadBackup() {
