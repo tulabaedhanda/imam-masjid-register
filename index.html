@@ -321,6 +321,7 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEkeTcxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE"; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // ناموں کو ڈیٹا بیس کے اصل ریکارڈز سے ہم آہنگ کر دیا گیا ہے
     const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور"];
     const defaultVideoLists = ["PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF","PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG","PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ","PL3-aVTBoE-114ez2v-su_1RK46bVns8sd","PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo","PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ","PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK","PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu","PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl","PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy","PL3-aVTBoE-11d-65cVValCeAfDHo46HaK","PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS","PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr","PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK","PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL","PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH","PL3-aVTBoE-13NbwY9qlqURI14HdArML2-","PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO","PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky","PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks","PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC","PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_","PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-","PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n","PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd","PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F","PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"];
 
@@ -355,8 +356,6 @@
                 if(settingsData.names) names = JSON.parse(settingsData.names);
                 if(settingsData.videos) videoLists = JSON.parse(settingsData.videos);
                 if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
-            } else {
-                await syncSettingsToSupabase();
             }
 
             const { data, error } = await _supabase.from('attendance_records').select('*');
@@ -387,10 +386,7 @@
 
     async function syncSettingsToSupabase() {
         const payload = { id: 1, names: JSON.stringify(names), videos: JSON.stringify(videoLists), timeline: JSON.stringify(timelinePosts) };
-        const { data } = await _supabase.from('masjid_settings').update(payload).eq('id', 1).select();
-        if(!data || data.length === 0) {
-            await _supabase.from('masjid_settings').insert([payload]);
-        }
+        await _supabase.from('masjid_settings').upsert(payload);
     }
 
     function populateStudentSelect() {
@@ -763,7 +759,10 @@
     }
 
     function tglA(el, name) {
-        if (!isTeacherMode) return; 
+        if (!isTeacherMode) {
+            alert("⚠️ ترمیم کرنے کے لیے براہ کرم نیچے سے 'استاد پورٹل' میں لاگ ان کریں!");
+            return;
+        }
         let s, c;
         if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
         else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
@@ -773,7 +772,10 @@
     }
 
     function tglL(el, name) {
-        if (!isTeacherMode) return; 
+        if (!isTeacherMode) {
+            alert("⚠️ ترمیم کرنے کے لیے براہ کرم نیچے سے 'استاد پورٹل' میں لاگ ان کریں!");
+            return;
+        }
         let s, c;
         if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
         else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
@@ -808,16 +810,7 @@
             prayer_lesson: r.wD
         };
 
-        const { data, error } = await _supabase
-            .from('attendance_records')
-            .update(payload)
-            .eq('date', d)
-            .eq('student_name', name)
-            .select();
-            
-        if (!data || data.length === 0) {
-            await _supabase.from('attendance_records').insert([payload]);
-        }
+        await _supabase.from('attendance_records').upsert(payload, { onConflict: 'date,student_name' });
     }
 
     function loadReports() {
