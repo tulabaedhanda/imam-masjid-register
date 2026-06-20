@@ -743,6 +743,7 @@
         });
 
         renderTimeline();
+        loadReports(); // یہ لائن شامل کی گئی ہے تاکہ تاریخ بدلنے پر رپورٹ اپڈیٹ ہو
     }
 
     function toggleVideo(i) {
@@ -812,7 +813,15 @@
     }
 
     function loadReports() {
-        const mKey = document.getElementById('mainDate').value.substring(0, 7);
+        const dateInput = document.getElementById('mainDate').value;
+        if(!dateInput) return;
+        const mKey = dateInput.substring(0, 7);
+        
+        // یہ لائن شامل کی گئی ہے تاکہ مہینے کا نام ظاہر ہو
+        const dObj = new Date(dateInput);
+        const monthStr = `${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()} کی رپورٹ`;
+        document.querySelectorAll('.monthTitle').forEach(el => el.innerText = monthStr);
+
         const bA = document.getElementById('attReportBody'), bL = document.getElementById('lessReportBody');
         bA.innerHTML = ''; bL.innerHTML = '';
 
