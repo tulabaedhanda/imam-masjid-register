@@ -450,7 +450,7 @@
 
         if(ytInput) {
             if(ytInput.includes('list=')) {
-                ytList = ytInput.split('list=').pop().split('&');
+                ytList = ytInput.split('list=').pop().split('&')[0];
             } else {
                 ytList = ytInput;
             }
@@ -518,7 +518,7 @@
 
         if(newYT) {
             if(newYT.includes('list=')) {
-                videoLists[idx] = newYT.split('list=').pop().split('&');
+                videoLists[idx] = newYT.split('list=').pop().split('&')[0];
             } else {
                 videoLists[idx] = newYT;
             }
@@ -621,7 +621,7 @@
 
         if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
             let videoId = '';
-            if (url.includes('v=')) videoId = url.split('v=').pop().split('&');
+            if (url.includes('v=')) videoId = url.split('v=').pop().split('&')[0];
             else videoId = url.split('/').pop();
             return `<div class="fb-video-wrapper"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
         } else if (url.includes('drive.google.com')) {
@@ -760,7 +760,6 @@
 
     function tglA(el, name) {
         if (!isTeacherMode) {
-            alert("⚠️ ترمیم کرنے کے لیے براہ کرم نیچے سے 'استاد پورٹل' میں لاگ ان کریں!");
             return;
         }
         let s, c;
@@ -773,7 +772,6 @@
 
     function tglL(el, name) {
         if (!isTeacherMode) {
-            alert("⚠️ ترمیم کرنے کے لیے براہ کرم نیچے سے 'استاد پورٹل' میں لاگ ان کریں!");
             return;
         }
         let s, c;
