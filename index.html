@@ -286,49 +286,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background: var(--purple-btn);" onclick="window.print()">پرنٹ نکالیں</button>
-        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="async function syncAllDataToCloud() {
-        if (!isTeacherMode) return;
-        const btn = document.getElementById('syncAllBtn');
-        btn.innerHTML = "بھیجا جا رہا ہے... ⏳"; 
-        btn.disabled = true;
-
-        try {
-            const d = document.getElementById('mainDate').value;
-            if (globalData[d]) {
-                const recordsToUpload = [];
-                for (let name in globalData[d]) {
-                    const r = globalData[d][name];
-                    recordsToUpload.push({
-                        date: d,
-                        student_name: name,
-                        attendance_status: r.aS,
-                        attendance_class: r.aC,
-                        lesson_status: r.lS,
-                        lesson_class: r.lC,
-                        quran_lesson: r.w,
-                        prayer_lesson: r.wD
-                    });
-                }
-                if (recordsToUpload.length > 0) {
-                    const { error } = await _supabase.from('attendance_records').upsert(recordsToUpload, { onConflict: 'date,student_name' });
-                    if (error) throw error;
-                }
-            }
-            
-            // سیٹنگز بھی اپڈیٹ کریں
-            await syncSettingsToSupabase();
-            await fetchSupabaseData();
-            
-            alert("ڈیٹا کامیابی سے آن لائن اپڈیٹ ہو گیا ہے! 🚀");
-        } catch (e) {
-            console.error(e);
-            alert("ڈیٹا بھیجنے میں مسئلہ آیا: " + (e.message || "Unknown error"));
-        } finally {
-            btn.innerHTML = "آن لائن ڈیٹا<br>بھیجیں 🚀"; 
-            btn.disabled = false;
-        }
-    }
-
+        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">آن لائن ڈیٹا<br>بھیجیں 🚀</button>
         <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="exportBtn" onclick="downloadBackup()">بیک اپ<br>(Backup)</button>
     </div>
 
@@ -360,9 +318,10 @@
 
 <script>
     const SUPABASE_URL = "https://fetygtmtqufoamyumjjy.supabase.co"; 
-     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzIxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzIxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور", "عبدالہادی"];
+    
+    const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور", "عبدالہادی"];
     const defaultVideoLists = ["PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF","PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG","PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ","PL3-aVTBoE-114ez2v-su_1RK46bVns8sd","PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo","PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ","PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK","PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu","PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl","PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy","PL3-aVTBoE-11d-65cVValCeAfDHo46HaK","PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS","PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr","PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK","PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL","PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH","PL3-aVTBoE-13NbwY9qlqURI14HdArML2-","PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO","PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky","PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks","PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC","PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_","PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-","PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n","PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd","PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F","PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"];
 
     let names = [...defaultNames];
@@ -388,15 +347,12 @@ const defaultNames = ["آذان منصور", "آيان وليد", "امیر حم
         }
         await fetchSupabaseData();
         setInterval(fetchSupabaseData, 30000);
-
-setInterval(fetchSupabaseData, 30000);
     };
 
     async function fetchSupabaseData() {
         try {
             const { data: settingsData } = await _supabase.from('masjid_settings').select('*').eq('id', 1).single();
             if (settingsData) {
-                // اگر سپابیس میں نام موجود ہوں تو لوڈ کرے، ورنہ ڈیفالٹ نام برقرار رہیں
                 if(settingsData.names && JSON.parse(settingsData.names).length > 0) names = JSON.parse(settingsData.names);
                 if(settingsData.videos && JSON.parse(settingsData.videos).length > 0) videoLists = JSON.parse(settingsData.videos);
                 if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
@@ -494,7 +450,7 @@ setInterval(fetchSupabaseData, 30000);
 
         if(ytInput) {
             if(ytInput.includes('list=')) {
-                ytList = ytInput.split('list=').pop().split('&')[0];
+                ytList = ytInput.split('list=').pop().split('&');
             } else {
                 ytList = ytInput;
             }
@@ -562,7 +518,7 @@ setInterval(fetchSupabaseData, 30000);
 
         if(newYT) {
             if(newYT.includes('list=')) {
-                videoLists[idx] = newYT.split('list=').pop().split('&')[0];
+                videoLists[idx] = newYT.split('list=').pop().split('&');
             } else {
                 videoLists[idx] = newYT;
             }
@@ -665,7 +621,7 @@ setInterval(fetchSupabaseData, 30000);
 
         if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
             let videoId = '';
-            if (url.includes('v=')) videoId = url.split('v=').pop().split('&')[0];
+            if (url.includes('v=')) videoId = url.split('v=').pop().split('&');
             else videoId = url.split('/').pop();
             return `<div class="fb-video-wrapper"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
         } else if (url.includes('drive.google.com')) {
@@ -900,16 +856,18 @@ setInterval(fetchSupabaseData, 30000);
                     });
                 }
                 if (recordsToUpload.length > 0) {
-                    await _supabase.from('attendance_records').upsert(recordsToUpload, { onConflict: 'date,student_name' });
+                    const { error } = await _supabase.from('attendance_records').upsert(recordsToUpload, { onConflict: 'date,student_name' });
+                    if (error) throw error;
                 }
             }
-            // ناموں کی لسٹ کو بھی ہر دفعہ آن لائن بھیجیں تاکہ لاک ہو جائے
+            
             await syncSettingsToSupabase();
             await fetchSupabaseData();
-            alert("ڈیٹا کامیابی سے آن لائن اپڈیٹ ہو گیا ہے اور دوسرے موبائلز پر بھی شو ہو جائے گا! 🚀");
+            
+            alert("ڈیٹا کامیابی سے آن لائن اپڈیٹ ہو گیا ہے! 🚀");
         } catch (e) {
             console.error(e);
-            alert("ڈیٹا بھیجنے میں مسئلہ آیا: " + e.message);
+            alert("ڈیٹا بھیجنے میں مسئلہ آیا: " + (e.message || "Unknown error"));
         } finally {
             btn.innerHTML = "آن لائن ڈیٹا<br>بھیجیں 🚀"; 
             btn.disabled = false;
@@ -925,5 +883,3 @@ setInterval(fetchSupabaseData, 30000);
 </script>
 </body>
 </html>
-
-
