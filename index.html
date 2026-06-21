@@ -192,31 +192,6 @@
             .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
-
-        .time-box {
-            margin: 10px auto;
-            padding: 12px 20px;
-            max-width: 550px;
-            text-align: center;
-
-            background: rgba(255,255,255,0.45);
-            backdrop-filter: blur(10px);
-
-            border: 3px solid transparent;
-            border-image: var(--gold-gradient) 1;
-
-            border-radius: 20px;
-
-            box-shadow:
-                0 0 15px rgba(212,175,55,.6),
-                inset 0 0 8px rgba(212,175,55,.4);
-
-            font-size: 22px;
-            font-weight: bold;
-            color: #880e4f;
-
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -225,7 +200,6 @@
     <div class="header-section">
         <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img">
         <div id="displayUrduDate" class="urdu-date"></div>
-        <div id="timeBox" class="time-box"></div>
     </div>
 
     <div class="date-picker-container">
@@ -242,24 +216,6 @@
             <input type="text" id="newStudentYT" class="mgmt-input" placeholder="یوٹیوب پلے لسٹ آئی ڈی (آپشنل)">
             <button class="btn-mgmt" style="background: var(--present-clr);" id="btnAddStudentSubmit" onclick="addStudent()">داخل کریں</button>
         </div>
-        
-        <hr>
-
-        <h3 style="color:#ad1457;">⏰ ویب سائٹ ٹائم</h3>
-
-        <input
-            type="text"
-            id="timeInput"
-            class="mgmt-input"
-            style="width:90%;max-width:500px;"
-            placeholder="مثال: نماز عصر 4:45 بجے">
-
-        <button
-            class="btn-mgmt"
-            style="background:#ad1457;"
-            onclick="saveWebsiteTime()">
-            محفوظ کریں
-        </button>
     </div>
 
     <div class="tabs">
@@ -373,7 +329,6 @@
     let timelinePosts = [];
     let globalData = {}; 
     let isTeacherMode = false;
-    let websiteTimeText = "";
 
     const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
@@ -401,8 +356,6 @@
                 if(settingsData.names && JSON.parse(settingsData.names).length > 0) names = JSON.parse(settingsData.names);
                 if(settingsData.videos && JSON.parse(settingsData.videos).length > 0) videoLists = JSON.parse(settingsData.videos);
                 if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
-
-                websiteTimeText = settingsData.time_text || "";
             }
 
             const { data, error } = await _supabase.from('attendance_records').select('*');
@@ -432,13 +385,7 @@
     }
 
     async function syncSettingsToSupabase() {
-        const payload = {
-            id: 1,
-            names: JSON.stringify(names),
-            videos: JSON.stringify(videoLists),
-            timeline: JSON.stringify(timelinePosts),
-            time_text: websiteTimeText
-        };
+        const payload = { id: 1, names: JSON.stringify(names), videos: JSON.stringify(videoLists), timeline: JSON.stringify(timelinePosts) };
         await _supabase.from('masjid_settings').upsert(payload);
     }
 
@@ -503,7 +450,7 @@
 
         if(ytInput) {
             if(ytInput.includes('list=')) {
-                ytList = ytInput.split('list=').pop().split('&');
+                ytList = ytInput.split('list=').pop().split('&')[0];
             } else {
                 ytList = ytInput;
             }
@@ -571,7 +518,7 @@
 
         if(newYT) {
             if(newYT.includes('list=')) {
-                videoLists[idx] = newYT.split('list=').pop().split('&');
+                videoLists[idx] = newYT.split('list=').pop().split('&')[0];
             } else {
                 videoLists[idx] = newYT;
             }
@@ -674,7 +621,7 @@
 
         if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
             let videoId = '';
-            if (url.includes('v=')) videoId = url.split('v=').pop().split('&');
+            if (url.includes('v=')) videoId = url.split('v=').pop().split('&')[0];
             else videoId = url.split('/').pop();
             return `<div class="fb-video-wrapper"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
         } else if (url.includes('drive.google.com')) {
@@ -738,16 +685,6 @@
         
         const dObj = new Date(date);
         document.getElementById('displayUrduDate').innerText = `${urduDays[dObj.getDay()]}، ${dObj.getDate()} ${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()}`;
-        
-        const timeBox = document.getElementById("timeBox");
-
-        if (websiteTimeText.trim() !== "") {
-            timeBox.style.display = "block";
-            timeBox.innerText = websiteTimeText;
-        } else {
-            timeBox.style.display = "none";
-        }
-
         document.getElementById('totalStudentsCount').innerText = `تعداد: ${names.length}`;
 
         const dayData = globalData[date] || {};
@@ -949,24 +886,6 @@
         const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = 'hussain_masjid_full_backup.txt'; a.click();
-    }
-
-    async function saveWebsiteTime() {
-
-        const txt = document.getElementById("timeInput").value.trim();
-
-        websiteTimeText = txt;
-
-        await _supabase
-            .from("masjid_settings")
-            .update({
-                time_text: txt
-            })
-            .eq("id", 1);
-
-        updateAll();
-
-        alert("ٹائم محفوظ ہوگیا");
     }
 </script>
 </body>
