@@ -432,7 +432,13 @@
     }
 
     async function syncSettingsToSupabase() {
-        const payload = { id: 1, names: JSON.stringify(names), videos: JSON.stringify(videoLists), timeline: JSON.stringify(timelinePosts) };
+        const payload = {
+            id: 1,
+            names: JSON.stringify(names),
+            videos: JSON.stringify(videoLists),
+            timeline: JSON.stringify(timelinePosts),
+            time_text: websiteTimeText
+        };
         await _supabase.from('masjid_settings').upsert(payload);
     }
 
