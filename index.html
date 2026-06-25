@@ -119,6 +119,39 @@
         }
         .diary-input:disabled { background: rgba(255, 255, 255, 0.4); color: #000000 !important; border: 1px solid rgba(0,0,0,0.1); cursor: not-allowed; }
 
+        .former-student-card {
+            background: rgba(255,255,255,0.35);
+            border: 2px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--gold-glow);
+            backdrop-filter: blur(8px);
+        }
+        .former-student-name {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .former-student-line {
+            font-size: 18px;
+            margin-bottom: 6px;
+            color: #111;
+        }
+        .restore-btn {
+            background: #1b5e20;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
         .fb-uploader-card {
             background: rgba(255, 255, 255, 0.4); padding: 15px; border-radius: 12px; border: 2px solid transparent; 
             border-image: var(--gold-gradient) 1; margin-bottom: 20px; text-align: right; box-shadow: var(--gold-glow); backdrop-filter: blur(8px);
@@ -135,14 +168,34 @@
         .fb-post-user { font-size: 18px; font-weight: bold; color: var(--primary); }
         .fb-post-date { font-size: 13px; color: #111; font-family: Arial, sans-serif !important; font-weight: bold; }
         .fb-post-title { font-size: 20px; font-weight: bold; color: #000000; margin-bottom: 12px; line-height: 1.5; }
+        
         .fb-post-media { 
             width: 100%; border-radius: 10px; border: 3px solid transparent; border-image: var(--gold-gradient) 1;
             box-shadow: var(--gold-glow); overflow: hidden; margin-bottom: 5px; position: relative; background: rgba(255, 255, 255, 0.5);
         }
-        .fb-video-wrapper { position: relative; width: 100%; display: block; }
-        .fb-video-wrapper iframe { width: 100%; height: 100%; min-height: 500px; border: none; display: block; }
-        .fb-post-media img { width: 100%; height: auto; display: block; margin: 0 auto; }
+        .fb-video-wrapper { position: relative; width: 100%; aspect-ratio: 16 / 9; display: block; }
+        .fb-video-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
+        .fb-post-media img { width: 100%; height: auto !important; object-fit: contain; display: block; margin: 0 auto; max-height: 800px; }
+        
         .fb-del-btn { background: #b71c1c; color: white; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+
+        .timeline-text-post {
+            background: #fff;
+            padding: 18px;
+            margin-top: 12px;
+            border-radius: 12px;
+            font-size: 20px;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            text-align: right;
+        }
+        .timeline-media, .timeline-image, .timeline-video, .timeline iframe {
+            width: 100%;
+            height: auto !important;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+        }
 
         .teacher-badge {
             background: rgba(232, 245, 233, 0.6); color: #2e7d32; border: 2px solid #4caf50; padding: 10px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 18px; backdrop-filter: blur(5px);
@@ -172,12 +225,6 @@
             border: 4px solid transparent; border-image: var(--gold-gradient) 1; text-align: right; box-shadow: var(--gold-glow);
         }
 
-        .removal-section { background: rgba(255, 240, 240, 0.5); border: 2px solid #b71c1c; padding: 15px; border-radius: 15px; margin-top: 25px; display: none; text-align: right; backdrop-filter: blur(5px); }
-        .removal-list-container { max-height: 200px; overflow-y: auto; margin-top: 10px; border: 1px solid #ffcdd2; background: rgba(255, 255, 255, 0.8); border-radius: 8px; padding: 5px; }
-        .removal-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid #ffebee; }
-        .removal-item:last-child { border-bottom: none; }
-        .delete-btn { background: #b71c1c; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
-
         .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .video-container { display: none; padding: 10px; background: rgba(249, 249, 249, 0.3); text-align: center; backdrop-filter: blur(5px); }
         .video-container iframe { width: 100%; max-width: 450px; height: 250px; border-radius: 10px; border: 2px solid transparent; border-image: var(--gold-gradient) 1; box-shadow: var(--gold-glow); }
@@ -189,7 +236,7 @@
         .login-submit { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
 
         @media print {
-            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .removal-section, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
+            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
@@ -278,6 +325,7 @@
         <button class="tab-btn" onclick="openTab('attReport', event)">حاضری رپورٹ</button>
         <button class="tab-btn" onclick="openTab('lessReport', event)">سبق رپورٹ</button>
         <button class="tab-btn" onclick="openTab('miscellaneousTab', event)">متفرق</button>
+        <button class="tab-btn" onclick="openTab('formerStudentsTab', event)">سابقہ طلباء</button>
     </div>
 
     <div id="dailyAtt" class="tab-content active">
@@ -291,11 +339,6 @@
             <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
             <tbody id="attTableBody"></tbody>
         </table>
-
-        <div id="removalSection" class="removal-section">
-            <strong style="color: #b71c1c; font-size: 18px;">❌ طالب علم خارج کریں (اخراج لسٹ):</strong>
-            <div class="removal-list-container" id="removalListBody"></div>
-        </div>
     </div>
 
     <div id="dailyLesson" class="tab-content">
@@ -331,10 +374,16 @@
             <select id="mediaStudentSelect"><option value="">طالب علم کا انتخاب کریں (آپشنل)</option></select>
             <input type="text" id="mediaTitleInput" placeholder="پوسٹ کا عنوان یا ٹائٹل لکھیں...">
             <input type="text" id="mediaUrlInput" placeholder="گوگل ڈرائیو، یوٹیوب یا فیس بک ویڈیو کا لنک پیسٹ کریں...">
+            <textarea id="timelineText" class="mgmt-input" style="width:100%; max-width:100%; margin:6px 0; padding:10px; border-radius:8px; box-sizing:border-box;" placeholder="صرف پیغام بھی لکھ سکتے ہیں..." rows="4"></textarea>
             <button class="btn-mgmt" style="background:var(--primary); width:100%; margin-top:5px; padding:10px;" id="btnTimelineSubmit" onclick="addTimelinePost()">ٹائم لائن پر پوسٹ کریں ✨</button>
         </div>
 
         <div class="fb-feed-container" id="fbFeedTimeline"></div>
+    </div>
+
+    <div id="formerStudentsTab" class="tab-content">
+        <div id="formerStudentsCount" style="text-align:center; font-size:20px; font-weight:bold; color:var(--primary); margin-bottom:15px;"></div>
+        <div id="formerStudentsContainer"></div>
     </div>
 
     <div class="footer-tools">
@@ -369,6 +418,15 @@
     </div>
 </div>
 
+<div id="studentMenuModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:2000;">
+    <div style="background:white; width:90%; max-width:320px; margin:120px auto; padding:15px; border-radius:15px; text-align:center;">
+        <input type="hidden" id="menuStudentIndex">
+        <button class="btn-mgmt" style="background:var(--primary); width:100%; margin-bottom:10px;" onclick="menuEditStudent()">✏️ ترمیم کریں</button>
+        <button class="btn-mgmt" style="background:#ef6c00; width:100%; margin-bottom:10px;" onclick="menuMoveFormer()">📦 سابقہ میں منتقل کریں</button>
+        <button class="btn-mgmt" style="background:#b71c1c; width:100%;" onclick="closeStudentMenu()">بند کریں</button>
+    </div>
+</div>
+
 <script>
     const SUPABASE_URL = "https://fetygtmtqufoamyumjjy.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzIxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE";
@@ -383,9 +441,17 @@
     let globalData = {}; 
     let isTeacherMode = false;
     let classTime = "";
+    let formerStudents = [];
+    window.studentJoinDates = {};
 
     const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
+
+    function formatUrduDate(dateString){
+        if(!dateString || dateString==='-') return '-';
+        const d = new Date(dateString);
+        return `${d.getDate()} ${urduMonths[d.getMonth()]} ${d.getFullYear()}`;
+    }
 
     window.onload = async function() {
         const today = new Date();
@@ -410,8 +476,10 @@
                 if(settingsData.names && JSON.parse(settingsData.names).length > 0) names = JSON.parse(settingsData.names);
                 if(settingsData.videos && JSON.parse(settingsData.videos).length > 0) videoLists = JSON.parse(settingsData.videos);
                 if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
-                
                 if(settingsData.class_time) classTime = settingsData.class_time;
+                if(settingsData.former_students) formerStudents = JSON.parse(settingsData.former_students);
+                if(settingsData.student_join_dates) window.studentJoinDates = JSON.parse(settingsData.student_join_dates);
+                
                 const box = document.getElementById("classTimeBox");
                 if(box) box.innerHTML = classTime || "";
             }
@@ -433,7 +501,7 @@
                 });
             }
             populateStudentSelect();
-            if(isTeacherMode) renderRemovalList();
+            if(isTeacherMode) renderFormerStudents();
             updateAll();
         } catch (err) {
             console.error("Supabase Load Error:", err);
@@ -443,7 +511,15 @@
     }
 
     async function syncSettingsToSupabase() {
-        const payload = { id: 1, names: JSON.stringify(names), videos: JSON.stringify(videoLists), timeline: JSON.stringify(timelinePosts) };
+        const payload = { 
+            id: 1, 
+            names: JSON.stringify(names), 
+            videos: JSON.stringify(videoLists), 
+            timeline: JSON.stringify(timelinePosts),
+            former_students: JSON.stringify(formerStudents),
+            student_join_dates: JSON.stringify(window.studentJoinDates || {}),
+            class_time: classTime
+        };
         await _supabase.from('masjid_settings').upsert(payload);
     }
 
@@ -468,9 +544,6 @@
         document.getElementById('mainContainer').classList.add('teacher-mode-active');
         document.getElementById('teacherBadge').style.display = "block";
         document.getElementById('managementPanel').style.display = "block";
-        if(document.getElementById('dailyAtt').classList.contains('active')) {
-            document.getElementById('removalSection').style.display = "block";
-        }
         document.getElementById('fbUploaderPanel').style.display = "block";
         document.getElementById('loginFormInputs').style.display = "none";
         document.getElementById('logoutBtn').style.display = "inline-block";
@@ -478,7 +551,7 @@
         document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'inline-block');
         document.getElementById('classTimeEditor').style.display = 'block';
         document.getElementById('classTimeInput').value = classTime || '';
-        renderRemovalList();
+        renderFormerStudents();
         updateAll();
     }
 
@@ -487,7 +560,6 @@
         document.getElementById('mainContainer').classList.remove('teacher-mode-active');
         document.getElementById('teacherBadge').style.display = "none";
         document.getElementById('managementPanel').style.display = "none";
-        document.getElementById('removalSection').style.display = "none";
         document.getElementById('fbUploaderPanel').style.display = "none";
         document.getElementById('loginFormInputs').style.display = "block";
         document.getElementById('logoutBtn').style.display = "none";
@@ -520,6 +592,10 @@
         names.push(name);
         videoLists.push(ytList);
         
+        const today = document.getElementById('mainDate').value;
+        if(!window.studentJoinDates) window.studentJoinDates = {};
+        window.studentJoinDates[name] = today;
+        
         try {
             await syncSettingsToSupabase();
             alert(`طالب علم "${name}" کامیابی سے آن لائن ڈیٹا بیس میں شامل ہو گیا ہے!`);
@@ -532,7 +608,7 @@
         document.getElementById('newStudentName').value = "";
         document.getElementById('newStudentYT').value = "";
         populateStudentSelect();
-        renderRemovalList();
+        renderFormerStudents();
         updateAll();
     }
 
@@ -575,6 +651,11 @@
                 }
             }
             names[idx] = newName;
+            
+            if(window.studentJoinDates && window.studentJoinDates[oldName]) {
+                window.studentJoinDates[newName] = window.studentJoinDates[oldName];
+                delete window.studentJoinDates[oldName];
+            }
         }
 
         if(newYT) {
@@ -593,39 +674,9 @@
         btn.disabled = false;
         closeEditModal();
         populateStudentSelect();
-        renderRemovalList();
+        renderFormerStudents();
         updateAll();
         alert("طالب علم کا ڈیٹا کامیابی سے آن لائن اپڈیٹ کر دیا گیا ہے!");
-    }
-
-    async function deleteStudent(index) {
-        const nameToRemove = names[index];
-        if(!confirm(`کیا آپ واقعی ${nameToRemove} کو خارج کرنا چاہتے ہیں؟`)) return;
-        
-        names.splice(index, 1);
-        videoLists.splice(index, 1);
-        await syncSettingsToSupabase();
-        
-        populateStudentSelect();
-        renderRemovalList();
-        updateAll();
-    }
-
-    function renderRemovalList() {
-        const container = document.getElementById('removalListBody');
-        container.innerHTML = '';
-        if(names.length === 0) {
-            container.innerHTML = '<p style="padding:10px; color:#777;">کوئی طالب علم موجود نہیں ہے۔</p>';
-            return;
-        }
-        names.forEach((n, idx) => {
-            container.innerHTML += `
-                <div class="removal-item">
-                    <span style="font-size:16px; font-weight:bold;">${idx+1}. ${n}</span>
-                    <button class="delete-btn" onclick="deleteStudent(${idx})">خارج کریں</button>
-                </div>
-            `;
-        });
     }
 
     function openTab(id, e) {
@@ -634,12 +685,6 @@
         document.getElementById(id).classList.add('active');
         e.currentTarget.classList.add('active');
         
-        if(id === 'dailyAtt' && isTeacherMode) {
-            document.getElementById('removalSection').style.display = "block";
-        } else {
-            document.getElementById('removalSection').style.display = "none";
-        }
-
         if(id.includes('Report')) loadReports();
     }
 
@@ -647,23 +692,26 @@
         const student = document.getElementById('mediaStudentSelect').value;
         const title = document.getElementById('mediaTitleInput').value.trim();
         let url = document.getElementById('mediaUrlInput').value.trim();
+        let text = document.getElementById('timelineText').value.trim();
         
         const dObj = new Date();
         const formattedCurrentUrduDate = `${urduDays[dObj.getDay()]}، ${dObj.getDate()} ${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()}`;
 
-        if(!title || !url) return alert("براہ کرم ٹائٹل اور میڈیا لنک دونوں فراہم کریں!");
+        if(!title) return alert("براہ کرم عنوان لکھیں!");
+        if(!url && !text) return alert("لنک یا پیغام درج کریں");
 
         const btn = document.getElementById('btnTimelineSubmit');
         btn.innerText = "آن لائن پوسٹ ہو رہا ہے...";
         btn.disabled = true;
 
-        timelinePosts.unshift({ student, title, url, date: formattedCurrentUrduDate });
+        timelinePosts.unshift({ student, title, text, url: url || "", date: formattedCurrentUrduDate });
         await syncSettingsToSupabase();
 
         btn.innerText = "ٹائم لائن پر پوسٹ کریں ✨";
         btn.disabled = false;
         document.getElementById('mediaTitleInput').value = '';
         document.getElementById('mediaUrlInput').value = '';
+        document.getElementById('timelineText').value = '';
         document.getElementById('mediaStudentSelect').value = '';
 
         alert("پوسٹ کامیابی سے متفرق ٹائم لائن پر سب سے اوپر اپلوڈ کر دی گئی ہے!");
@@ -692,7 +740,7 @@
             let encodedUrl = encodeURIComponent(url);
             return `<div class="fb-video-wrapper"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=0&width=560" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe></div>`;
         } else {
-            return `<img src="${url}" alt="Media Resource">`;
+            return `<img src="${url}" class="timeline-media" loading="lazy" alt="Media Resource">`;
         }
     }
 
@@ -722,9 +770,8 @@
                         </div>
                     </div>
                     <div class="fb-post-title">${post.title}</div>
-                    <div class="fb-post-media">
-                        ${formatMediaEmbed(post.url)}
-                    </div>
+                    ${post.text ? `<div class="timeline-text-post">${post.text}</div>` : ''}
+                    ${post.url ? `<div class="fb-post-media">${formatMediaEmbed(post.url)}</div>` : ''}
                 </div>
             `;
         });
@@ -778,7 +825,7 @@
                 <td class="student-name">
                     <div class="student-name-container">
                         <span>${n}</span>
-                        <button class="three-dots-btn" onclick="openEditModal(${i})">⋮</button>
+                        <button class="three-dots-btn" onclick="openStudentMenu(${i})">⋮</button>
                     </div>
                 </td>
                 <td><div class="${s.aC}" ${clickA}>${s.aS}</div></td>
@@ -804,7 +851,8 @@
         });
 
         renderTimeline();
-        loadReports(); // یہ لائن شامل کی گئی ہے تاکہ تاریخ بدلنے پر رپورٹ اپڈیٹ ہو
+        renderFormerStudents();
+        loadReports(); 
     }
 
     function toggleVideo(i) {
@@ -878,7 +926,6 @@
         if(!dateInput) return;
         const mKey = dateInput.substring(0, 7);
         
-        // یہ لائن شامل کی گئی ہے تاکہ مہینے کا نام ظاہر ہو
         const dObj = new Date(dateInput);
         const monthStr = `${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()} کی رپورٹ`;
         document.querySelectorAll('.monthTitle').forEach(el => el.innerText = monthStr);
@@ -943,28 +990,159 @@
     }
 
     function downloadBackup() {
-        const backupData = { attendance: globalData, names, videos: videoLists, timelinePosts };
+        const backupData = { 
+            attendance: globalData, 
+            names, 
+            videos: videoLists, 
+            timelinePosts,
+            formerStudents,
+            studentJoinDates: window.studentJoinDates || {}
+        };
         const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = 'hussain_masjid_full_backup.txt'; a.click();
     }
 
     async function saveClassTime(){
-
-        classTime =
-            document.getElementById('classTimeInput').value;
-
-        document.getElementById('classTimeBox').innerHTML =
-            classTime;
-
-        await _supabase
-            .from('masjid_settings')
-            .upsert({
-                id:1,
-                class_time: classTime
-            });
-
+        classTime = document.getElementById('classTimeInput').value;
+        document.getElementById('classTimeBox').innerHTML = classTime;
+        await _supabase.from('masjid_settings').upsert({ id:1, class_time: classTime });
         alert('کلاس ٹائم محفوظ ہوگیا');
+    }
+
+    function renderFormerStudents(){
+        const container = document.getElementById('formerStudentsContainer');
+        if(!container) return;
+        
+        const countBox = document.getElementById('formerStudentsCount');
+        if (countBox) countBox.innerText = `سابقہ طلباء: ${formerStudents.length}`;
+        
+        container.innerHTML = '';
+        if(formerStudents.length===0){
+            container.innerHTML=`
+            <div style="text-align:center; font-size:20px; padding:30px; color:#666;">
+            ابھی کوئی سابقہ طالب علم موجود نہیں
+            </div>`;
+            return;
+        }
+        formerStudents.forEach((student,index)=>{
+            let restoreBtn='';
+            let deleteBtn='';
+            if(isTeacherMode){
+                restoreBtn=`<button class="restore-btn" onclick="restoreStudent(${index})">♻️ ری سٹور کریں</button>`;
+                deleteBtn=`<button class="restore-btn" style="background:#b71c1c; margin-right:10px;" onclick="deleteFormerStudent(${index})">🗑️ مکمل حذف کریں</button>`;
+            }
+            container.innerHTML += `
+            <div class="former-student-card">
+                <div class="former-student-name">👤 ${student.name}</div>
+                <div class="former-student-line">🏷️ حیثیت: سابقہ طالب علم</div>
+                <div class="former-student-line">📅 چھوڑنے کی تاریخ: ${formatUrduDate(student.formerDate)}</div>
+                <div class="former-student-line">📖 آخری حاضری: ${formatUrduDate(student.lastAttendance)}</div>
+                <div class="former-student-line">⏳ مدت تعلیم: ${student.studyPeriod || '-'}</div>
+                <button class="video-btn" onclick="showFormerPlaylist(${index})">🎥 ویڈیوز دیکھیں</button>
+                <div id="formerVideo${index}" style="margin-top:10px;"></div>
+                ${restoreBtn}
+                ${deleteBtn}
+            </div>
+            `;
+        });
+    }
+
+    async function moveToFormerStudent(index){
+        const studentName = names[index];
+        if(!confirm(`${studentName} کو سابقہ طلباء میں منتقل کرنا ہے؟`)) return;
+        
+        const today = document.getElementById('mainDate').value;
+        let lastAttendance = '-';
+        const allDates = Object.keys(globalData).sort().reverse();
+        for(const d of allDates){
+            if(globalData[d] && globalData[d][studentName] && globalData[d][studentName].aS === 'حاضر'){
+                lastAttendance = d;
+                break;
+            }
+        }
+        
+        const joinDate = window.studentJoinDates ? window.studentJoinDates[studentName] : null;
+        let studyPeriod = '-';
+        if(joinDate){
+            studyPeriod = `${formatUrduDate(joinDate)} تا ${formatUrduDate(today)}`;
+        }
+        
+        formerStudents.push({
+            name: studentName,
+            playlist: videoLists[index] || '',
+            formerDate: today,
+            lastAttendance: lastAttendance,
+            studyPeriod: studyPeriod,
+            joinDate: joinDate || ''
+        });
+        names.splice(index,1);
+        videoLists.splice(index,1);
+        await syncSettingsToSupabase();
+        populateStudentSelect();
+        renderFormerStudents();
+        updateAll();
+        alert('سابقہ طلباء میں منتقل کر دیا گیا');
+    }
+
+    async function restoreStudent(index){
+        const student = formerStudents[index];
+        names.push(student.name);
+        videoLists.push(student.playlist || '');
+        if(student.joinDate){
+            if(!window.studentJoinDates) window.studentJoinDates = {};
+            window.studentJoinDates[student.name] = student.joinDate;
+        }
+        formerStudents.splice(index,1);
+        await syncSettingsToSupabase();
+        populateStudentSelect();
+        renderFormerStudents();
+        updateAll();
+        alert('طالب علم بحال کر دیا گیا');
+    }
+
+    async function deleteFormerStudent(index){
+        if(!confirm("کیا آپ واقعی اس طالب علم کا ریکارڈ مکمل طور پر حذف کرنا چاہتے ہیں؟")) return;
+        formerStudents.splice(index, 1);
+        await syncSettingsToSupabase();
+        renderFormerStudents();
+        alert("طالب علم کا ریکارڈ مکمل حذف کر دیا گیا");
+    }
+
+    function showFormerPlaylist(index){
+        const student = formerStudents[index];
+        const container = document.getElementById(`formerVideo${index}`);
+        if(container.innerHTML !== ''){
+            container.innerHTML='';
+            return;
+        }
+        const playlist = student.playlist || 'PL3-aVTBoE-13TR-5h0Mi9_ElEtmLI53Zq';
+        container.innerHTML = `
+        <iframe width="100%" height="250" src="https://www.youtube.com/embed/videoseries?list=${playlist}" frameborder="0" allowfullscreen style="border:none; border-radius:12px;"></iframe>
+        <br>
+        <a href="intent://www.youtube.com/playlist?list=${playlist}#Intent;package=com.google.android.youtube;scheme=https;end" class="yt-playlist-link-btn">مکمل Playlist یوٹیوب پر دیکھیں</a>
+        `;
+    }
+
+    function openStudentMenu(index){
+        document.getElementById('menuStudentIndex').value = index;
+        document.getElementById('studentMenuModal').style.display = 'block';
+    }
+
+    function closeStudentMenu(){
+        document.getElementById('studentMenuModal').style.display = 'none';
+    }
+
+    function menuEditStudent(){
+        const index = document.getElementById('menuStudentIndex').value;
+        closeStudentMenu();
+        openEditModal(index);
+    }
+
+    function menuMoveFormer(){
+        const index = document.getElementById('menuStudentIndex').value;
+        closeStudentMenu();
+        moveToFormerStudent(index);
     }
 </script>
 </body>
