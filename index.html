@@ -63,6 +63,15 @@
             font-size: 16px; margin-bottom: 12px; backdrop-filter: blur(5px);
         }
 
+        /* نیا ڈائینامک نوٹس بار جو بتائے گا کہ ڈیٹا محفوظ کرنا باقی ہے */
+        #unsavedNotice {
+            display: none;
+            background-color: #ffcdd2; color: #b71c1c; border: 2px dashed #e53935;
+            padding: 8px; border-radius: 10px; text-align: center; font-weight: bold;
+            font-size: 16px; margin-bottom: 12px; animation: blinker 1.5s linear infinite;
+        }
+        @keyframes blinker { 50% { opacity: 0.7; } }
+
         .tabs { 
             display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.3);
             padding: 6px; border-radius: 14px; border: 3px solid transparent; border-image: var(--gold-gradient) 1;
@@ -370,7 +379,8 @@
 
     <div class="date-picker-container">
         <label for="mainDate" style="color: var(--primary); font-weight: bold; font-size: 16px; margin-left: 5px;">تاریخ منتخب کریں:</label>
-        <input type="date" id="mainDate" onchange="updateAll()">
+        <!-- آٹو ریفریش ختم کرنے اور نیا سمارٹ لوڈر استعمال کرنے کے لیے onchange اپڈیٹ کیا گیا ہے -->
+        <input type="date" id="mainDate" onchange="handleDateChange()">
     </div>
 
     <div id="classTimeBox" class="class-time-box"></div>
@@ -411,6 +421,10 @@
     </div>
 
     <div id="dailyAtt" class="tab-content active">
+        <!-- نئی وارننگز جو استاد کو الرٹ کریں گی -->
+        <div id="unsavedNotice">⚠️ آپ نے کچھ تبدیلیاں کی ہیں! انہیں پکا محفوظ کرنے کے لیے نیچے دیئے گئے "آن لائن ڈیٹا بھیجیں 🚀" بٹن کو دبائیں۔</div>
+        <div class="parent-notice-bar" id="loadingBar" style="display:none;">🔄 کلاؤڈ سے آپ کا پرانا ڈیٹا لایا جا رہا ہے...</div>
+        
         <div class="parent-notice-bar">📢 ریکارڈ دیکھنے کیلئے اوپر دی گئی تاریخ منتخب کریں</div>
 
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
@@ -489,7 +503,7 @@
 
     <div class="footer-tools">
         <button class="btn-tool" style="background: var(--purple-btn);" onclick="window.print()">پرنٹ نکالیں</button>
-        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="syncAllBtn" onclick="syncAllDataToCloud()">آن لائن ڈیٹا<br>بھیجیں 🚀</button>
+        <button class="btn-tool teacher-only-btn" style="background: var(--present-clr);" id="syncAllBtn" onclick="syncAllDataToCloud()">آن لائن ڈیٹا<br>بھیجیں 🚀</button>
         <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="exportBtn" onclick="downloadBackup()">بیک اپ<br>(Backup)</button>
     </div>
 
@@ -533,17 +547,18 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzIxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     
-    const defaultNames = ["آذان منصور", "آيان وليد", "امیر حمزه", "ایشال مظہر", "ایمان عمران", "ایمان فاروق", "ثانیہ مظہر", "جنت فاطمہ", "حراء زينب", "حلیمہ آصف", "سفيان وليد", "سميع نذير", "سیرت نور", "شہباز شریف", "عبد الرافع", "عبد الرحمن", "عبدالمنان", "عثمان وليد", "کاشان حیدر", "محمد صائم", "محمد طيب", "محمد عبداللّٰه", "محمد عیسی", "محمد كيف", "مريم نور", "مشال عمران", "ہبہ نور", "عبدالہادی"];
-    const defaultVideoLists = ["PL3-aVTBoE-11I0cxBCaodvTMKuGaRDHIF","PL3-aVTBoE-10reJv2GeI3amXI8gRVbJZG","PL3-aVTBoE-13GzYAGGXQapKWVhSJk-_UJ","PL3-aVTBoE-114ez2v-su_1RK46bVns8sd","PL3-aVTBoE-12AMQej2YdT7Ey6DReVHEmo","PL3-aVTBoE-13y0y9oeevgtEHBmdF6fwTZ","PL3-aVTBoE-10xUNjVEuV376hTpKW89IDK","PL3-aVTBoE-12_XMM5U2qayz-CJyS1ITnu","PL3-aVTBoE-10FIBKEJOwNmXrqhmqv89Bl","PL3-aVTBoE-11TBJfNwhzXyJnSzGSN9Yoy","PL3-aVTBoE-11d-65cVValCeAfDHo46HaK","PL3-aVTBoE-128srzSb-aTsnnGfCXsrVsS","PL3-aVTBoE-10UMKXaLeLGuZEo80AkhdZr","PL3-aVTBoE-125dCx82BBCUy5MwisDm-pK","PL3-aVTBoE-10Wxku9zRYLT5gaopVb6qAL","PL3-aVTBoE-12MaumWeMzXa8alSWc7YfuH","PL3-aVTBoE-13NbwY9qlqURI14HdArML2-","PL3-aVTBoE-12hb1v_BIIMEQdFUcon56yO","PL3-aVTBoE-11YF7GNJLjO1giiY1DptYky","PL3-aVTBoE-124T77RUbMTnjyiE4EUqEks","PL3-aVTBoE-11a9vUQhzQuuOFfi-rXTISC","PL3-aVTBoE-13-2Z1Es24KDQ7mdd2KM_E_","PL3-aVTBoE-10EZR4jt3FMY24bfoa5O6c-","PL3-aVTBoE-12ZZZPTclZ_coElxPYwuU0n","PL3-aVTBoE-11Gp8DTfV-6Sw3_GmEdmSNd","PL3-aVTBoE-13_UFJCc5j0UGBWSBTgdc-F","PL3-aVTBoE-12Xw5c0d5MoKidcAORSJVNr"];
-
-    let names = [...defaultNames];
-    let videoLists = [...defaultVideoLists];
+    let names = [];
+    let videoLists = [];
     let timelinePosts = [];
     let globalData = {}; 
     let isTeacherMode = false;
     let classTime = "";
     let formerStudents = [];
     window.studentJoinDates = {};
+
+    // نئی Variables بگز ختم کرنے کے لیے
+    let unsavedChanges = false;
+    let loadedMonths = new Set(); 
 
     const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
@@ -554,6 +569,7 @@
         return `${d.getDate()} ${urduMonths[d.getMonth()]} ${d.getFullYear()}`;
     }
 
+    // ونڈو لوڈ ہونے پر آٹو ریفریش ہٹا دیا گیا ہے
     window.onload = async function() {
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -566,11 +582,32 @@
         } else {
             teacherLogout();
         }
-        await fetchSupabaseData();
-        setInterval(fetchSupabaseData, 30000);
+        
+        // آف لائن بیک اپ کی ریکوری
+        const localBackup = localStorage.getItem('masjid_backup');
+        if(localBackup) {
+            globalData = JSON.parse(localBackup);
+        }
+
+        await fetchBasicSettings(); 
+        await fetchMonthData(`${yyyy}-${mm}`); // صرف اس مہینے کا ڈیٹا لائے گا
     };
 
-    async function fetchSupabaseData() {
+    // تاریخ بدلنے پر سمارٹ لوڈر چلے گا (1000 لمیٹ ایشو فکس)
+    async function handleDateChange() {
+        const dateInput = document.getElementById('mainDate').value;
+        if(!dateInput) return;
+        const mKey = dateInput.substring(0, 7); 
+        
+        if(!loadedMonths.has(mKey)) {
+            document.getElementById('loadingBar').style.display = 'block';
+            await fetchMonthData(mKey);
+        } else {
+            updateAll();
+        }
+    }
+
+    async function fetchBasicSettings() {
         try {
             const { data: settingsData } = await _supabase.from('masjid_settings').select('*').eq('id', 1).single();
             if (settingsData) {
@@ -584,29 +621,52 @@
                 const box = document.getElementById("classTimeBox");
                 if(box) box.innerHTML = classTime || "";
             }
-
-            const { data, error } = await _supabase.from('attendance_records').select('*');
-            if (error) throw error;
-            if (data && data.length > 0) {
-                globalData = {};
-                data.forEach(row => {
-                    if (!globalData[row.date]) globalData[row.date] = {};
-                    globalData[row.date][row.student_name] = {
-                        aS: row.attendance_status || '---',
-                        aC: row.attendance_class || 'status-btn',
-                        lS: row.lesson_status || '---',
-                        lC: row.lesson_class || 'status-btn',
-                        w: row.quran_lesson || '',
-                        wD: row.prayer_lesson || ''
-                    };
-                });
-            }
             populateStudentSelect();
             if(isTeacherMode) renderFormerStudents();
-            updateAll();
         } catch (err) {
-            console.error("Supabase Load Error:", err);
-            populateStudentSelect();
+            console.error("Settings Load Error:", err);
+        }
+    }
+
+    // نیا Pagination فنکشن تاکہ 1000 سے زیادہ ریکارڈز بھی پورے آئیں
+    async function fetchMonthData(monthPrefix) {
+        try {
+            let limit = 1000;
+            let start = 0;
+            
+            while(true) {
+                const { data, error } = await _supabase.from('attendance_records')
+                    .select('*')
+                    .like('date', `${monthPrefix}%`)
+                    .range(start, start + limit - 1);
+                
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    data.forEach(row => {
+                        if (!globalData[row.date]) globalData[row.date] = {};
+                        globalData[row.date][row.student_name] = {
+                            aS: row.attendance_status || '---',
+                            aC: row.attendance_class || 'status-btn',
+                            lS: row.lesson_status || '---',
+                            lC: row.lesson_class || 'status-btn',
+                            w: row.quran_lesson || '',
+                            wD: row.prayer_lesson || ''
+                        };
+                    });
+                }
+                if(!data || data.length < limit) break;
+                start += limit;
+            }
+            
+            loadedMonths.add(monthPrefix); 
+            document.getElementById('loadingBar').style.display = 'none';
+            updateAll();
+
+        } catch (err) {
+            console.error("Month Load Error:", err);
+            document.getElementById('loadingBar').innerText = "انٹرنیٹ کا مسئلہ! آف لائن موڈ چل رہا ہے۔";
+            setTimeout(() => { document.getElementById('loadingBar').style.display = 'none'; }, 3000);
             updateAll();
         }
     }
@@ -684,7 +744,7 @@
 
         if(ytInput) {
             if(ytInput.includes('list=')) {
-                ytList = ytInput.split('list=').pop().split('&');
+                ytList = ytInput.split('list=').pop().split('&')[0];
             } else {
                 ytList = ytInput;
             }
@@ -713,169 +773,92 @@
         updateAll();
     }
 
-    function openEditModal(index) {
+    // نیا آف لائن سیو فنکشن تاکہ کلک کرتے ہی حاضری پکی ہو جائے
+    function saveLocalRecord(name, k, v, c) {
+        const d = document.getElementById('mainDate').value;
+        
+        if(!globalData[d]) globalData[d] = {};
+        if(!globalData[d][name]) globalData[d][name] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:'', wD:''};
+        
+        if(k==='aS'){ globalData[d][name].aS=v; globalData[d][name].aC=c; }
+        else if(k==='lS'){ globalData[d][name].lS=v; globalData[d][name].lC=c; }
+        else if(k==='w'){ globalData[d][name].w=v; }
+        else if(k==='wD'){ globalData[d][name].wD=v; }
+
+        localStorage.setItem('masjid_backup', JSON.stringify(globalData));
+        unsavedChanges = true;
+        document.getElementById('unsavedNotice').style.display = 'block';
+    }
+
+    function tglA(el, name) {
         if (!isTeacherMode) return;
-        document.getElementById('editStudentIndex').value = index;
-        document.getElementById('editStudentNameInput').value = names[index];
-        document.getElementById('editStudentYTInput').value = videoLists[index] || "";
-        document.getElementById('editStudentModal').style.display = "flex";
+        let s, c;
+        if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
+        else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
+        else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
+        else {s="---"; c="status-btn";}
+        el.innerText=s; el.className=c; 
+        saveLocalRecord(name, 'aS', s, c);
     }
 
-    function closeEditModal() {
-        document.getElementById('editStudentModal').style.display = "none";
+    function tglL(el, name) {
+        if (!isTeacherMode) return;
+        let s, c;
+        if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
+        else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
+        else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
+        else {s="---"; c="status-btn";}
+        el.innerText=s; el.className=c; 
+        saveLocalRecord(name, 'lS', s, c);
     }
 
-    async function saveStudentEdits() {
-        const idx = document.getElementById('editStudentIndex').value;
-        const oldName = names[idx];
-        const newName = document.getElementById('editStudentNameInput').value.trim();
-        const newYT = document.getElementById('editStudentYTInput').value.trim();
+    function saveW(name, v) { saveLocalRecord(name, 'w', v); }
+    function saveWD(name, v) { saveLocalRecord(name, 'wD', v); }
 
-        if(!newName) return alert("طالب علم کا نام خالی نہیں ہو سکتا!");
-
-        const btn = document.getElementById('btnEditStudentSubmit');
-        btn.innerText = "آن لائن اپڈیٹ ہو رہا ہے...";
+    // نیا ایک کلک بلک اپلوڈ (سارا ڈیٹا ایک ساتھ کلاؤڈ پر جائے گا)
+    async function syncAllDataToCloud() {
+        if (!isTeacherMode) return;
+        const btn = document.getElementById('syncAllBtn');
+        btn.innerHTML = "آن لائن بھیجا جا رہا ہے... ⏳"; 
         btn.disabled = true;
 
-        if(oldName !== newName) {
-            if (names.includes(newName)) {
-                btn.innerText = "محفوظ کریں";
-                btn.disabled = false;
-                return alert("یہ نام پہلے سے موجود ہے!");
-            }
-            for (let date in globalData) {
-                if (globalData[date][oldName]) {
-                    globalData[date][newName] = globalData[date][oldName];
-                    delete globalData[date][oldName];
-                    await _supabase.from('attendance_records').delete().eq('date', date).eq('student_name', oldName);
-                    await saveAndSyncRecord(newName, null, null, null, date);
+        try {
+            const recordsToUpload = [];
+            for (let d in globalData) {
+                for (let name in globalData[d]) {
+                    const r = globalData[d][name];
+                    recordsToUpload.push({
+                        date: d,
+                        student_name: name,
+                        attendance_status: r.aS,
+                        attendance_class: r.aC,
+                        lesson_status: r.lS,
+                        lesson_class: r.lC,
+                        quran_lesson: r.w,
+                        prayer_lesson: r.wD
+                    });
                 }
             }
-            names[idx] = newName;
             
-            if(window.studentJoinDates && window.studentJoinDates[oldName]) {
-                window.studentJoinDates[newName] = window.studentJoinDates[oldName];
-                delete window.studentJoinDates[oldName];
+            if (recordsToUpload.length > 0) {
+                const { error } = await _supabase.from('attendance_records').upsert(recordsToUpload, { onConflict: 'date,student_name' });
+                if (error) throw error;
             }
+            
+            await syncSettingsToSupabase();
+            
+            unsavedChanges = false;
+            document.getElementById('unsavedNotice').style.display = 'none';
+            localStorage.removeItem('masjid_backup'); 
+            
+            alert("ڈیٹا کامیابی سے انٹرنیٹ پر محفوظ ہو گیا ہے! 🚀");
+        } catch (e) {
+            console.error(e);
+            alert("انٹرنیٹ کا مسئلہ! ڈیٹا آن لائن نہیں گیا: " + (e.message || "Unknown error"));
+        } finally {
+            btn.innerHTML = "آن لائن ڈیٹا<br>بھیجیں 🚀"; 
+            btn.disabled = false;
         }
-
-        if(newYT) {
-            if(newYT.includes('list=')) {
-                videoLists[idx] = newYT.split('list=').pop().split('&');
-            } else {
-                videoLists[idx] = newYT;
-            }
-        } else {
-            videoLists[idx] = "";
-        }
-
-        await syncSettingsToSupabase();
-        
-        btn.innerText = "محفوظ کریں";
-        btn.disabled = false;
-        closeEditModal();
-        populateStudentSelect();
-        renderFormerStudents();
-        updateAll();
-        alert("طالب علم کا ڈیٹا کامیابی سے آن لائن اپڈیٹ کر دیا گیا ہے!");
-    }
-
-    function openTab(id, e) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        e.currentTarget.classList.add('active');
-        
-        if(id.includes('Report')) loadReports();
-    }
-
-    async function addTimelinePost() {
-        const student = document.getElementById('mediaStudentSelect').value;
-        const title = document.getElementById('mediaTitleInput').value.trim();
-        let url = document.getElementById('mediaUrlInput').value.trim();
-        let text = document.getElementById('timelineText').value.trim();
-        
-        const dObj = new Date();
-        const formattedCurrentUrduDate = `${urduDays[dObj.getDay()]}، ${dObj.getDate()} ${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()}`;
-
-        if(!title) return alert("براہ کرم عنوان لکھیں!");
-        if(!url && !text) return alert("لنک یا پیغام درج کریں");
-
-        const btn = document.getElementById('btnTimelineSubmit');
-        btn.innerText = "آن لائن پوسٹ ہو رہا ہے...";
-        btn.disabled = true;
-
-        timelinePosts.unshift({ student, title, text, url: url || "", date: formattedCurrentUrduDate });
-        await syncSettingsToSupabase();
-
-        btn.innerText = "ٹائم لائن پر پوسٹ کریں ✨";
-        btn.disabled = false;
-        document.getElementById('mediaTitleInput').value = '';
-        document.getElementById('mediaUrlInput').value = '';
-        document.getElementById('timelineText').value = '';
-        document.getElementById('mediaStudentSelect').value = '';
-
-        alert("پوسٹ کامیابی سے متفرق ٹائم لائن پر سب سے اوپر اپلوڈ کر دی گئی ہے!");
-        renderTimeline();
-    }
-
-    async function deleteTimelinePost(idx) {
-        if(!confirm("کیا آپ واقعی یہ پوسٹ وال سے حذف کرنا چاہتے ہیں؟")) return;
-        timelinePosts.splice(idx, 1);
-        await syncSettingsToSupabase();
-        renderTimeline();
-    }
-
-    function formatMediaEmbed(url) {
-        let isFb = url.includes('facebook.com') || url.includes('fb.watch');
-
-        if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
-            let videoId = '';
-            if (url.includes('v=')) videoId = url.split('v=').pop().split('&');
-            else videoId = url.split('/').pop();
-            return `<div class="fb-video-wrapper"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
-        } else if (url.includes('drive.google.com')) {
-            let embedUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview').replace('?usp=drivesdk', '');
-            return `<div class="fb-video-wrapper"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
-        } else if (isFb) {
-            let encodedUrl = encodeURIComponent(url);
-            return `<div class="fb-video-wrapper"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=0&width=560" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe></div>`;
-        } else {
-            return `<img src="${url}" class="timeline-media" loading="lazy" alt="Media Resource">`;
-        }
-    }
-
-    function renderTimeline() {
-        const feed = document.getElementById('fbFeedTimeline');
-        feed.innerHTML = '';
-
-        if(!timelinePosts || timelinePosts.length === 0) {
-            feed.innerHTML = `<p style="text-align:center; color:#333; font-size:18px; padding:30px; font-weight:bold;">ٹائم لائن ابھی خالی ہے۔ استاد موڈ میں لاگ ان ہو کر نئی ویڈیوز یا تصاویر یہاں اپلوڈ کریں۔</p>`;
-            return;
-        }
-
-        timelinePosts.forEach((post, idx) => {
-            const deleteBtnHtml = isTeacherMode ? `<button class="fb-del-btn" onclick="deleteTimelinePost(${idx})">حذف کریں</button>` : '';
-            const tagStudentHtml = post.student ? `<span style="background:rgba(26, 35, 126, 0.15); color:#1a237e; padding:2px 8px; border-radius:4px; font-size:14px; margin-right:8px; font-weight:bold;">👤 ${post.student}</span>` : '';
-
-            feed.innerHTML += `
-                <div class="fb-post-card">
-                    <div class="fb-post-header">
-                        <div>
-                            <span class="fb-post-user">امام حسین مسجد میڈیا گیلری</span>
-                            ${tagStudentHtml}
-                        </div>
-                        <div>
-                            <span class="fb-post-date">${post.date}</span>
-                            ${deleteBtnHtml}
-                        </div>
-                    </div>
-                    <div class="fb-post-title">${post.title}</div>
-                    ${post.text ? `<div class="timeline-text-post">${post.text}</div>` : ''}
-                    ${post.url ? `<div class="fb-post-media">${formatMediaEmbed(post.url)}</div>` : ''}
-                </div>
-            `;
-        });
     }
 
     function getLatestLesson(targetDate, name, type) {
@@ -970,59 +953,6 @@
         }
     }
 
-    function tglA(el, name) {
-        if (!isTeacherMode) {
-            return;
-        }
-        let s, c;
-        if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
-        else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
-        else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
-        else {s="---"; c="status-btn";}
-        el.innerText=s; el.className=c; saveAndSyncRecord(name,'aS',s,c);
-    }
-
-    function tglL(el, name) {
-        if (!isTeacherMode) {
-            return;
-        }
-        let s, c;
-        if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
-        else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
-        else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
-        else {s="---"; c="status-btn";}
-        el.innerText=s; el.className=c; saveAndSyncRecord(name,'lS',s,c);
-    }
-
-    function saveW(name, v) { saveAndSyncRecord(name, 'w', v); }
-    function saveWD(name, v) { saveAndSyncRecord(name, 'wD', v); }
-
-    async function saveAndSyncRecord(name, k, v, c, forceDate = null) {
-        const d = forceDate || document.getElementById('mainDate').value;
-        
-        if(!globalData[d]) globalData[d] = {};
-        if(!globalData[d][name]) globalData[d][name] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:'', wD:''};
-        
-        if(k==='aS'){ globalData[d][name].aS=v; globalData[d][name].aC=c; }
-        else if(k==='lS'){ globalData[d][name].lS=v; globalData[d][name].lC=c; }
-        else if(k==='w'){ globalData[d][name].w=v; }
-        else if(k==='wD'){ globalData[d][name].wD=v; }
-
-        const r = globalData[d][name];
-        const payload = {
-            date: d,
-            student_name: name,
-            attendance_status: r.aS,
-            attendance_class: r.aC,
-            lesson_status: r.lS,
-            lesson_class: r.lC,
-            quran_lesson: r.w,
-            prayer_lesson: r.wD
-        };
-
-        await _supabase.from('attendance_records').upsert(payload, { onConflict: 'date,student_name' });
-    }
-
     function loadReports() {
         const dateInput = document.getElementById('mainDate').value;
         if(!dateInput) return;
@@ -1049,169 +979,191 @@
         });
     }
 
-    async function syncAllDataToCloud() {
-        if (!isTeacherMode) return;
-        const btn = document.getElementById('syncAllBtn');
-        btn.innerHTML = "بھیجا جا رہا ہے... ⏳"; 
+    function openTab(id, e) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        e.currentTarget.classList.add('active');
+        
+        if(id.includes('Report')) loadReports();
+    }
+
+    async function addTimelinePost() {
+        const student = document.getElementById('mediaStudentSelect').value;
+        const title = document.getElementById('mediaTitleInput').value.trim();
+        let url = document.getElementById('mediaUrlInput').value.trim();
+        let text = document.getElementById('timelineText').value.trim();
+        
+        const dObj = new Date();
+        const formattedCurrentUrduDate = `${urduDays[dObj.getDay()]}، ${dObj.getDate()} ${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()}`;
+
+        if(!title) return alert("براہ کرم عنوان لکھیں!");
+        if(!url && !text) return alert("لنک یا پیغام درج کریں");
+
+        const btn = document.getElementById('btnTimelineSubmit');
+        btn.innerText = "آن لائن پوسٹ ہو رہا ہے...";
         btn.disabled = true;
 
-        try {
-            const d = document.getElementById('mainDate').value;
-            if (globalData[d]) {
-                const recordsToUpload = [];
-                for (let name in globalData[d]) {
-                    const r = globalData[d][name];
-                    recordsToUpload.push({
-                        date: d,
-                        student_name: name,
-                        attendance_status: r.aS,
-                        attendance_class: r.aC,
-                        lesson_status: r.lS,
-                        lesson_class: r.lC,
-                        quran_lesson: r.w,
-                        prayer_lesson: r.wD
-                    });
-                }
-                if (recordsToUpload.length > 0) {
-                    const { error } = await _supabase.from('attendance_records').upsert(recordsToUpload, { onConflict: 'date,student_name' });
-                    if (error) throw error;
-                }
-            }
-            
-            await syncSettingsToSupabase();
-            await fetchSupabaseData();
-            
-            alert("ڈیٹا کامیابی سے آن لائن اپڈیٹ ہو گیا ہے! 🚀");
-        } catch (e) {
-            console.error(e);
-            alert("ڈیٹا بھیجنے میں مسئلہ آیا: " + (e.message || "Unknown error"));
-        } finally {
-            btn.innerHTML = "آن لائن ڈیٹا<br>بھیجیں 🚀"; 
-            btn.disabled = false;
+        timelinePosts.unshift({ student, title, text, url: url || "", date: formattedCurrentUrduDate });
+        await syncSettingsToSupabase();
+
+        btn.innerText = "ٹائم لائن پر پوسٹ کریں ✨";
+        btn.disabled = false;
+        document.getElementById('mediaTitleInput').value = '';
+        document.getElementById('mediaUrlInput').value = '';
+        document.getElementById('timelineText').value = '';
+        document.getElementById('mediaStudentSelect').value = '';
+
+        alert("پوسٹ کامیابی سے متفرق ٹائم لائن پر سب سے اوپر اپلوڈ کر دی گئی ہے!");
+        renderTimeline();
+    }
+
+    async function deleteTimelinePost(idx) {
+        if(!confirm("کیا آپ واقعی یہ پوسٹ وال سے حذف کرنا چاہتے ہیں؟")) return;
+        timelinePosts.splice(idx, 1);
+        await syncSettingsToSupabase();
+        renderTimeline();
+    }
+
+    function formatMediaEmbed(url) {
+        let isFb = url.includes('facebook.com') || url.includes('fb.watch');
+
+        if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
+            let videoId = '';
+            if (url.includes('v=')) videoId = url.split('v=').pop().split('&')[0];
+            else videoId = url.split('/').pop();
+            return `<div class="fb-video-wrapper"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
+        } else if (url.includes('drive.google.com')) {
+            let embedUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview').replace('?usp=drivesdk', '');
+            return `<div class="fb-video-wrapper"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+        } else if (isFb) {
+            let encodedUrl = encodeURIComponent(url);
+            return `<div class="fb-video-wrapper"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=0&width=560" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe></div>`;
+        } else {
+            return `<img src="${url}" class="timeline-media" loading="lazy" alt="Media Resource">`;
         }
     }
 
-function closeLessonHistory(){
-    document.getElementById("lessonHistoryModal").style.display="none";
-}
+    function renderTimeline() {
+        const feed = document.getElementById('fbFeedTimeline');
+        feed.innerHTML = '';
 
-function showLessonHistory(studentName){
-
-    let html="";
-
-    document.getElementById("lessonHistoryTitle").innerHTML=
-    "📖 " + studentName + " کا سبق ریکارڈ";
-
-    let dates = Object.keys(globalData).sort().reverse();
-
-    dates.forEach(function(date){
-
-        if(
-            globalData[date] &&
-            globalData[date][studentName]
-        ){
-
-            const rec = globalData[date][studentName];
-
-            const quran = (rec.w || "").trim();
-            const prayer = (rec.wD || "").trim();
-
-            // اگر اس تاریخ میں سبق تبدیل نہیں ہوا تو نہ دکھائیں
-            if(quran.length === 0 && prayer.length === 0){
-                return;
-            }
-
-            html += `
-            <div class="history-item">
-
-                <div class="history-date">
-                    📅 ${formatUrduDate(date)}
-                </div>
-
-                <div style="margin-bottom:10px;">
-                    <b>📖 قرآن</b><br>
-                    ${quran || "-"}
-                </div>
-
-                <div>
-                    <b>🕌 نماز / دعا</b><br>
-                    ${prayer || "-"}
-                </div>
-
-            </div>`;
-        }
-
-    });
-
-    if(html===""){
-        html=`
-        <div style="text-align:center;padding:30px;font-size:20px;">
-            ابھی اس طالب علم کا سبق ریکارڈ موجود نہیں۔
-        </div>`;
-    }
-
-    document.getElementById("lessonHistoryBody").innerHTML = html;
-
-    document.getElementById("lessonHistoryModal").style.display = "block";
-}
-
-    function downloadBackup() {
-        const backupData = { 
-            attendance: globalData, 
-            names, 
-            videos: videoLists, 
-            timelinePosts,
-            formerStudents,
-            studentJoinDates: window.studentJoinDates || {}
-        };
-        const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = 'hussain_masjid_full_backup.txt'; a.click();
-    }
-
-    async function saveClassTime(){
-        classTime = document.getElementById('classTimeInput').value;
-        document.getElementById('classTimeBox').innerHTML = classTime;
-        await _supabase.from('masjid_settings').upsert({ id:1, class_time: classTime });
-        alert('کلاس ٹائم محفوظ ہوگیا');
-    }
-
-    function renderFormerStudents(){
-        const container = document.getElementById('formerStudentsContainer');
-        if(!container) return;
-        
-        const countBox = document.getElementById('formerStudentsCount');
-        if (countBox) countBox.innerText = `سابقہ طلباء: ${formerStudents.length}`;
-        
-        container.innerHTML = '';
-        if(formerStudents.length===0){
-            container.innerHTML=`
-            <div style="text-align:center; font-size:20px; padding:30px; color:#666;">
-            ابھی کوئی سابقہ طالب علم موجود نہیں
-            </div>`;
+        if(!timelinePosts || timelinePosts.length === 0) {
+            feed.innerHTML = `<p style="text-align:center; color:#333; font-size:18px; padding:30px; font-weight:bold;">ٹائم لائن ابھی خالی ہے۔ استاد موڈ میں لاگ ان ہو کر نئی ویڈیوز یا تصاویر یہاں اپلوڈ کریں۔</p>`;
             return;
         }
-        formerStudents.forEach((student,index)=>{
-            let restoreBtn='';
-            let deleteBtn='';
-            if(isTeacherMode){
-                restoreBtn=`<button class="restore-btn" onclick="restoreStudent(${index})">♻️ ری سٹور کریں</button>`;
-                deleteBtn=`<button class="restore-btn" style="background:#b71c1c; margin-right:10px;" onclick="deleteFormerStudent(${index})">🗑️ مکمل حذف کریں</button>`;
-            }
-            container.innerHTML += `
-            <div class="former-student-card">
-                <div class="former-student-name">👤 ${student.name}</div>
-                <div class="former-student-line">🏷️ حیثیت: سابقہ طالب علم</div>
-                <div class="former-student-line">📅 چھوڑنے کی تاریخ: ${formatUrduDate(student.formerDate)}</div>
-                <div class="former-student-line">📖 آخری حاضری: ${formatUrduDate(student.lastAttendance)}</div>
-                <div class="former-student-line">⏳ مدت تعلیم: ${student.studyPeriod || '-'}</div>
-                <button class="video-btn" onclick="showFormerPlaylist(${index})">🎥 ویڈیوز دیکھیں</button>
-                <div id="formerVideo${index}" style="margin-top:10px;"></div>
-                ${restoreBtn}
-                ${deleteBtn}
-            </div>
+
+        timelinePosts.forEach((post, idx) => {
+            const deleteBtnHtml = isTeacherMode ? `<button class="fb-del-btn" onclick="deleteTimelinePost(${idx})">حذف کریں</button>` : '';
+            const tagStudentHtml = post.student ? `<span style="background:rgba(26, 35, 126, 0.15); color:#1a237e; padding:2px 8px; border-radius:4px; font-size:14px; margin-right:8px; font-weight:bold;">👤 ${post.student}</span>` : '';
+
+            feed.innerHTML += `
+                <div class="fb-post-card">
+                    <div class="fb-post-header">
+                        <div>
+                            <span class="fb-post-user">امام حسین مسجد میڈیا گیلری</span>
+                            ${tagStudentHtml}
+                        </div>
+                        <div>
+                            <span class="fb-post-date">${post.date}</span>
+                            ${deleteBtnHtml}
+                        </div>
+                    </div>
+                    <div class="fb-post-title">${post.title}</div>
+                    ${post.text ? `<div class="timeline-text-post">${post.text}</div>` : ''}
+                    ${post.url ? `<div class="fb-post-media">${formatMediaEmbed(post.url)}</div>` : ''}
+                </div>
             `;
         });
+    }
+
+    function openEditModal(index) {
+        if (!isTeacherMode) return;
+        document.getElementById('editStudentIndex').value = index;
+        document.getElementById('editStudentNameInput').value = names[index];
+        document.getElementById('editStudentYTInput').value = videoLists[index] || "";
+        document.getElementById('editStudentModal').style.display = "flex";
+    }
+
+    function closeEditModal() {
+        document.getElementById('editStudentModal').style.display = "none";
+    }
+
+    async function saveStudentEdits() {
+        const idx = document.getElementById('editStudentIndex').value;
+        const oldName = names[idx];
+        const newName = document.getElementById('editStudentNameInput').value.trim();
+        const newYT = document.getElementById('editStudentYTInput').value.trim();
+
+        if(!newName) return alert("طالب علم کا نام خالی نہیں ہو سکتا!");
+
+        const btn = document.getElementById('btnEditStudentSubmit');
+        btn.innerText = "آن لائن اپڈیٹ ہو رہا ہے...";
+        btn.disabled = true;
+
+        if(oldName !== newName) {
+            if (names.includes(newName)) {
+                btn.innerText = "محفوظ کریں";
+                btn.disabled = false;
+                return alert("یہ نام پہلے سے موجود ہے!");
+            }
+            for (let date in globalData) {
+                if (globalData[date][oldName]) {
+                    globalData[date][newName] = globalData[date][oldName];
+                    delete globalData[date][oldName];
+                    await _supabase.from('attendance_records').delete().eq('date', date).eq('student_name', oldName);
+                }
+            }
+            names[idx] = newName;
+            unsavedChanges = true; 
+            
+            if(window.studentJoinDates && window.studentJoinDates[oldName]) {
+                window.studentJoinDates[newName] = window.studentJoinDates[oldName];
+                delete window.studentJoinDates[oldName];
+            }
+        }
+
+        if(newYT) {
+            if(newYT.includes('list=')) {
+                videoLists[idx] = newYT.split('list=').pop().split('&')[0];
+            } else {
+                videoLists[idx] = newYT;
+            }
+        } else {
+            videoLists[idx] = "";
+        }
+
+        await syncSettingsToSupabase();
+        
+        btn.innerText = "محفوظ کریں";
+        btn.disabled = false;
+        closeEditModal();
+        populateStudentSelect();
+        renderFormerStudents();
+        updateAll();
+        document.getElementById('unsavedNotice').style.display = 'block'; 
+        alert("ڈیٹا اپڈیٹ ہو گیا ہے۔ براہ کرم 'آن لائن ڈیٹا بھیجیں' پر کلک کریں تاکہ سب پکا ہو جائے!");
+    }
+
+    function openStudentMenu(index){
+        document.getElementById('menuStudentIndex').value = index;
+        document.getElementById('studentMenuModal').style.display = 'block';
+    }
+
+    function closeStudentMenu(){
+        document.getElementById('studentMenuModal').style.display = 'none';
+    }
+
+    function menuEditStudent(){
+        const index = document.getElementById('menuStudentIndex').value;
+        closeStudentMenu();
+        openEditModal(index);
+    }
+
+    function menuMoveFormer(){
+        const index = document.getElementById('menuStudentIndex').value;
+        closeStudentMenu();
+        moveToFormerStudent(index);
     }
 
     async function moveToFormerStudent(index){
@@ -1275,6 +1227,44 @@ function showLessonHistory(studentName){
         alert("طالب علم کا ریکارڈ مکمل حذف کر دیا گیا");
     }
 
+    function renderFormerStudents(){
+        const container = document.getElementById('formerStudentsContainer');
+        if(!container) return;
+        
+        const countBox = document.getElementById('formerStudentsCount');
+        if (countBox) countBox.innerText = `سابقہ طلباء: ${formerStudents.length}`;
+        
+        container.innerHTML = '';
+        if(formerStudents.length===0){
+            container.innerHTML=`
+            <div style="text-align:center; font-size:20px; padding:30px; color:#666;">
+            ابھی کوئی سابقہ طالب علم موجود نہیں
+            </div>`;
+            return;
+        }
+        formerStudents.forEach((student,index)=>{
+            let restoreBtn='';
+            let deleteBtn='';
+            if(isTeacherMode){
+                restoreBtn=`<button class="restore-btn" onclick="restoreStudent(${index})">♻️ ری سٹور کریں</button>`;
+                deleteBtn=`<button class="restore-btn" style="background:#b71c1c; margin-right:10px;" onclick="deleteFormerStudent(${index})">🗑️ مکمل حذف کریں</button>`;
+            }
+            container.innerHTML += `
+            <div class="former-student-card">
+                <div class="former-student-name">👤 ${student.name}</div>
+                <div class="former-student-line">🏷️ حیثیت: سابقہ طالب علم</div>
+                <div class="former-student-line">📅 چھوڑنے کی تاریخ: ${formatUrduDate(student.formerDate)}</div>
+                <div class="former-student-line">📖 آخری حاضری: ${formatUrduDate(student.lastAttendance)}</div>
+                <div class="former-student-line">⏳ مدت تعلیم: ${student.studyPeriod || '-'}</div>
+                <button class="video-btn" onclick="showFormerPlaylist(${index})">🎥 ویڈیوز دیکھیں</button>
+                <div id="formerVideo${index}" style="margin-top:10px;"></div>
+                ${restoreBtn}
+                ${deleteBtn}
+            </div>
+            `;
+        });
+    }
+
     function showFormerPlaylist(index){
         const student = formerStudents[index];
         const container = document.getElementById(`formerVideo${index}`);
@@ -1288,27 +1278,6 @@ function showLessonHistory(studentName){
         <br>
         <a href="intent://www.youtube.com/playlist?list=${playlist}#Intent;package=com.google.android.youtube;scheme=https;end" class="yt-playlist-link-btn">مکمل Playlist یوٹیوب پر دیکھیں</a>
         `;
-    }
-
-    function openStudentMenu(index){
-        document.getElementById('menuStudentIndex').value = index;
-        document.getElementById('studentMenuModal').style.display = 'block';
-    }
-
-    function closeStudentMenu(){
-        document.getElementById('studentMenuModal').style.display = 'none';
-    }
-
-    function menuEditStudent(){
-        const index = document.getElementById('menuStudentIndex').value;
-        closeStudentMenu();
-        openEditModal(index);
-    }
-
-    function menuMoveFormer(){
-        const index = document.getElementById('menuStudentIndex').value;
-        closeStudentMenu();
-        moveToFormerStudent(index);
     }
 
     function searchLessonStudent(e){
@@ -1336,7 +1305,72 @@ function showLessonHistory(studentName){
             cards.forEach(c=>c.classList.remove("lesson-highlight"));
         }
     }
+
+    async function saveClassTime(){
+        classTime = document.getElementById('classTimeInput').value;
+        document.getElementById('classTimeBox').innerHTML = classTime;
+        await _supabase.from('masjid_settings').upsert({ id:1, class_time: classTime });
+        alert('کلاس ٹائم محفوظ ہوگیا');
+    }
+
+    function showLessonHistory(studentName){
+        let html="";
+        document.getElementById("lessonHistoryTitle").innerHTML= "📖 " + studentName + " کا سبق ریکارڈ";
+        let dates = Object.keys(globalData).sort().reverse();
+        
+        dates.forEach(function(date){
+            if(globalData[date] && globalData[date][studentName]){
+                const rec = globalData[date][studentName];
+                const quran = (rec.w || "").trim();
+                const prayer = (rec.wD || "").trim();
+
+                if(quran.length === 0 && prayer.length === 0) return;
+
+                html += `
+                <div class="history-item">
+                    <div class="history-date">📅 ${formatUrduDate(date)}</div>
+                    <div style="margin-bottom:10px;"><b>📖 قرآن</b><br>${quran || "-"}</div>
+                    <div><b>🕌 نماز / دعا</b><br>${prayer || "-"}</div>
+                </div>`;
+            }
+        });
+
+        if(html===""){
+            html=`<div style="text-align:center;padding:30px;font-size:20px;">ابھی اس طالب علم کا سبق ریکارڈ موجود نہیں۔</div>`;
+        }
+
+        document.getElementById("lessonHistoryBody").innerHTML = html;
+        document.getElementById("lessonHistoryModal").style.display = "block";
+    }
+
+    function closeLessonHistory(){
+        document.getElementById("lessonHistoryModal").style.display="none";
+    }
+
+    function downloadBackup() {
+        const backupData = { 
+            attendance: globalData, 
+            names, 
+            videos: videoLists, 
+            timelinePosts,
+            formerStudents,
+            studentJoinDates: window.studentJoinDates || {}
+        };
+        const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'hussain_masjid_full_backup.txt'; a.click();
+    }
+    
+    // اگر کام سیو کیے بغیر صفحہ بند کرنے لگیں تو الرٹ آئے گا
+    window.addEventListener('beforeunload', function (e) {
+        if (unsavedChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
 </script>
+
 <!-- سبق ہسٹری -->
 <div id="lessonHistoryModal" class="history-modal">
     <div class="history-box">
