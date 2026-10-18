@@ -191,8 +191,6 @@
         .login-portal h3 { margin-top: 0; color: var(--primary); font-size: 20px; }
         .login-input { padding: 8px; margin: 5px; border: 1px solid var(--primary); border-radius: 5px; font-size: 16px; width: 80%; max-width: 200px; text-align: center; background: white; }
         .login-submit { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        
-        .forgot-pass-link { display: inline-block; margin-top: 12px; color: var(--primary); font-weight: bold; font-size: 15px; text-decoration: underline; cursor: pointer; }
 
 /* ===== سبق ہسٹری ===== */
 .history-btn{ width:100%; margin-top:8px; padding:10px; border:none; border-radius:10px; background:#00695c; color:#fff; font-size:16px; font-weight:bold; cursor:pointer; }
@@ -329,11 +327,9 @@
     <div class="login-portal" id="loginPortalSection">
         <h3 id="portalTitle">🔐 استاد پورٹل لاگ ان</h3>
         <div id="loginFormInputs">
-            <input type="text" id="uName" class="login-input" placeholder="ای میل ایڈریس درج کریں">
+            <input type="text" id="uName" class="login-input" placeholder="یوزر نیم درج کریں">
             <input type="password" id="pWord" class="login-input" placeholder="پاس ورڈ درج کریں">
             <button class="login-submit" onclick="checkTeacherLogin()">لاگ ان</button>
-            <br>
-            <a class="forgot-pass-link" onclick="resetPassword()">پاسورڈ بھول گئے؟ یہاں کلک کریں</a>
         </div>
         <button class="login-submit" id="logoutBtn" style="display:none; background:#b71c1c;" onclick="teacherLogout()">لاگ آؤٹ</button>
     </div>
@@ -388,18 +384,6 @@
         const d = new Date(dateString);
         return `${d.getDate()} ${urduMonths[d.getMonth()]} ${d.getFullYear()}`;
     }
-
-    // ای میل کے لنک سے واپس آنے پر نیا پاسورڈ سیٹ کرنے والا فنکشن
-    _supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'PASSWORD_RECOVERY') {
-            const newPassword = prompt("پاسورڈ ری سیٹ کا عمل شروع ہو گیا ہے۔ براہ کرم اپنا نیا پاسورڈ درج کریں:");
-            if (!newPassword) return;
-            
-            const { data, error } = await _supabase.auth.updateUser({ password: newPassword });
-            if (data) alert("زبردست! آپ کا پاسورڈ کامیابی سے تبدیل ہو گیا ہے۔ اب آپ نئے پاسورڈ سے لاگ ان کر سکتے ہیں۔");
-            if (error) alert("پاسورڈ اپڈیٹ کرنے میں مسئلہ آیا: " + error.message);
-        }
-    });
 
     window.onload = async function() {
         const today = new Date();
@@ -492,40 +476,26 @@
         names.forEach((n) => { select.innerHTML += `<option value="${n}">${n}</option>`; });
     }
 
-    async function checkTeacherLogin() {
+    function checkTeacherLogin() {
         const u = document.getElementById('uName').value.trim();
         const p = document.getElementById('pWord').value.trim();
         
-        if(!u || !p) return alert("ای میل اور پاسورڈ درج کریں!");
+        if(!u || !p) return alert("یوزر نیم اور پاسورڈ درج کریں!");
 
         const btn = document.querySelector('.login-submit');
         btn.innerText = "لاگ ان ہو رہا ہے... ⏳"; btn.disabled = true;
 
-        try {
-            const { data, error } = await _supabase.auth.signInWithPassword({ email: u, password: p });
-            if (error) throw error;
-            sessionStorage.setItem('isTeacherLoggedIn', 'true');
-            activateTeacherMode();
-            alert("لاگ ان کامیاب!");
-            document.getElementById('uName').value = ""; document.getElementById('pWord').value = "";
-        } catch (err) {
-            console.error("Login Error:", err); alert("غلط ای میل یا پاسورڈ!");
-        } finally {
+        setTimeout(() => {
+            if (u === "nasirali258" && p === "merayQuaid1#") {
+                sessionStorage.setItem('isTeacherLoggedIn', 'true');
+                activateTeacherMode();
+                alert("لاگ ان کامیاب!");
+                document.getElementById('uName').value = ""; document.getElementById('pWord').value = "";
+            } else {
+                alert("غلط یوزر نیم یا پاسورڈ!");
+            }
             btn.innerText = "لاگ ان"; btn.disabled = false;
-        }
-    }
-
-    async function resetPassword() {
-        const email = prompt("اپنا وہ ای میل درج کریں جس سے آپ نے رجسٹر بنایا تھا:");
-        if (!email) return;
-
-        const { data, error } = await _supabase.auth.resetPasswordForEmail(email);
-        
-        if (error) {
-            alert("ایرر آیا ہے: " + error.message);
-        } else {
-            alert("پاسورڈ ری سیٹ کا لنک آپ کے ای میل پر بھیج دیا گیا ہے۔ اپنا ان باکس یا Spam فولڈر چیک کریں!");
-        }
+        }, 500);
     }
 
     function activateTeacherMode() {
