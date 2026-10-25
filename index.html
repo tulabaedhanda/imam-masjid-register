@@ -308,7 +308,7 @@
             <strong style="color:var(--primary); font-size:18px;">📝 میڈیا ٹائم لائن پوسٹ تخلیق کریں:</strong>
             <select id="mediaStudentSelect"><option value="">طالب علم کا انتخاب کریں (آپشنل)</option></select>
             <input type="text" id="mediaTitleInput" placeholder="پوسٹ کا عنوان یا ٹائٹل لکھیں...">
-            <input type="text" id="mediaUrlInput" placeholder="یوٹیوب، ڈرائیو یا فیس بک کا لنک پیسٹ کریں...">
+            <input type="text" id="mediaUrlInput" placeholder="یوٹیوب، ڈرائیو یا فیس ফেসব کا لنک پیسٹ کریں...">
             <textarea id="timelineText" class="mgmt-input" style="width:100%; max-width:100%; margin:6px 0; padding:10px; border-radius:8px; box-sizing:border-box;" placeholder="صرف پیغام بھی لکھ سکتے ہیں..." rows="4"></textarea>
             <button class="btn-mgmt" style="background:var(--primary); width:100%; margin-top:5px; padding:10px;" id="btnTimelineSubmit" onclick="addTimelinePost()">ٹائم لائن پر پوسٹ کریں ✨</button>
         </div>
@@ -360,6 +360,15 @@
         <button class="btn-mgmt" style="background:var(--primary); width:100%; margin-bottom:10px;" onclick="menuEditStudent()">✏️ ترمیم کریں</button>
         <button class="btn-mgmt" style="background:#ef6c00; width:100%; margin-bottom:10px;" onclick="menuMoveFormer()">📦 سابقہ میں منتقل کریں</button>
         <button class="btn-mgmt" style="background:#b71c1c; width:100%;" onclick="closeStudentMenu()">بند کریں</button>
+    </div>
+</div>
+
+<!-- سبق ہسٹری کا موڈل -->
+<div id="lessonHistoryModal" class="history-modal">
+    <div class="history-box">
+        <div id="lessonHistoryTitle" class="history-title"></div>
+        <div id="lessonHistoryBody" style="max-height: 60vh; overflow-y: auto; padding-right: 5px;"></div>
+        <button class="close-history" style="margin-top:15px;" onclick="closeLessonHistory()">بند کریں</button>
     </div>
 </div>
 
@@ -880,18 +889,46 @@
         await _supabase.from('masjid_settings').upsert({ id:1, class_time: classTime }); alert('کلاس ٹائم محفوظ ہوگیا');
     }
 
-    function showLessonHistory(studentName){
-        let html=""; document.getElementById("lessonHistoryTitle").innerHTML= "📖 " + studentName + " کا سبق ریکارڈ";
-        let dates = Object.keys(globalData).sort().reverse();
-        dates.forEach(function(date){
-            if(globalData[date] && globalData[date][studentName]){
-                const rec = globalData[date][studentName]; const quran = (rec.w || "").trim(); const prayer = (rec.wD || "").trim();
-                if(quran.length === 0 && prayer.length === 0) return;
-                html += `<div class="history-item"><div class="history-date">📅 ${formatUrduDate(date)}</div><div style="margin-bottom:10px;"><b>📖 قرآن</b><br>${quran || "-"}</div><div><b>🕌 نماز / دعا</b><br>${prayer || "-"}</div></div>`;
+    async function showLessonHistory(studentName){
+        document.getElementById("lessonHistoryModal").style.display = "block";
+        document.getElementById("lessonHistoryTitle").innerHTML = "📖 " + studentName + " کا سبق ریکارڈ";
+        document.getElementById("lessonHistoryBody").innerHTML = "<div style='text-align:center; padding:20px; font-size:18px;'>ڈیٹا کلاؤڈ سے لایا جا رہا ہے... ⏳</div>";
+
+        try {
+            const { data, error } = await _supabase
+                .from('attendance_records')
+                .select('date, quran_lesson, prayer_lesson')
+                .eq('student_name', studentName)
+                .order('date', { ascending: false });
+
+            if (error) throw error;
+
+            let html = "";
+            if (data && data.length > 0) {
+                data.forEach(function(rec){
+                    const quran = (rec.quran_lesson || "").trim();
+                    const prayer = (rec.prayer_lesson || "").trim();
+                    
+                    if(quran.length > 0 || prayer.length > 0) {
+                        html += `<div class="history-item">
+                                    <div class="history-date">📅 ${formatUrduDate(rec.date)}</div>
+                                    <div style="margin-bottom:10px;"><b>📖 قرآن:</b><br>${quran || "-"}</div>
+                                    <div><b>🕌 نماز / دعا:</b><br>${prayer || "-"}</div>
+                                 </div>`;
+                    }
+                });
             }
-        });
-        if(html===""){ html=`<div style="text-align:center;padding:30px;font-size:20px;">ابھی اس طالب علم کا سبق ریکارڈ موجود نہیں۔</div>`; }
-        document.getElementById("lessonHistoryBody").innerHTML = html; document.getElementById("lessonHistoryModal").style.display = "block";
+
+            if(html === ""){ 
+                html = `<div style="text-align:center;padding:30px;font-size:20px;">ابھی اس طالب علم کا کوئی سبق ریکارڈ موجود نہیں۔</div>`; 
+            }
+            
+            document.getElementById("lessonHistoryBody").innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById("lessonHistoryBody").innerHTML = `<div style="color:red; text-align:center; font-weight:bold;">انٹرنیٹ کا مسئلہ! ڈیٹا لانے میں ناکامی۔</div>`;
+        }
     }
 
     function closeLessonHistory(){ document.getElementById("lessonHistoryModal").style.display="none"; }
