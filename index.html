@@ -8,9 +8,17 @@
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
-        
-        * { font-family: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', serif !important; }
+        @font-face {
+            font-family: 'Jameel Noori Nastaleeq';
+            src: url('JameelNoori.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * { 
+            font-family: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', serif !important; 
+            line-height: 1.8 !important; 
+        }
 
         :root { 
             --primary: #ad1457; 
