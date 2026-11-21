@@ -7,6 +7,7 @@
     <!-- موبائل ایپ (PWA) کا لنک -->
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
         @font-face {
             font-family: 'Jameel Noori Nastaleeq';
@@ -216,6 +217,204 @@
 .history-date{ color:#c62828; font-size:20px; font-weight:bold; margin-bottom:10px; }
 .close-history{ width:100%; padding:12px; border:none; border-radius:10px; background:#c62828; color:#fff; font-size:20px; font-weight:bold; cursor:pointer; }
 
+        /* ===== مکمل صاف سادہ نیٹو ویڈیو پلیئر (بغیر زوم + صرف پلے بٹن کلک + فریم پاز) ===== */
+        .native-yt-card,
+        .native-yt-card * {
+            -webkit-tap-highlight-color: transparent !important;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .native-yt-card {
+            width: 100%;
+            background: #140a28;
+            border-radius: 16px;
+            border: 2px solid #b38728;
+            overflow: hidden;
+            margin: 0 auto 10px auto;
+            box-shadow:
+                0 14px 28px rgba(0, 0, 0, 0.42),
+                0 6px 14px rgba(173, 20, 87, 0.28),
+                0 2px 10px rgba(212, 175, 55, 0.35);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .native-yt-stage {
+            position: relative;
+            width: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .native-yt-stage iframe,
+        .native-yt-player-target {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            border: none;
+            pointer-events: none;
+        }
+
+        .native-yt-thumb {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            pointer-events: none;
+            background: radial-gradient(circle at center, #4a148c 0%, #150b29 100%);
+            transition: opacity 0.3s ease;
+        }
+
+        .native-yt-card.is-playing .native-yt-thumb,
+        .native-yt-card.has-started .native-yt-thumb {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .native-yt-click-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: none;
+        }
+
+        .native-yt-card.is-playing .native-yt-click-layer {
+            pointer-events: auto;
+        }
+
+        .native-yt-center-btn {
+            pointer-events: auto;
+            cursor: pointer;
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            background: rgba(173, 20, 87, 0.84);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fcf6ba;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fcf6ba;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 0 12px rgba(252, 246, 186, 0.35);
+            transition: transform 0.2s, opacity 0.25s;
+            font-family: Arial, sans-serif !important;
+            padding-left: 4px;
+            outline: none;
+        }
+
+        .native-yt-center-btn:active {
+            transform: scale(0.92);
+        }
+
+        .native-yt-card.is-playing .native-yt-center-btn {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .native-yt-card.is-playing.is-paused .native-yt-center-btn {
+            opacity: 0.95;
+            pointer-events: auto;
+            width: 56px;
+            height: 56px;
+            font-size: 21px;
+            padding-left: 3px;
+        }
+
+        .native-yt-controls {
+            width: 100%;
+            height: 42px;
+            box-sizing: border-box;
+            background: linear-gradient(90deg, #1b0d36 0%, #3b0e28 50%, #1b0d36 100%);
+            border-top: 1px solid rgba(252, 246, 186, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            direction: ltr;
+        }
+
+        .native-yt-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(252, 246, 186, 0.14);
+            border: 1px solid rgba(252, 246, 186, 0.45);
+            color: #fcf6ba;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.15s, border-color 0.2s;
+        }
+
+        .native-yt-icon-btn:active {
+            transform: scale(0.9);
+        }
+
+        .native-yt-icon-btn.is-muted {
+            background: rgba(183, 28, 28, 0.35);
+            border-color: rgba(255, 138, 128, 0.7);
+            color: #ffcdd2;
+        }
+
+        .native-yt-icon-btn svg {
+            width: 15px;
+            height: 15px;
+            display: block;
+        }
+
+        .native-yt-progress {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.28);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .native-yt-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #bf953f, #fcf6ba);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .native-yt-progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 6px rgba(0,0,0,0.6);
+        }
+
+        .native-yt-time {
+            color: #fcf6ba;
+            font-size: 13px;
+            font-weight: bold;
+            font-family: Arial, sans-serif !important;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+
         @media print {
             .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -400,7 +599,12 @@
     window.studentJoinDates = {};
 
     let unsavedChanges = false;
-    let loadedMonths = new Set(); 
+    let loadedMonths = new Set();
+    let isSettingsLoaded = false;
+
+    let ytPlayers = {};
+    let ytTimers = {};
+    let activeYtBoxId = null;
 
     const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
@@ -455,22 +659,60 @@
     }
 
     async function fetchBasicSettings() {
+        const cachedSettings = localStorage.getItem('hussain_masjid_settings_cache');
+        if (cachedSettings) {
+            try {
+                const c = JSON.parse(cachedSettings);
+                if (Array.isArray(c.names)) names = c.names;
+                if (Array.isArray(c.videos)) videoLists = c.videos;
+                if (Array.isArray(c.timeline)) timelinePosts = c.timeline;
+                if (Array.isArray(c.former_students)) formerStudents = c.former_students;
+                if (c.student_join_dates) window.studentJoinDates = c.student_join_dates;
+                if (c.class_time !== undefined) {
+                    classTime = c.class_time;
+                    const box = document.getElementById("classTimeBox");
+                    if(box) box.innerHTML = classTime || "";
+                    const inp = document.getElementById("classTimeInput");
+                    if(inp) inp.value = classTime || "";
+                }
+            } catch (e) { console.error("Cache Error:", e); }
+        }
+
         try {
-            const { data: settingsData } = await _supabase.from('masjid_settings').select('*').eq('id', 1).single();
-            if (settingsData) {
-                if(settingsData.names && JSON.parse(settingsData.names).length > 0) names = JSON.parse(settingsData.names);
-                if(settingsData.videos && JSON.parse(settingsData.videos).length > 0) videoLists = JSON.parse(settingsData.videos);
-                if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
-                if(settingsData.class_time) classTime = settingsData.class_time;
-                if(settingsData.former_students) formerStudents = JSON.parse(settingsData.former_students);
-                if(settingsData.student_join_dates) window.studentJoinDates = JSON.parse(settingsData.student_join_dates);
-                
-                const box = document.getElementById("classTimeBox");
-                if(box) box.innerHTML = classTime || "";
+            const { data: settingsData, error } = await _supabase.from('masjid_settings').select('*').eq('id', 1).single();
+            if (error || !settingsData) {
+                console.error("Settings Load Error:", error);
+                alert("⚠️ انٹرنیٹ کا مسئلہ! کلاؤڈ سے طلباء کی تازہ فہرست لوڈ نہیں ہو سکی۔ براہ کرم انٹرنیٹ چیک کر کے صفحہ ریفریش کریں۔");
+                populateStudentSelect();
+                if(isTeacherMode) renderFormerStudents();
+                return;
             }
+
+            if(settingsData.names) names = JSON.parse(settingsData.names);
+            if(settingsData.videos) videoLists = JSON.parse(settingsData.videos);
+            if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
+            if(settingsData.class_time !== undefined && settingsData.class_time !== null) classTime = settingsData.class_time;
+            if(settingsData.former_students) formerStudents = JSON.parse(settingsData.former_students);
+            if(settingsData.student_join_dates) window.studentJoinDates = JSON.parse(settingsData.student_join_dates);
+
+            isSettingsLoaded = true;
+            localStorage.setItem('hussain_masjid_settings_cache', JSON.stringify({
+                names, videos: videoLists, timeline: timelinePosts,
+                former_students: formerStudents, student_join_dates: window.studentJoinDates,
+                class_time: classTime
+            }));
+
+            const box = document.getElementById("classTimeBox");
+            if(box) box.innerHTML = classTime || "";
+            const inp = document.getElementById("classTimeInput");
+            if(inp) inp.value = classTime || "";
+
             populateStudentSelect();
             if(isTeacherMode) renderFormerStudents();
-        } catch (err) { console.error("Settings Load Error:", err); }
+        } catch (err) {
+            console.error("Settings Load Error:", err);
+            alert("⚠️ کلاؤڈ سے رابطہ نہیں ہو سکا۔ صفحہ دوبارہ ریفریش کریں۔");
+        }
     }
 
     async function fetchMonthData(monthPrefix) {
@@ -504,8 +746,27 @@
     }
 
     async function syncSettingsToSupabase() {
-        const payload = { id: 1, names: JSON.stringify(names), videos: JSON.stringify(videoLists), timeline: JSON.stringify(timelinePosts), former_students: JSON.stringify(formerStudents), student_join_dates: JSON.stringify(window.studentJoinDates || {}), class_time: classTime };
-        await _supabase.from('masjid_settings').upsert(payload);
+        if (!isSettingsLoaded) {
+            alert("🛑 خبردار! کلاؤڈ سے تازہ فہرست لوڈ نہیں ہوئی تھی، اس لیے پرانا ڈیٹا اپلوڈ ہونے سے روک دیا گیا ہے۔ براہ کرم انٹرنیٹ چیک کر کے صفحہ ریفریش کریں۔");
+            throw new Error("Settings not loaded from cloud");
+        }
+        const payload = {
+            id: 1,
+            names: JSON.stringify(names),
+            videos: JSON.stringify(videoLists),
+            timeline: JSON.stringify(timelinePosts),
+            former_students: JSON.stringify(formerStudents),
+            student_join_dates: JSON.stringify(window.studentJoinDates || {}),
+            class_time: classTime
+        };
+        const { error } = await _supabase.from('masjid_settings').upsert(payload);
+        if (error) throw error;
+
+        localStorage.setItem('hussain_masjid_settings_cache', JSON.stringify({
+            names, videos: videoLists, timeline: timelinePosts,
+            former_students: formerStudents, student_join_dates: window.studentJoinDates,
+            class_time: classTime
+        }));
     }
 
     function populateStudentSelect() {
@@ -627,6 +888,10 @@
 
     async function syncAllDataToCloud() {
         if (!isTeacherMode) return;
+        if (!isSettingsLoaded) {
+            alert("🛑 خبردار! کلاؤڈ سے تازہ فہرست لوڈ نہیں ہوئی تھی، اس لیے پرانا ڈیٹا اپلوڈ ہونے سے روک دیا گیا ہے۔ براہ کرم انٹرنیٹ چیک کر کے صفحہ ریفریش کریں۔");
+            return;
+        }
         const btn = document.getElementById('syncAllBtn');
         btn.innerHTML = "آن لائن بھیجا جا رہا ہے... ⏳"; btn.disabled = true;
 
@@ -698,11 +963,30 @@
     }
 
     function toggleVideo(i) {
-        const row = document.getElementById(`videoRow-${i}`); const area = document.getElementById(`videoArea-${i}`);
+        const row = document.getElementById(`videoRow-${i}`);
+        const area = document.getElementById(`videoArea-${i}`);
         const listID = videoLists[i] || "PL3-aVTBoE-13TR-5h0Mi9_ElEtmLI53Zq";
-        if (row.style.display === "table-row") { row.style.display = "none"; area.innerHTML = ""; } 
-        else { document.querySelectorAll('.video-container').forEach(r => r.style.display = 'none'); row.style.display = "table-row";
-            area.innerHTML = `<iframe style="aspect-ratio: 16/9; width: 100%; border:none; border-radius:10px;" src="https://www.youtube.com/embed/videoseries?list=${listID}" allowfullscreen></iframe><br><a href="https://www.youtube.com/playlist?list=${listID}" target="_blank" class="yt-playlist-link-btn">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>`;
+        const boxId = `hussain_student_pl_${i}`;
+
+        if (row.style.display === "table-row") {
+            destroyCustomYT(boxId);
+            row.style.display = "none";
+            area.innerHTML = "";
+        } else {
+            pauseAllCustomYT();
+            document.querySelectorAll('.video-container').forEach(r => {
+                const idxStr = r.id.replace('videoRow-', '');
+                destroyCustomYT(`hussain_student_pl_${idxStr}`);
+                r.style.display = 'none';
+                const oldArea = document.getElementById(`videoArea-${idxStr}`);
+                if (oldArea) oldArea.innerHTML = "";
+            });
+
+            row.style.display = "table-row";
+            area.innerHTML = `
+                ${buildCustomYTBox({ boxId, listId: listID })}
+                <a href="https://www.youtube.com/playlist?list=${listID}" target="_blank" class="yt-playlist-link-btn">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>`;
+            setupNativeYouTubeCards(area);
         }
     }
 
@@ -730,8 +1014,11 @@
     }
 
     function openTab(id, e) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active');
+        pauseAllCustomYT();
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        e.currentTarget.classList.add('active');
         if(id.includes('Report')) loadReports();
     }
 
@@ -756,16 +1043,62 @@
         timelinePosts.splice(idx, 1); await syncSettingsToSupabase(); renderTimeline();
     }
 
-    // نیا سمارٹ ویڈیو فریم ڈیٹیکٹر (9:16 اور 16:9)
-    function formatMediaEmbed(url) {
-        if (url.includes('youtube.com/watch') || url.includes('youtu.be') || url.includes('/shorts/')) {
-            let videoId = ''; let isShort = url.includes('/shorts/');
-            if (isShort) { videoId = url.split('/shorts/').pop().split('?')[0]; } 
-            else if (url.includes('v=')) { videoId = url.split('v=').pop().split('&')[0]; } 
-            else { videoId = url.split('/').pop().split('?')[0]; }
-            
-            let aspectStyle = isShort ? "aspect-ratio: 9/16; max-width: 350px; margin: 0 auto; display: block;" : "aspect-ratio: 16/9; width: 100%;";
-            return `<iframe src="https://www.youtube.com/embed/${videoId}" style="${aspectStyle} border:none; border-radius:12px;" allowfullscreen></iframe>`;
+    function extractYouTubeId(url) {
+        if (!url) return '';
+        if (url.includes('/shorts/')) return url.split('/shorts/').pop().split(/[?&/]/)[0];
+        if (url.includes('/live/')) return url.split('/live/').pop().split(/[?&/]/)[0];
+        if (url.includes('v=')) return url.split('v=').pop().split('&')[0];
+        if (url.includes('youtu.be/')) return url.split('youtu.be/').pop().split(/[?&/]/)[0];
+        if (url.includes('/embed/')) return url.split('/embed/').pop().split(/[?&/]/)[0];
+        return '';
+    }
+
+    function formatTimeSec(sec) {
+        sec = Math.floor(sec || 0);
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function buildCustomYTBox({ boxId, videoId = '', listId = '', isShort = false }) {
+        const cardStyle = isShort
+            ? "max-width: 340px; width: 100%;"
+            : "max-width: 100%; width: 100%;";
+        const stageStyle = isShort
+            ? "aspect-ratio: 9/16;"
+            : "aspect-ratio: 16/9;";
+        const thumbSrc = videoId
+            ? `https://i.ytimg.com/vi/${videoId}/sddefault.jpg`
+            : `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`;
+        const thumbFallback = videoId
+            ? `onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${videoId}/hqdefault.jpg';"`
+            : '';
+
+        return `
+        <div class="native-yt-card" id="${boxId}" data-videoid="${videoId}" data-listid="${listId}" style="${cardStyle}">
+            <div class="native-yt-stage" style="${stageStyle}">
+                <div class="native-yt-player-target" id="target_${boxId}"></div>
+                <img class="native-yt-thumb" src="${thumbSrc}" ${thumbFallback} alt="Video">
+                <div class="native-yt-click-layer" onclick="toggleCustomYT('${boxId}')">
+                    <div class="native-yt-center-btn" onclick="event.stopPropagation(); toggleCustomYT('${boxId}')"><svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><polygon points="6,4 20,12 6,20"></polygon></svg></div>
+                </div>
+            </div>
+            <div class="native-yt-controls" dir="ltr" onclick="event.stopPropagation()">
+                <button type="button" class="native-yt-icon-btn mute-btn" aria-label="Volume" onclick="toggleMuteCustomYT('${boxId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></button>
+                <div class="native-yt-progress" onclick="seekCustomYT(event, '${boxId}')">
+                    <div class="native-yt-progress-fill"></div>
+                </div>
+                <span class="native-yt-time">00:00 / 00:00</span>
+            </div>
+        </div>`;
+    }
+
+    function formatMediaEmbed(url, idx = 0) {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const videoId = extractYouTubeId(url);
+            const isShort = url.includes('/shorts/');
+            const boxId = `hussain_ytbox_${idx}_${videoId}`;
+            return buildCustomYTBox({ boxId, videoId, isShort });
         } else if (url.includes('drive.google.com')) {
             let embedUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview').replace('?usp=drivesdk', '');
             return `<iframe src="${embedUrl}" style="aspect-ratio: 16/9; width: 100%; border:none; border-radius:12px;" allowfullscreen></iframe>`;
@@ -778,6 +1111,7 @@
     }
 
     function renderTimeline() {
+        pauseAllCustomYT();
         const feed = document.getElementById('fbFeedTimeline'); feed.innerHTML = '';
         if(!timelinePosts || timelinePosts.length === 0) { feed.innerHTML = `<p style="text-align:center; color:#333; font-size:18px; padding:30px; font-weight:bold;">ٹائم لائن ابھی خالی ہے۔ استاد موڈ میں لاگ ان ہو کر نئی ویڈیوز یا تصاویر یہاں اپلوڈ کریں۔</p>`; return; }
 
@@ -793,9 +1127,308 @@
                     </div>
                     <div class="fb-post-title">${post.title}</div>
                     ${post.text ? `<div class="timeline-text-post">${post.text}</div>` : ''}
-                    ${post.url ? `<div class="fb-post-media" style="background: transparent; border: none; box-shadow: none;">${formatMediaEmbed(post.url)}</div>` : ''}
+                    ${post.url ? `<div class="fb-post-media" style="background: transparent; border: none; box-shadow: none;">${formatMediaEmbed(post.url, idx)}</div>` : ''}
                 </div>`;
         });
+        setupNativeYouTubeCards();
+    }
+
+    const ytScrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const boxId = entry.target.id;
+            if (entry.intersectionRatio < 0.35 && activeYtBoxId === boxId) {
+                pauseCustomYT(boxId);
+            }
+        });
+    }, { threshold: [0, 0.35, 0.7] });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) pauseAllCustomYT();
+    });
+
+    function applyOriginalRatioBeforePlay(box, oembedTargetUrl) {
+        if (!box || box.dataset.ratioApplied === '1') return;
+        fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(oembedTargetUrl)}&format=json`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (!data) return;
+                box.dataset.ratioApplied = '1';
+                if (data.thumbnail_url) {
+                    const thumbEl = box.querySelector('.native-yt-thumb');
+                    if (thumbEl) thumbEl.src = data.thumbnail_url;
+                }
+                const stageEl = box.querySelector('.native-yt-stage');
+                if (data.width && data.height && stageEl) {
+                    stageEl.style.aspectRatio = `${data.width} / ${data.height}`;
+                    if (data.height > data.width) {
+                        box.style.maxWidth = '340px';
+                        box.style.margin = '0 auto';
+                    } else {
+                        box.style.maxWidth = '100%';
+                    }
+                }
+            }).catch(() => {});
+    }
+
+    function setupNativeYouTubeCards(rootEl = document) {
+        rootEl.querySelectorAll('.native-yt-card').forEach(box => {
+            if (box.dataset.observed === '1') return;
+            box.dataset.observed = '1';
+            ytScrollObserver.observe(box);
+
+            const videoId = box.dataset.videoid;
+            const listId = box.dataset.listid;
+            if (videoId) {
+                applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${videoId}`);
+            } else if (listId) {
+                initYTPlayer(box.id, false);
+            }
+        });
+    }
+
+    function initYTPlayer(boxId, autoPlayNow = false) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
+
+        box.dataset.autoplayPending = autoPlayNow ? '1' : '0';
+
+        if (ytPlayers[boxId] && typeof ytPlayers[boxId].playVideo === 'function') {
+            if (autoPlayNow) ytPlayers[boxId].playVideo();
+            return;
+        }
+
+        if (typeof YT === 'undefined' || !YT.Player) {
+            setTimeout(() => initYTPlayer(boxId, box.dataset.autoplayPending === '1'), 350);
+            return;
+        }
+
+        if (box.dataset.initializing === '1') return;
+        box.dataset.initializing = '1';
+
+        const videoId = box.dataset.videoid;
+        const listId = box.dataset.listid;
+
+        const playerVars = {
+            autoplay: autoPlayNow ? 1 : 0,
+            controls: 0,
+            modestbranding: 1,
+            rel: 0,
+            playsinline: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            disablekb: 1
+        };
+        if (window.location && window.location.origin && window.location.origin.startsWith('http')) {
+            playerVars.origin = window.location.origin;
+        }
+        if (listId) {
+            playerVars.listType = 'playlist';
+            playerVars.list = listId;
+        }
+
+        const config = {
+            playerVars: playerVars,
+            events: {
+                onReady: (e) => {
+                    box.dataset.initializing = '0';
+                    if (listId && box.dataset.autoplayPending !== '1') {
+                        try {
+                            e.target.cuePlaylist({ list: listId, listType: 'playlist', index: 0 });
+                        } catch (err) {}
+                    }
+                    try {
+                        const vData = e.target.getVideoData ? e.target.getVideoData() : null;
+                        if (vData && vData.video_id) {
+                            box.dataset.cuedVid = vData.video_id;
+                            applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${vData.video_id}`);
+                        }
+                    } catch (err) {}
+
+                    if (box.dataset.autoplayPending === '1') {
+                        box.dataset.autoplayPending = '0';
+                        e.target.playVideo();
+                    }
+                },
+                onStateChange: (e) => {
+                    if (e.data === YT.PlayerState.CUED) {
+                        try {
+                            const vData = e.target.getVideoData ? e.target.getVideoData() : null;
+                            if (vData && vData.video_id) {
+                                box.dataset.cuedVid = vData.video_id;
+                                applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${vData.video_id}`);
+                            }
+                        } catch (err) {}
+                    } else if (e.data === YT.PlayerState.PLAYING) {
+                        let currentVid = '';
+                        try {
+                            const vData = e.target.getVideoData ? e.target.getVideoData() : null;
+                            if (vData && vData.video_id) currentVid = vData.video_id;
+                        } catch (err) {}
+
+                        if (currentVid) {
+                            if (!box.dataset.lockedVid) {
+                                box.dataset.lockedVid = currentVid;
+                                applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${currentVid}`);
+                            } else if (box.dataset.lockedVid !== currentVid) {
+                                try { e.target.pauseVideo(); } catch (err) {}
+                                box.dataset.lockedVid = '';
+                                pauseCustomYT(boxId);
+                                return;
+                            }
+                        }
+
+                        pauseAllCustomYT(boxId);
+                        activeYtBoxId = boxId;
+
+                        const centerBtn = box.querySelector('.native-yt-center-btn');
+                        if (centerBtn) centerBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
+                        box.classList.add('has-started');
+                        box.classList.remove('is-paused');
+
+                        setTimeout(() => {
+                            if (activeYtBoxId === boxId) box.classList.add('is-playing');
+                        }, 220);
+                        startYtProgressTimer(boxId);
+                    } else if (e.data === YT.PlayerState.ENDED) {
+                        box.dataset.lockedVid = '';
+                        box.classList.remove('has-started');
+                        box.classList.remove('is-paused');
+                        try {
+                            e.target.seekTo(0, true);
+                            e.target.pauseVideo();
+                        } catch (err) {}
+                        const fillEl = box.querySelector('.native-yt-progress-fill');
+                        if (fillEl) fillEl.style.width = '0%';
+                        pauseCustomYT(boxId);
+                    } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
+                        if (e.data === YT.PlayerState.PAUSED) {
+                            box.classList.add('has-started');
+                            box.classList.add('is-paused');
+                            const centerBtn = box.querySelector('.native-yt-center-btn');
+                            if (centerBtn) centerBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+                            if (activeYtBoxId === boxId) activeYtBoxId = null;
+                            clearInterval(ytTimers[boxId]);
+                        } else {
+                            box.classList.remove('is-playing');
+                        }
+                    }
+                }
+            }
+        };
+
+        if (videoId) {
+            config.videoId = videoId;
+        }
+
+        ytPlayers[boxId] = new YT.Player(`target_${boxId}`, config);
+    }
+
+    function toggleCustomYT(boxId) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
+
+        if (ytPlayers[boxId] && typeof ytPlayers[boxId].getPlayerState === 'function') {
+            const state = ytPlayers[boxId].getPlayerState();
+            if (state === YT.PlayerState.PLAYING) {
+                try { ytPlayers[boxId].pauseVideo(); } catch (e) {}
+                return;
+            }
+            if (state === YT.PlayerState.PAUSED) {
+                pauseAllCustomYT(boxId);
+                activeYtBoxId = boxId;
+                box.classList.remove('is-paused');
+                box.classList.add('has-started');
+                try { ytPlayers[boxId].playVideo(); } catch (e) {}
+                return;
+            }
+        }
+
+        pauseAllCustomYT(boxId);
+        activeYtBoxId = boxId;
+        box.dataset.lockedVid = '';
+
+        initYTPlayer(boxId, true);
+    }
+
+    function destroyCustomYT(boxId) {
+        clearInterval(ytTimers[boxId]);
+        delete ytTimers[boxId];
+        if (ytPlayers[boxId]) {
+            try { ytPlayers[boxId].destroy(); } catch (e) {}
+            delete ytPlayers[boxId];
+        }
+        if (activeYtBoxId === boxId) activeYtBoxId = null;
+    }
+
+    function pauseCustomYT(boxId) {
+        const box = document.getElementById(boxId);
+        if (box) {
+            box.dataset.autoplayPending = '0';
+            box.classList.remove('is-playing');
+            box.classList.remove('is-paused');
+            box.classList.remove('has-started');
+            const centerBtn = box.querySelector('.native-yt-center-btn');
+            if (centerBtn) centerBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+        }
+        if (ytPlayers[boxId] && typeof ytPlayers[boxId].pauseVideo === 'function') {
+            try { ytPlayers[boxId].pauseVideo(); } catch (e) {}
+        }
+        clearInterval(ytTimers[boxId]);
+        if (activeYtBoxId === boxId) activeYtBoxId = null;
+    }
+
+    function pauseAllCustomYT(exceptBoxId = null) {
+        Object.keys(ytPlayers).forEach(id => {
+            if (id !== exceptBoxId) pauseCustomYT(id);
+        });
+    }
+
+    function getVolumeSVG(muted) {
+        if (muted) {
+            return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+        }
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>';
+    }
+
+    function toggleMuteCustomYT(boxId) {
+        const player = ytPlayers[boxId];
+        const box = document.getElementById(boxId);
+        if (!player || !box) return;
+        const btn = box.querySelector('.mute-btn');
+        if (player.isMuted()) {
+            player.unMute();
+            btn.classList.remove('is-muted');
+            btn.innerHTML = getVolumeSVG(false);
+        } else {
+            player.mute();
+            btn.classList.add('is-muted');
+            btn.innerHTML = getVolumeSVG(true);
+        }
+    }
+
+    function seekCustomYT(event, boxId) {
+        const player = ytPlayers[boxId];
+        if (!player || typeof player.getDuration !== 'function') return;
+        const bar = event.currentTarget;
+        const rect = bar.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        const dur = player.getDuration();
+        if (dur > 0) player.seekTo(dur * ratio, true);
+    }
+
+    function startYtProgressTimer(boxId) {
+        clearInterval(ytTimers[boxId]);
+        ytTimers[boxId] = setInterval(() => {
+            const player = ytPlayers[boxId];
+            const box = document.getElementById(boxId);
+            if (!player || !box || typeof player.getCurrentTime !== 'function') return;
+            const cur = player.getCurrentTime() || 0;
+            const dur = player.getDuration() || 0;
+            const timeEl = box.querySelector('.native-yt-time');
+            const fillEl = box.querySelector('.native-yt-progress-fill');
+            if (timeEl) timeEl.innerText = `${formatTimeSec(cur)} / ${formatTimeSec(dur)}`;
+            if (fillEl && dur > 0) fillEl.style.width = `${(cur / dur) * 100}%`;
+        }, 500);
     }
 
     function openEditModal(index) {
@@ -879,11 +1512,20 @@
     }
 
     function showFormerPlaylist(index){
-        const student = formerStudents[index]; const container = document.getElementById(`formerVideo${index}`);
-        if(container.innerHTML !== ''){ container.innerHTML=''; return; }
+        const student = formerStudents[index];
+        const container = document.getElementById(`formerVideo${index}`);
+        const boxId = `hussain_former_pl_${index}`;
+        if(container.innerHTML !== ''){
+            destroyCustomYT(boxId);
+            container.innerHTML = '';
+            return;
+        }
+        pauseAllCustomYT();
         const playlist = student.playlist || 'PL3-aVTBoE-13TR-5h0Mi9_ElEtmLI53Zq';
-        container.innerHTML = `<iframe style="aspect-ratio: 16/9; width: 100%; border:none; border-radius:10px;" src="https://www.youtube.com/embed/videoseries?list=${playlist}" allowfullscreen></iframe>
-        <br><a href="intent://www.youtube.com/playlist?list=${playlist}#Intent;package=com.google.android.youtube;scheme=https;end" class="yt-playlist-link-btn">مکمل Playlist یوٹیوب پر دیکھیں</a>`;
+        container.innerHTML = `
+            ${buildCustomYTBox({ boxId, listId: playlist })}
+            <a href="intent://www.youtube.com/playlist?list=${playlist}#Intent;package=com.google.android.youtube;scheme=https;end" class="yt-playlist-link-btn">مکمل Playlist یوٹیوب پر دیکھیں</a>`;
+        setupNativeYouTubeCards(container);
     }
 
     function searchLessonStudent(e){
@@ -898,8 +1540,10 @@
     }
 
     async function saveClassTime(){
-        classTime = document.getElementById('classTimeInput').value; document.getElementById('classTimeBox').innerHTML = classTime;
-        await _supabase.from('masjid_settings').upsert({ id:1, class_time: classTime }); alert('کلاس ٹائم محفوظ ہوگیا');
+        classTime = document.getElementById('classTimeInput').value.trim();
+        document.getElementById('classTimeBox').innerHTML = classTime;
+        await syncSettingsToSupabase();
+        alert('کلاس ٹائم محفوظ ہوگیا');
     }
 
     async function showLessonHistory(studentName){
@@ -959,3 +1603,4 @@
 
 </body>
 </html>
+
