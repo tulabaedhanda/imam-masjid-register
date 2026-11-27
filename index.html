@@ -17,9 +17,48 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Al Qalam Quran Majeed 2';
+            src: url('Al Qalam Quran Majeed 2.ttf') format('truetype');
+            font-display: swap;
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * { 
             font-family: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', serif !important; 
             line-height: 1.8 !important; 
+        }
+
+        .arabic-lesson-font {
+            font-family: 'Al Qalam Quran Majeed 2', 'Amiri', 'Traditional Arabic', serif !important;
+            line-height: 2.1 !important;
+            font-size: 24px !important;
+        }
+
+        /* ===== فونٹ لوڈنگ سپنر اوورلے ===== */
+        #fontLoadingOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background: rgba(255, 248, 240, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .font-spinner {
+            width: 54px;
+            height: 54px;
+            border: 5px solid rgba(173, 20, 87, 0.2);
+            border-top: 5px solid #ad1457;
+            border-radius: 50%;
+            animation: spinLoader 0.85s linear infinite;
+        }
+        @keyframes spinLoader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         :root { 
@@ -125,6 +164,34 @@
         .leave { background-color: var(--leave-clr) !important; color: white !important; border-color: var(--leave-clr); }
         .report-count { font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
 
+        /* ===== روزانہ حاضری کا خلاصہ (حاضر، غیر حاضر، رخصت) ===== */
+        .daily-att-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .att-sum-card {
+            background: rgba(255, 255, 255, 0.78);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            backdrop-filter: blur(6px);
+        }
+        .att-sum-label {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.4 !important;
+        }
+        .att-sum-num {
+            font-family: Arial, sans-serif !important;
+            font-size: 26px;
+            font-weight: 900;
+            line-height: 1.3 !important;
+        }
+
         .student-lesson-card {
             background: rgba(255, 255, 255, 0.25); border: 2px solid transparent; border-image: var(--gold-gradient) 1;
             border-radius: 12px; padding: 12px; margin-bottom: 14px; box-shadow: var(--gold-glow), 0 4px 8px rgba(0,0,0,0.1);
@@ -132,11 +199,76 @@
         }
         .lesson-row-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; font-size: 22px; font-weight: bold; }
         .lesson-inputs-holder { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 5px; border-top: 1px dashed rgba(186, 149, 63, 0.4); padding-top: 5px; }
-        .lesson-box-label { font-size: 18px; color: #880e4f; font-weight: bold; text-align: right; margin-top: 2px; }
+        .lesson-label-row { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; flex-wrap: wrap; gap: 6px; }
+        .lesson-box-label { font-size: 18px; color: #880e4f; font-weight: bold; text-align: right; }
+
+        /* ===== فونٹ سوئچر بٹنز ===== */
+        .font-toggle-group {
+            display: inline-flex;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2px;
+            border-radius: 8px;
+            border: 1px solid rgba(173, 20, 87, 0.35);
+        }
+        .font-toggle-btn {
+            border: none;
+            background: transparent;
+            color: #5c0632;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 2px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            line-height: 1.4 !important;
+        }
+        .font-toggle-btn.active {
+            background: var(--primary);
+            color: #ffffff !important;
+        }
+
+        /* ===== وائس ان پٹ بٹن ===== */
+        .input-with-mic {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .voice-mic-btn {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+            transition: all 0.2s ease;
+        }
+        .voice-mic-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .voice-mic-btn.listening {
+            background: #b71c1c !important;
+            color: #ffffff !important;
+            border-color: #ffd700 !important;
+            animation: micPulse 1s infinite alternate;
+        }
+        @keyframes micPulse {
+            from { transform: scale(1); box-shadow: 0 0 5px #b71c1c; }
+            to { transform: scale(1.08); box-shadow: 0 0 16px #ff1744; }
+        }
         
         .diary-input { 
-            width: 95%; padding: 7px; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 6px; 
+            width: 100%; padding: 7px; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 6px; 
             font-size: 22px; background: rgba(255, 255, 255, 0.75); color: #000000 !important; font-weight: bold;
+            box-sizing: border-box;
         }
         .diary-input:disabled { background: rgba(255, 255, 255, 0.4); color: #000000 !important; border: 1px solid rgba(0,0,0,0.1); cursor: not-allowed; }
 
@@ -413,7 +545,7 @@
         }
 
         @media print {
-            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
+            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn, .voice-mic-btn, .font-toggle-group { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
@@ -426,6 +558,10 @@
     </style>
 </head>
 <body>
+
+<div id="fontLoadingOverlay">
+    <div class="font-spinner"></div>
+</div>
 
 <div class="container" id="mainContainer">
     <div class="header-section">
@@ -474,17 +610,51 @@
 
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
             <div></div>
-            <div style="color:var(--primary); font-weight:bold; font-size:20px;" id="totalStudentsCount">تعداد: لوڈ ہو رہا ہے...</div>
+            <div style="color:var(--primary); font-weight:bold; font-size:20px;" id="totalStudentsCount"></div>
         </div>
         <table>
             <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
             <tbody id="attTableBody"></tbody>
         </table>
+
+        <div class="daily-att-summary">
+            <div class="att-sum-card" style="border-color: var(--present-clr); color: var(--present-clr);">
+                <div class="att-sum-label">حاضر</div>
+                <div class="att-sum-num" id="dailyPresentCount">0</div>
+            </div>
+            <div class="att-sum-card" style="border-color: var(--absent-clr); color: var(--absent-clr);">
+                <div class="att-sum-label">غیر حاضر</div>
+                <div class="att-sum-num" id="dailyAbsentCount">0</div>
+            </div>
+            <div class="att-sum-card" style="border-color: var(--leave-clr); color: var(--leave-clr);">
+                <div class="att-sum-label">رخصت</div>
+                <div class="att-sum-num" id="dailyLeaveCount">0</div>
+            </div>
+        </div>
     </div>
 
     <div id="dailyLesson" class="tab-content">
-        <div style="position:sticky;top:0;z-index:20; background:rgba(255,248,240,.9); padding:10px; backdrop-filter:blur(8px);">
-            <input id="lessonSearch" type="text" placeholder="🔍 طالب علم کا نام یا نمبر لکھیں..." onkeyup="searchLessonStudent(event)" style="width:100%; padding:12px; font-size:20px; border:2px solid #ad1457; border-radius:12px; box-sizing:border-box; font-weight:bold;">
+        <div style="position:sticky;top:0;z-index:20; background:rgba(255,248,240,.9); padding:10px; backdrop-filter:blur(8px); border-radius:12px; margin-bottom:10px;">
+            <div class="input-with-mic">
+                <input id="lessonSearch" type="text" placeholder="🔍 طالب علم کا نام یا نمبر لکھیں..." onkeyup="searchLessonStudent(event)" style="width:100%; padding:12px; font-size:20px; border:2px solid #ad1457; border-radius:12px; box-sizing:border-box; font-weight:bold;">
+                <button type="button" class="voice-mic-btn" id="searchVoiceBtn" title="آواز سے طالب علم تلاش کریں" onclick="startSearchVoice(this)">🎤</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:16px; font-weight:bold; color:#880e4f;">قرآن فونٹ:</span>
+                    <div class="font-toggle-group">
+                        <button type="button" class="font-toggle-btn" id="globalQuranUrduBtn" onclick="setGlobalLessonFont('w', 'urdu')">اردو</button>
+                        <button type="button" class="font-toggle-btn" id="globalQuranArabicBtn" onclick="setGlobalLessonFont('w', 'arabic')">عربی</button>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:16px; font-weight:bold; color:#880e4f;">نماز فونٹ:</span>
+                    <div class="font-toggle-group">
+                        <button type="button" class="font-toggle-btn" id="globalPrayerUrduBtn" onclick="setGlobalLessonFont('wD', 'urdu')">اردو</button>
+                        <button type="button" class="font-toggle-btn" id="globalPrayerArabicBtn" onclick="setGlobalLessonFont('wD', 'arabic')">عربی</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="lessCardsContainer"></div>
     </div>
@@ -581,6 +751,24 @@
 </div>
 
 <script>
+    // جمیل نوری فونٹ لوڈ ہونے تک سپنر دکھائیں
+    (function handleFontLoader() {
+        const loader = document.getElementById('fontLoadingOverlay');
+        if (!loader) return;
+        const hideLoader = () => { loader.style.display = 'none'; };
+        if (document.fonts && document.fonts.load) {
+            Promise.race([
+                Promise.all([
+                    document.fonts.load('16px "Jameel Noori Nastaleeq"'),
+                    document.fonts.ready
+                ]),
+                new Promise(resolve => setTimeout(resolve, 3000))
+            ]).then(hideLoader).catch(hideLoader);
+        } else {
+            setTimeout(hideLoader, 1200);
+        }
+    })();
+
     const SUPABASE_URL = "https://fetygtmtqufoamyumjjy.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzIxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -603,6 +791,156 @@
     let ytPlayers = {};
     let ytTimers = {};
     let activeYtBoxId = null;
+
+    // فونٹ ترجیحات (اردو یا عربی)
+    let lessonFontPrefs = {};
+    try {
+        lessonFontPrefs = JSON.parse(localStorage.getItem('hussain_masjid_lesson_fonts') || '{}');
+    } catch (e) { lessonFontPrefs = {}; }
+
+    function saveLessonFontPrefs() {
+        try {
+            localStorage.setItem('hussain_masjid_lesson_fonts', JSON.stringify(lessonFontPrefs));
+        } catch (e) {}
+    }
+
+    function getLessonFont(studentName, fieldType) {
+        const key = `${studentName}_${fieldType}`;
+        if (lessonFontPrefs[key]) return lessonFontPrefs[key];
+        const globalKey = `global_${fieldType}`;
+        if (lessonFontPrefs[globalKey]) return lessonFontPrefs[globalKey];
+        return 'urdu';
+    }
+
+    function setStudentLessonFont(studentName, fieldType, fontChoice) {
+        lessonFontPrefs[`${studentName}_${fieldType}`] = fontChoice;
+        saveLessonFontPrefs();
+        updateAll();
+    }
+
+    function setGlobalLessonFont(fieldType, fontChoice) {
+        lessonFontPrefs[`global_${fieldType}`] = fontChoice;
+        names.forEach(n => {
+            lessonFontPrefs[`${n}_${fieldType}`] = fontChoice;
+        });
+        saveLessonFontPrefs();
+        updateAll();
+    }
+
+    function updateGlobalFontButtonsUI() {
+        const qFont = lessonFontPrefs['global_w'] || 'urdu';
+        const pFont = lessonFontPrefs['global_wD'] || 'urdu';
+        const qU = document.getElementById('globalQuranUrduBtn');
+        const qA = document.getElementById('globalQuranArabicBtn');
+        const pU = document.getElementById('globalPrayerUrduBtn');
+        const pA = document.getElementById('globalPrayerArabicBtn');
+        if (qU && qA) {
+            qU.classList.toggle('active', qFont === 'urdu');
+            qA.classList.toggle('active', qFont === 'arabic');
+        }
+        if (pU && pA) {
+            pU.classList.toggle('active', pFont === 'urdu');
+            pA.classList.toggle('active', pFont === 'arabic');
+        }
+    }
+
+    // ===== وائس ٹائپنگ (Speech-to-Text) =====
+    let activeSpeechRecognition = null;
+    let activeMicButton = null;
+
+    function stopActiveSpeech() {
+        if (activeSpeechRecognition) {
+            try { activeSpeechRecognition.stop(); } catch (e) {}
+            activeSpeechRecognition = null;
+        }
+        if (activeMicButton) {
+            activeMicButton.classList.remove('listening');
+            activeMicButton = null;
+        }
+    }
+
+    function startVoiceRecognition({ lang, onResult, btnEl }) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("معذرت! آپ کے براؤزر میں آواز سے لکھنے (Voice Typing) کی سہولت موجود نہیں ہے۔ براہ کرم Google Chrome استعمال کریں۔");
+            return;
+        }
+
+        if (activeMicButton === btnEl) {
+            stopActiveSpeech();
+            return;
+        }
+
+        stopActiveSpeech();
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = lang || 'ur-PK';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        activeSpeechRecognition = recognition;
+        activeMicButton = btnEl;
+        if (btnEl) btnEl.classList.add('listening');
+
+        recognition.onresult = function(event) {
+            if (event.results && event.results[0] && event.results[0][0]) {
+                const spokenText = event.results[0][0].transcript.trim();
+                if (spokenText && onResult) onResult(spokenText);
+            }
+        };
+
+        recognition.onerror = function(event) {
+            console.error("Voice Error:", event.error);
+            if (event.error === 'not-allowed') {
+                alert("براہ کرم مائیکروفون (Microphone) کی اجازت دیں!");
+            }
+            stopActiveSpeech();
+        };
+
+        recognition.onend = function() {
+            stopActiveSpeech();
+        };
+
+        try {
+            recognition.start();
+        } catch (e) {
+            stopActiveSpeech();
+        }
+    }
+
+    function startSearchVoice(btnEl) {
+        startVoiceRecognition({
+            lang: 'ur-PK',
+            btnEl: btnEl,
+            onResult: (text) => {
+                const cleanText = text.replace(/[۔،؟!,.?]+$/g, '').trim();
+                const searchInput = document.getElementById('lessonSearch');
+                if (searchInput) {
+                    searchInput.value = cleanText;
+                    searchLessonStudent({ key: 'Enter' });
+                }
+            }
+        });
+    }
+
+    function startLessonVoice(btnEl, studentName, fieldType, inputId) {
+        if (!isTeacherMode) return;
+        const currentFont = getLessonFont(studentName, fieldType);
+        const lang = currentFont === 'arabic' ? 'ar-SA' : 'ur-PK';
+        startVoiceRecognition({
+            lang: lang,
+            btnEl: btnEl,
+            onResult: (text) => {
+                const inputEl = document.getElementById(inputId);
+                if (!inputEl) return;
+                const existing = inputEl.value.trim();
+                const updatedVal = existing ? `${existing} ${text}` : text;
+                inputEl.value = updatedVal;
+                if (fieldType === 'w') saveW(studentName, updatedVal);
+                else if (fieldType === 'wD') saveWD(studentName, updatedVal);
+            }
+        });
+    }
 
     const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
     const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
@@ -896,6 +1234,7 @@
         else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
         else {s="---"; c="status-btn";}
         el.innerText=s; el.className=c; saveLocalRecord(name, 'aS', s, c);
+        updateDailyAttSummary();
     }
 
     function tglL(el, name) {
@@ -910,6 +1249,28 @@
 
     function saveW(name, v) { saveLocalRecord(name, 'w', v); }
     function saveWD(name, v) { saveLocalRecord(name, 'wD', v); }
+
+    function updateDailyAttSummary() {
+        const date = document.getElementById('mainDate').value;
+        const dayData = (date && globalData[date]) ? globalData[date] : {};
+        let presentCount = 0, absentCount = 0, leaveCount = 0;
+
+        names.forEach(n => {
+            const rec = dayData[n];
+            if (rec) {
+                if (rec.aS === 'حاضر') presentCount++;
+                else if (rec.aS === 'غیر حاضر') absentCount++;
+                else if (rec.aS === 'رخصت') leaveCount++;
+            }
+        });
+
+        const pEl = document.getElementById('dailyPresentCount');
+        const aEl = document.getElementById('dailyAbsentCount');
+        const lEl = document.getElementById('dailyLeaveCount');
+        if (pEl) pEl.innerText = presentCount;
+        if (aEl) aEl.innerText = absentCount;
+        if (lEl) lEl.innerText = leaveCount;
+    }
 
     async function syncAllDataToCloud() {
         if (!isTeacherMode) return;
@@ -970,11 +1331,14 @@
         const b1 = document.getElementById('attTableBody'), b4 = document.getElementById('videoTableBody'), lessCardsContainer = document.getElementById('lessCardsContainer');
         const disabledInput = isTeacherMode ? '' : 'disabled';
 
+        updateGlobalFontButtonsUI();
+
         let attHtml = '';
         let lessHtml = '';
         let vidHtml = '';
 
         names.forEach((n, i) => {
+            const safeN = n.replace(/'/g, "\\'");
             let s = dayData[n];
             let currentW = '', currentWD = '';
             if (s) {
@@ -986,20 +1350,45 @@
             if (!currentW) currentW = getLatestLesson(date, n, 'w');
             if (!currentWD) currentWD = getLatestLesson(date, n, 'wD');
 
-            attHtml += `<tr><td>${i+1}</td><td class="student-name"><div class="student-name-container"><span>${n}</span><button class="three-dots-btn" onclick="openStudentMenu(${i})">⋮</button></div></td><td><div class="${s.aC}" onclick="tglA(this,'${n}')">${s.aS}</div></td></tr>`;
+            const quranFont = getLessonFont(n, 'w');
+            const prayerFont = getLessonFont(n, 'wD');
+            const quranFontClass = quranFont === 'arabic' ? 'arabic-lesson-font' : '';
+            const prayerFontClass = prayerFont === 'arabic' ? 'arabic-lesson-font' : '';
+
+            attHtml += `<tr><td>${i+1}</td><td class="student-name"><div class="student-name-container"><span>${n}</span><button class="three-dots-btn" onclick="openStudentMenu(${i})">⋮</button></div></td><td><div class="${s.aC}" onclick="tglA(this,'${safeN}')">${s.aS}</div></td></tr>`;
             
             lessHtml += `
                 <div class="student-lesson-card">
                     <div class="lesson-row-container">
                         <span style="font-size:22px; color:var(--primary); font-weight:bold;">${i+1}. ${n}</span>
-                        <div class="${s.lC}" onclick="tglL(this,'${n}')">${s.lS}</div>
+                        <div class="${s.lC}" onclick="tglL(this,'${safeN}')">${s.lS}</div>
                     </div>
                     <div class="lesson-inputs-holder">
-                        <span class="lesson-box-label">قرآن کا سبق:</span>
-                        <input type="text" class="diary-input" value="${currentW}" ${disabledInput} onchange="saveW('${n}',this.value)" placeholder="قرآن کا سبق">
-                        <span class="lesson-box-label">نماز / دعائیں:</span>
-                        <input type="text" class="diary-input" value="${currentWD}" ${disabledInput} onchange="saveWD('${n}',this.value)" placeholder="نماز کا سبق">
-                        <button class="history-btn" onclick="showLessonHistory('${n}')">📖 مکمل سبق ریکارڈ</button>
+                        <div class="lesson-label-row">
+                            <span class="lesson-box-label">قرآن کا سبق:</span>
+                            <div class="font-toggle-group">
+                                <button type="button" class="font-toggle-btn ${quranFont === 'urdu' ? 'active' : ''}" onclick="setStudentLessonFont('${safeN}', 'w', 'urdu')">اردو</button>
+                                <button type="button" class="font-toggle-btn ${quranFont === 'arabic' ? 'active' : ''}" onclick="setStudentLessonFont('${safeN}', 'w', 'arabic')">عربی</button>
+                            </div>
+                        </div>
+                        <div class="input-with-mic">
+                            <input type="text" id="quranInput_${i}" class="diary-input ${quranFontClass}" value="${currentW}" ${disabledInput} onchange="saveW('${safeN}',this.value)" placeholder="قرآن کا سبق">
+                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے قرآن کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'w', 'quranInput_${i}')">🎤</button>
+                        </div>
+
+                        <div class="lesson-label-row">
+                            <span class="lesson-box-label">نماز / دعائیں:</span>
+                            <div class="font-toggle-group">
+                                <button type="button" class="font-toggle-btn ${prayerFont === 'urdu' ? 'active' : ''}" onclick="setStudentLessonFont('${safeN}', 'wD', 'urdu')">اردو</button>
+                                <button type="button" class="font-toggle-btn ${prayerFont === 'arabic' ? 'active' : ''}" onclick="setStudentLessonFont('${safeN}', 'wD', 'arabic')">عربی</button>
+                            </div>
+                        </div>
+                        <div class="input-with-mic">
+                            <input type="text" id="prayerInput_${i}" class="diary-input ${prayerFontClass}" value="${currentWD}" ${disabledInput} onchange="saveWD('${safeN}',this.value)" placeholder="نماز کا سبق">
+                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے نماز کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'wD', 'prayerInput_${i}')">🎤</button>
+                        </div>
+
+                        <button class="history-btn" onclick="showLessonHistory('${safeN}')">📖 مکمل سبق ریکارڈ</button>
                     </div>
                 </div>`;
             
@@ -1010,6 +1399,7 @@
         lessCardsContainer.innerHTML = lessHtml;
         b4.innerHTML = vidHtml;
 
+        updateDailyAttSummary();
         renderTimeline();
         renderFormerStudents();
         loadReports();
@@ -1600,6 +1990,9 @@
         document.getElementById("lessonHistoryTitle").innerHTML = "📖 " + studentName + " کا سبق ریکارڈ";
         document.getElementById("lessonHistoryBody").innerHTML = "<div style='text-align:center; padding:20px; font-size:18px;'>ڈیٹا کلاؤڈ سے لایا جا رہا ہے... ⏳</div>";
 
+        const quranFontClass = getLessonFont(studentName, 'w') === 'arabic' ? 'arabic-lesson-font' : '';
+        const prayerFontClass = getLessonFont(studentName, 'wD') === 'arabic' ? 'arabic-lesson-font' : '';
+
         try {
             const { data, error } = await _supabase
                 .from('attendance_records')
@@ -1618,8 +2011,8 @@
                     if(quran.length > 0 || prayer.length > 0) {
                         html += `<div class="history-item">
                                     <div class="history-date">📅 ${formatUrduDate(rec.date)}</div>
-                                    <div style="margin-bottom:10px;"><b>📖 قرآن:</b><br>${quran || "-"}</div>
-                                    <div><b>🕌 نماز / دعا:</b><br>${prayer || "-"}</div>
+                                    <div style="margin-bottom:10px;"><b>📖 قرآن:</b><br><span class="${quranFontClass}">${quran || "-"}</span></div>
+                                    <div><b>🕌 نماز / دعا:</b><br><span class="${prayerFontClass}">${prayer || "-"}</span></div>
                                  </div>`;
                     }
                 });
