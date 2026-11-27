@@ -172,24 +172,25 @@
             margin-top: 15px;
         }
         .att-sum-card {
-            background: rgba(255, 255, 255, 0.78);
-            border: 2px solid var(--primary);
+            border: 2px solid #ffd700;
             border-radius: 12px;
             padding: 10px 6px;
             text-align: center;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-            backdrop-filter: blur(6px);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
         }
         .att-sum-label {
             font-size: 20px;
             font-weight: bold;
             line-height: 1.4 !important;
+            color: #ffffff !important;
         }
         .att-sum-num {
             font-family: Arial, sans-serif !important;
             font-size: 26px;
             font-weight: 900;
             line-height: 1.3 !important;
+            color: #ffffff !important;
         }
 
         .student-lesson-card {
@@ -202,14 +203,23 @@
         .lesson-label-row { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; flex-wrap: wrap; gap: 6px; }
         .lesson-box-label { font-size: 18px; color: #880e4f; font-weight: bold; text-align: right; }
 
-        /* ===== فونٹ سوئچر بٹنز ===== */
+        /* ===== فونٹ سوئچر بٹنز (صرف استاد موڈ میں) ===== */
+        .teacher-font-control {
+            display: none !important;
+        }
+        .teacher-mode-active .teacher-font-control {
+            display: flex !important;
+        }
         .font-toggle-group {
-            display: inline-flex;
+            display: none;
             gap: 4px;
             background: rgba(255, 255, 255, 0.7);
             padding: 2px;
             border-radius: 8px;
             border: 1px solid rgba(173, 20, 87, 0.35);
+        }
+        .teacher-mode-active .font-toggle-group {
+            display: inline-flex;
         }
         .font-toggle-btn {
             border: none;
@@ -545,7 +555,7 @@
         }
 
         @media print {
-            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn, .voice-mic-btn, .font-toggle-group { display: none !important; }
+            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn, .voice-mic-btn, .font-toggle-group, .teacher-font-control { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
@@ -618,15 +628,15 @@
         </table>
 
         <div class="daily-att-summary">
-            <div class="att-sum-card" style="border-color: var(--present-clr); color: var(--present-clr);">
+            <div class="att-sum-card" style="background: var(--present-clr); border-color: #ffd700; color: #ffffff;">
                 <div class="att-sum-label">حاضر</div>
                 <div class="att-sum-num" id="dailyPresentCount">0</div>
             </div>
-            <div class="att-sum-card" style="border-color: var(--absent-clr); color: var(--absent-clr);">
+            <div class="att-sum-card" style="background: var(--absent-clr); border-color: #ffd700; color: #ffffff;">
                 <div class="att-sum-label">غیر حاضر</div>
                 <div class="att-sum-num" id="dailyAbsentCount">0</div>
             </div>
-            <div class="att-sum-card" style="border-color: var(--leave-clr); color: var(--leave-clr);">
+            <div class="att-sum-card" style="background: var(--leave-clr); border-color: #ffd700; color: #ffffff;">
                 <div class="att-sum-label">رخصت</div>
                 <div class="att-sum-num" id="dailyLeaveCount">0</div>
             </div>
@@ -636,10 +646,14 @@
     <div id="dailyLesson" class="tab-content">
         <div style="position:sticky;top:0;z-index:20; background:rgba(255,248,240,.9); padding:10px; backdrop-filter:blur(8px); border-radius:12px; margin-bottom:10px;">
             <div class="input-with-mic">
-                <input id="lessonSearch" type="text" placeholder="🔍 طالب علم کا نام یا نمبر لکھیں..." onkeyup="searchLessonStudent(event)" style="width:100%; padding:12px; font-size:20px; border:2px solid #ad1457; border-radius:12px; box-sizing:border-box; font-weight:bold;">
-                <button type="button" class="voice-mic-btn" id="searchVoiceBtn" title="آواز سے طالب علم تلاش کریں" onclick="startSearchVoice(this)">🎤</button>
+                <input id="lessonSearch" type="text" placeholder="طالب علم کا نام یا نمبر لکھیں..." onkeyup="searchLessonStudent(event)" style="width:100%; padding:12px; font-size:20px; border:2px solid #ad1457; border-radius:12px; box-sizing:border-box; font-weight:bold;">
+                <button type="button" class="voice-mic-btn" id="searchVoiceBtn" title="آواز سے طالب علم تلاش کریں" onclick="startSearchVoice(this)">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" style="display:block;">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
+                    </svg>
+                </button>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px;">
+            <div class="teacher-font-control" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px;">
                 <div style="display:flex; align-items:center; gap:6px;">
                     <span style="font-size:16px; font-weight:bold; color:#880e4f;">قرآن فونٹ:</span>
                     <div class="font-toggle-group">
@@ -751,6 +765,8 @@
 </div>
 
 <script>
+    const GOOGLE_MIC_SVG = `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" style="display:block;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>`;
+
     // جمیل نوری فونٹ لوڈ ہونے تک سپنر دکھائیں
     (function handleFontLoader() {
         const loader = document.getElementById('fontLoadingOverlay');
@@ -813,18 +829,26 @@
     }
 
     function setStudentLessonFont(studentName, fieldType, fontChoice) {
+        if (!isTeacherMode) return;
         lessonFontPrefs[`${studentName}_${fieldType}`] = fontChoice;
         saveLessonFontPrefs();
         updateAll();
+        if (isSettingsLoaded) {
+            syncSettingsToSupabase().catch(() => {});
+        }
     }
 
     function setGlobalLessonFont(fieldType, fontChoice) {
+        if (!isTeacherMode) return;
         lessonFontPrefs[`global_${fieldType}`] = fontChoice;
         names.forEach(n => {
             lessonFontPrefs[`${n}_${fieldType}`] = fontChoice;
         });
         saveLessonFontPrefs();
         updateAll();
+        if (isSettingsLoaded) {
+            syncSettingsToSupabase().catch(() => {});
+        }
     }
 
     function updateGlobalFontButtonsUI() {
@@ -1012,7 +1036,12 @@
             if (Array.isArray(c.videos)) videoLists = c.videos;
             if (Array.isArray(c.timeline)) timelinePosts = c.timeline;
             if (Array.isArray(c.former_students)) formerStudents = c.former_students;
-            if (c.student_join_dates) window.studentJoinDates = c.student_join_dates;
+            if (c.student_join_dates) {
+                window.studentJoinDates = c.student_join_dates;
+                if (window.studentJoinDates.__fontPrefs__) {
+                    lessonFontPrefs = window.studentJoinDates.__fontPrefs__;
+                }
+            }
             if (c.class_time !== undefined) {
                 classTime = c.class_time;
                 const box = document.getElementById("classTimeBox");
@@ -1052,7 +1081,13 @@
             if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
             if(settingsData.class_time !== undefined && settingsData.class_time !== null) classTime = settingsData.class_time;
             if(settingsData.former_students) formerStudents = JSON.parse(settingsData.former_students);
-            if(settingsData.student_join_dates) window.studentJoinDates = JSON.parse(settingsData.student_join_dates);
+            if(settingsData.student_join_dates) {
+                window.studentJoinDates = JSON.parse(settingsData.student_join_dates);
+                if (window.studentJoinDates && window.studentJoinDates.__fontPrefs__) {
+                    lessonFontPrefs = window.studentJoinDates.__fontPrefs__;
+                    saveLessonFontPrefs();
+                }
+            }
 
             isSettingsLoaded = true;
             localStorage.setItem('hussain_masjid_settings_cache', JSON.stringify({
@@ -1114,13 +1149,16 @@
             alert("🛑 خبردار! کلاؤڈ سے تازہ فہرست لوڈ نہیں ہوئی تھی، اس لیے پرانا ڈیٹا اپلوڈ ہونے سے روک دیا گیا ہے۔ براہ کرم انٹرنیٹ چیک کر کے صفحہ ریفریش کریں۔");
             throw new Error("Settings not loaded from cloud");
         }
+        const joinDatesWithFonts = Object.assign({}, window.studentJoinDates || {}, { __fontPrefs__: lessonFontPrefs });
+        window.studentJoinDates = joinDatesWithFonts;
+
         const payload = {
             id: 1,
             names: JSON.stringify(names),
             videos: JSON.stringify(videoLists),
             timeline: JSON.stringify(timelinePosts),
             former_students: JSON.stringify(formerStudents),
-            student_join_dates: JSON.stringify(window.studentJoinDates || {}),
+            student_join_dates: JSON.stringify(joinDatesWithFonts),
             class_time: classTime
         };
         const { error } = await _supabase.from('masjid_settings').upsert(payload);
@@ -1128,7 +1166,7 @@
 
         localStorage.setItem('hussain_masjid_settings_cache', JSON.stringify({
             names, videos: videoLists, timeline: timelinePosts,
-            former_students: formerStudents, student_join_dates: window.studentJoinDates,
+            former_students: formerStudents, student_join_dates: joinDatesWithFonts,
             class_time: classTime
         }));
     }
@@ -1373,7 +1411,7 @@
                         </div>
                         <div class="input-with-mic">
                             <input type="text" id="quranInput_${i}" class="diary-input ${quranFontClass}" value="${currentW}" ${disabledInput} onchange="saveW('${safeN}',this.value)" placeholder="قرآن کا سبق">
-                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے قرآن کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'w', 'quranInput_${i}')">🎤</button>
+                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے قرآن کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'w', 'quranInput_${i}')">${GOOGLE_MIC_SVG}</button>
                         </div>
 
                         <div class="lesson-label-row">
@@ -1385,7 +1423,7 @@
                         </div>
                         <div class="input-with-mic">
                             <input type="text" id="prayerInput_${i}" class="diary-input ${prayerFontClass}" value="${currentWD}" ${disabledInput} onchange="saveWD('${safeN}',this.value)" placeholder="نماز کا سبق">
-                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے نماز کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'wD', 'prayerInput_${i}')">🎤</button>
+                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے نماز کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'wD', 'prayerInput_${i}')">${GOOGLE_MIC_SVG}</button>
                         </div>
 
                         <button class="history-btn" onclick="showLessonHistory('${safeN}')">📖 مکمل سبق ریکارڈ</button>
