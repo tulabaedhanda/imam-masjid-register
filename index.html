@@ -1,1917 +1,1654 @@
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>مسجد سبق اور ماہانہ نمبر</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    @font-face {
-      font-family: 'JameelNoori';
-      src: url('Jameel%20Noori%20Nastaleeq%202.ttf') format('truetype'),
-           url('Jameel Noori Nastaleeq 2.ttf') format('truetype'),
-           local('Jameel Noori Nastaleeq');
-      font-weight: normal;
-      font-style: normal;
-      font-display: block;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'JameelNoori', 'Noto Nastaliq Urdu', Tahoma, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ہلکا دھندلا لوڈنگ اسکرین (جب تک جمیل نوری فونٹ لوڈ ہو) */
-    .font-loader-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(22, 6, 44, 0.78);
-      backdrop-filter: blur(9px);
-      -webkit-backdrop-filter: blur(9px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      z-index: 9999;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-
-    .font-loader-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .loader-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 215, 0, 0.25);
-      border-top-color: #ffd700;
-      border-right-color: #00f2fe;
-      border-radius: 50%;
-      animation: loaderSpin 0.85s linear infinite;
-    }
-
-    .loader-text {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      color: #ffe57f;
-      direction: ltr;
-    }
-
-    @keyframes loaderSpin {
-      to { transform: rotate(360deg); }
-    }
-
-    .score-num {
-      font-family: 'Arial Black', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
-      font-weight: 900 !important;
-      direction: ltr;
-      unicode-bidi: isolate;
-      letter-spacing: 0.5px;
-      line-height: 1.05;
-    }
-
-    .sharp-gold-shine {
-      font-family: 'Arial Black', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
-      font-weight: 900 !important;
-      direction: ltr;
-      unicode-bidi: isolate;
-      line-height: 1;
-      background-image: linear-gradient(
-        115deg,
-        #c87d00 0%,
-        #ffd700 24%,
-        #fff7b2 40%,
-        #ffffff 47%,
-        #ffd700 55%,
-        #b56900 74%,
-        #ffe45e 90%,
-        #c87d00 100%
-      );
-      background-size: 220% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: #ffd700;
-      filter: none !important;
-      text-shadow: none !important;
-      animation: crispGoldSweep 2.6s linear infinite;
-    }
-
-    @keyframes crispGoldSweep {
-      0% { background-position: 100% 50%; }
-      100% { background-position: -120% 50%; }
-    }
-
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #1b0638 0%, #430d73 45%, #9b145a 85%, #d93b20 100%);
-      background-attachment: fixed;
-      color: #fff;
-      padding: 10px 10px 80px 10px;
-      line-height: 1.95;
-    }
-
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    /* اسکرین پر محفوظ ہونے کا واضح میسج */
-    .toast-banner {
-      position: fixed;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-130%);
-      background: linear-gradient(135deg, #00b09b 0%, #38ef7d 100%);
-      color: #042114;
-      font-size: 1.32rem;
-      font-weight: bold;
-      padding: 8px 22px;
-      border-radius: 30px;
-      border: 2px solid #ffffff;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
-      z-index: 2000;
-      white-space: nowrap;
-      transition: transform 0.25s ease;
-    }
-
-    .toast-banner.error {
-      background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
-      color: #ffffff;
-    }
-
-    .toast-banner.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* مسجد بینر سیکشن */
-    .banner-wrapper {
-      background: rgba(255, 255, 255, 0.12);
-      border: 2px solid rgba(255, 215, 0, 0.65);
-      border-radius: 20px;
-      padding: 8px;
-      margin-bottom: 11px;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-    }
-
-    .active-banner-box {
-      width: 100%;
-      border-radius: 14px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #2b094c, #140529);
-      min-height: 95px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .active-banner-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
-    }
-
-    .mosque-switcher {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .thumb-btn {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      background: #1a0633;
-      cursor: pointer;
-      height: 54px;
-      opacity: 0.62;
-      transition: all 0.2s ease;
-      padding: 0;
-    }
-
-    .thumb-btn.active {
-      opacity: 1;
-      border: 2.5px solid #ffd200;
-      box-shadow: 0 0 14px rgba(255, 210, 0, 0.55);
-      transform: scale(1.01);
-    }
-
-    .thumb-btn img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* مہینے اور سال کی بڑی سرخی اور پچھلے مہینے دیکھنے کا سلیکٹر */
-    .month-hero-card {
-      background: linear-gradient(135deg, rgba(24, 6, 48, 0.88), rgba(66, 14, 102, 0.88));
-      border: 2px solid rgba(255, 215, 0, 0.65);
-      border-radius: 18px;
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      text-align: center;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-    }
-
-    .month-big-title {
-      font-size: 2.4rem;
-      font-weight: bold;
-      line-height: 1.65;
-      color: #ffd700;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
-    }
-
-    .month-sub-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 6px;
-    }
-
-    .month-select {
-      width: 100%;
-      max-width: 260px;
-      min-height: 42px;
-      padding: 2px 12px;
-      font-size: 1.22rem;
-      line-height: 1.8;
-      border-radius: 12px;
-      border: 1.5px solid #00f2fe;
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-      font-weight: bold;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .month-select option {
-      background: #240842;
-      color: #fff;
-    }
-
-    /* بنیادی بٹن */
-    .btn {
-      border: none;
-      border-radius: 12px;
-      padding: 5px 14px;
-      font-size: 1.18rem;
-      line-height: 1.85;
-      color: #fff;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.28);
-    }
-
-    .btn:active { transform: scale(0.96); }
-
-    /* ایڈمن ایکشن بٹن: کلاس شامل کریں + آن لائن بھیجیں + پرنٹ */
-    .admin-top-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .btn-add-class {
-      width: 100%;
-      background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
-      color: #062114;
-      font-size: 1.22rem;
-      font-weight: bold;
-      border-radius: 14px;
-      padding: 5px 10px;
-    }
-
-    .btn-sync-online {
-      width: 100%;
-      background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-      color: #ffffff;
-      font-size: 1.22rem;
-      font-weight: bold;
-      border-radius: 14px;
-      padding: 5px 10px;
-      border: 1.5px solid rgba(255, 255, 255, 0.45);
-    }
-
-    .btn-print {
-      grid-column: span 2;
-      width: 100%;
-      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
-      color: #240b36;
-      font-size: 1.28rem;
-      font-weight: bold;
-      border-radius: 14px;
-      padding: 5px 12px;
-    }
-
-    .btn-gold {
-      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
-      color: #240b36;
-      font-weight: bold;
-    }
-
-    .btn-icon {
-      background: rgba(0, 0, 0, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      padding: 2px 10px;
-      font-size: 1rem;
-      border-radius: 9px;
-    }
-
-    .btn-del {
-      background: rgba(239, 68, 68, 0.88);
-      padding: 2px 10px;
-      font-size: 1rem;
-      border-radius: 9px;
-    }
-
-    /* کلاس کارڈ */
-    .class-card {
-      background: rgba(255, 255, 255, 0.09);
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
-      padding: 13px;
-      margin-bottom: 18px;
-      border: 1.5px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-    }
-
-    .class-header {
-      background: linear-gradient(90deg, #ff00cc 0%, #333399 100%);
-      border-radius: 14px;
-      padding: 7px 13px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 11px;
-    }
-
-    .class-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    /* ٹاپ 3 ونرز کارڈ */
-    .winner-box {
-      background: linear-gradient(135deg, #ffd200 0%, #ff8c00 50%, #ff3d54 100%);
-      border-radius: 16px;
-      padding: 9px;
-      margin-bottom: 13px;
-      border: 2px solid #fff5b8;
-      box-shadow: 0 6px 20px rgba(255, 140, 0, 0.35);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .winner-item {
-      background: rgba(20, 4, 40, 0.97);
-      border: 1.5px solid rgba(255, 215, 0, 0.75);
-      border-radius: 14px;
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .winner-left-group {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .winner-pos-stylish {
-      font-family: 'Georgia', 'Palatino Linotype', 'Times New Roman', serif !important;
-      font-style: italic;
-      font-weight: 900;
-      direction: ltr;
-      unicode-bidi: isolate;
-      font-size: 1.7rem;
-      line-height: 1;
-      letter-spacing: 0.5px;
-      flex-shrink: 0;
-      padding-bottom: 2px;
-      filter: none !important;
-    }
-
-    .winner-pos-stylish sup {
-      font-size: 0.98rem;
-      font-style: italic;
-      margin-left: 1px;
-      vertical-align: super;
-    }
-
-    .pos-1 {
-      background: linear-gradient(180deg, #fffde7 0%, #ffd700 55%, #d48806 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .pos-2 {
-      background: linear-gradient(180deg, #ffffff 0%, #cfd8dc 55%, #90a4ae 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .pos-3 {
-      background: linear-gradient(180deg, #ffe0b2 0%, #ffab40 55%, #e65100 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .winner-name-side {
-      font-size: 2.55rem;
-      font-weight: bold;
-      line-height: 1.72;
-      color: #ffffff;
-      word-break: break-word;
-    }
-
-    .winner-pts-bare {
-      font-size: 3.65rem;
-      padding-left: 2px;
-      flex-shrink: 0;
-    }
-
-    /* نگران بچہ (مانیٹر) کارڈ */
-    .monitor-card {
-      background: linear-gradient(145deg, rgba(22, 11, 52, 0.95), rgba(49, 15, 84, 0.95));
-      border-radius: 16px;
-      padding: 11px;
-      margin-bottom: 12px;
-      border: 1.5px solid #a855f7;
-    }
-
-    .monitor-card.top-monitor {
-      border: 2.5px solid #ffd200;
-      box-shadow: 0 5px 18px rgba(255, 210, 0, 0.28);
-    }
-
-    .monitor-top {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-      color: #052417;
-      border-radius: 12px;
-      padding: 7px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .monitor-card.top-monitor .monitor-top {
-      background: linear-gradient(135deg, #ffe259 0%, #ffa751 100%);
-      color: #240830;
-    }
-
-    .monitor-name-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .monitor-serial-num {
-      background: #140529;
-      color: #ffd200;
-      min-width: 30px;
-      height: 30px;
-      padding: 0 8px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.15rem;
-      flex-shrink: 0;
-    }
-
-    .monitor-name {
-      font-size: 1.55rem;
-      font-weight: bold;
-      line-height: 1.65;
-    }
-
-    .monitor-total-bare {
-      color: #140529;
-      font-size: 1.85rem;
-      padding-right: 4px;
-    }
-
-    /* دیئے گئے بچوں (بچوں کے بچے) کی فہرست */
-    .student-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .student-row {
-      background: rgba(255, 255, 255, 0.11);
-      border-radius: 14px;
-      padding: 9px 14px;
-      border-right: 5px solid #38ef7d;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .student-info-col {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-      flex: 1;
-    }
-
-    .student-name {
-      font-size: 1.52rem;
-      font-weight: bold;
-      line-height: 1.65;
-      color: #fff;
-    }
-
-    .student-btns-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .pts-btn {
-      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-      color: #06182c;
-      border: none;
-      border-radius: 10px;
-      padding: 1px 13px;
-      font-size: 1.12rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .pts-btn:active { transform: scale(0.95); }
-
-    .student-score-bare {
-      color: #ffffff;
-      font-size: 2.45rem;
-      padding: 4px 8px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .student-score-bare.editable { cursor: pointer; }
-    .student-score-bare.editable:active { transform: scale(0.93); }
-
-    .empty-text {
-      text-align: center;
-      padding: 10px;
-      font-size: 1.18rem;
-      color: rgba(255, 255, 255, 0.82);
-    }
-
-    /* نیچے ایڈمن لاگ ان / سٹیٹس پٹی */
-    .admin-footer {
-      margin-top: 22px;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .admin-trigger-btn {
-      background: rgba(0, 0, 0, 0.38);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: rgba(255, 255, 255, 0.88);
-      border-radius: 20px;
-      padding: 3px 16px;
-      font-size: 1.08rem;
-      cursor: pointer;
-    }
-
-    .sync-badge {
-      font-size: 1rem;
-      color: #38ef7d;
-      background: rgba(0, 0, 0, 0.38);
-      padding: 2px 12px;
-      border-radius: 20px;
-    }
-
-    /* ماڈل باکس */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 2, 24, 0.84);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 999;
-    }
-
-    .modal-overlay.show { display: flex; }
-
-    .modal-box {
-      width: 100%;
-      max-width: 390px;
-      background: linear-gradient(145deg, #2b094c, #59116e);
-      border: 2px solid #ffd200;
-      border-radius: 20px;
-      padding: 18px;
-    }
-
-    .modal-title {
-      font-size: 1.38rem;
-      font-weight: bold;
-      color: #ffd200;
-      margin-bottom: 10px;
-    }
-
-    .modal-input {
-      width: 100%;
-      padding: 8px 13px;
-      font-size: 1.35rem;
-      line-height: 1.85;
-      border-radius: 12px;
-      border: 2px solid #00f2fe;
-      background: rgba(0, 0, 0, 0.45);
-      color: #fff;
-      margin-bottom: 12px;
-      outline: none;
-    }
-
-    .auth-input {
-      direction: ltr;
-      font-family: Tahoma, Arial, sans-serif;
-      font-size: 1.05rem;
-      line-height: 1.5;
-      padding: 10px 13px;
-    }
-
-    .modal-btns {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    /* نیچے گنتی والا کی بورڈ */
-    .keypad-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(8, 2, 20, 0.72);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .keypad-overlay.show { display: flex; }
-
-    .keypad-sheet {
-      width: 100%;
-      max-width: 500px;
-      background: linear-gradient(160deg, #1e073b 0%, #3d0e66 60%, #191345 100%);
-      border-top: 3px solid #ffd200;
-      border-radius: 24px 24px 0 0;
-      padding: 13px 13px 18px 13px;
-    }
-
-    .kp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .kp-title {
-      font-size: 1.35rem;
-      font-weight: bold;
-      color: #ffd200;
-    }
-
-    .kp-close {
-      background: rgba(255, 255, 255, 0.16);
-      border: none;
-      color: #fff;
-      border-radius: 9px;
-      padding: 2px 11px;
-      font-size: 1.1rem;
-      cursor: pointer;
-    }
-
-    .kp-display {
-      background: rgba(0, 0, 0, 0.55);
-      border: 2px solid #00f2fe;
-      border-radius: 14px;
-      padding: 7px 12px;
-      margin-bottom: 9px;
-    }
-
-    .kp-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.15rem;
-    }
-
-    .kp-expr { font-size: 1.35rem; color: #38ef7d; }
-    .kp-total { font-size: 1.75rem; color: #ffd200; }
-
-    .kp-modes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 9px;
-    }
-
-    .kp-mode {
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 10px;
-      padding: 3px;
-      font-size: 1.15rem;
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .kp-mode.add-on { background: linear-gradient(135deg, #11998e, #38ef7d); color: #052216; }
-    .kp-mode.sub-on { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; }
-
-    .kp-grid {
-      direction: ltr;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-    }
-
-    .kp-key {
-      border: none;
-      border-radius: 12px;
-      padding: 11px 4px;
-      font-family: 'Arial Black', 'Segoe UI', Roboto, Arial, sans-serif;
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: #fff;
-      background: rgba(255, 255, 255, 0.16);
-      cursor: pointer;
-    }
-
-    .kp-key:active { transform: scale(0.94); }
-    .kp-plus { background: linear-gradient(135deg, #00c6ff, #0072ff); }
-    .kp-back { background: linear-gradient(135deg, #f7971e, #ffd200); color: #240b36; }
-    .kp-clr  { background: linear-gradient(135deg, #cb2d3e, #ef473a); font-family: 'JameelNoori', Tahoma, sans-serif; font-size: 1.2rem; }
-    .kp-save { grid-column: span 2; background: linear-gradient(135deg, #11998e, #38ef7d); color: #052216; font-family: 'JameelNoori', Tahoma, sans-serif; font-size: 1.4rem; }
-
-    /* پرنٹ (A4 / PDF) کے لیے صاف اور واضح ڈیزائن */
-    @media print {
-      body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        padding: 0 !important;
-      }
-      .font-loader-overlay,
-      .toast-banner,
-      .mosque-switcher,
-      .month-sub-row,
-      #adminTopBar,
-      .student-btns-row,
-      .btn,
-      .admin-footer,
-      .modal-overlay,
-      .keypad-overlay {
-        display: none !important;
-      }
-      .container { max-width: 100% !important; }
-      .banner-wrapper {
-        background: #ffffff !important;
-        border: 1.5px solid #000 !important;
-        box-shadow: none !important;
-        padding: 4px !important;
-      }
-      .month-hero-card {
-        background: #f3f4f6 !important;
-        border: 1.5px solid #000 !important;
-        box-shadow: none !important;
-      }
-      .month-big-title {
-        color: #000000 !important;
-        text-shadow: none !important;
-      }
-      .class-card {
-        background: #ffffff !important;
-        border: 1.5px solid #000 !important;
-        box-shadow: none !important;
-        break-inside: avoid;
-      }
-      .class-header {
-        background: #e5e7eb !important;
-        color: #000000 !important;
-        border-bottom: 1.5px solid #000 !important;
-      }
-      .winner-box {
-        background: #f9fafb !important;
-        border: 1.5px solid #000 !important;
-        box-shadow: none !important;
-      }
-      .winner-item {
-        background: #ffffff !important;
-        border: 1px solid #444 !important;
-      }
-      .winner-name-side,
-      .winner-pos-stylish,
-      .winner-pts-bare,
-      .sharp-gold-shine {
-        color: #000000 !important;
-        -webkit-text-fill-color: #000000 !important;
-        background: none !important;
-        text-shadow: none !important;
-      }
-      .monitor-card {
-        background: #ffffff !important;
-        border: 1px solid #333 !important;
-        box-shadow: none !important;
-      }
-      .monitor-top {
-        background: #f3f4f6 !important;
-        color: #000000 !important;
-        border-bottom: 1px solid #888 !important;
-      }
-      .monitor-serial-num {
-        background: #000000 !important;
-        color: #ffffff !important;
-      }
-      .student-row {
-        background: #ffffff !important;
-        border: 1px solid #ccc !important;
-        border-right: 3px solid #000 !important;
-      }
-      .student-name,
-      .student-score-bare {
-        color: #000000 !important;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رجسٹر - امام حسین مسجد</title>
+    <!-- موبائل ایپ (PWA) کا لنک -->
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+        @font-face {
+            font-family: 'Jameel Noori Nastaleeq';
+            src: url('JameelNoori.ttf') format('truetype');
+            font-display: swap;
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * { 
+            font-family: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', serif !important; 
+            line-height: 1.8 !important; 
+        }
+
+        :root { 
+            --primary: #ad1457; 
+            --present-clr: #1b5e20;
+            --absent-clr: #b71c1c;
+            --leave-clr: #ef6c00;
+            --purple-btn: #4a148c;
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --gold-glow: 0 0 10px rgba(212, 175, 55, 0.6), inset 0 0 5px rgba(212, 175, 55, 0.4);
+        }
+
+        body { 
+            background-image: url("https://lh3.googleusercontent.com/d/1gDcwRn_tCIcik1x2wFoesEwdYC4HrlxF");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            padding: 10px; margin: 0; 
+        }
+
+        .container { 
+            max-width: 100%; margin: auto; 
+            background: rgba(255, 248, 240, 0.65); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px; border-radius: 20px; 
+            border: 4px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), var(--gold-glow);
+        }
+
+        .header-section { text-align: center; margin: -15px -15px 20px -15px; position: relative; }
+        .banner-img { width: 100%; border-radius: 15px 15px 0 0; border-bottom: 4px solid #ffd700; display: block; height: auto; }
+        
+        .urdu-date { 
+            background: var(--primary); color: white; padding: 5px 20px; 
+            border-radius: 50px; display: inline-block; margin-top: -20px;
+            position: relative; border: 2px solid #ffd700; font-size: 18px; z-index: 10;
+            box-shadow: var(--gold-glow);
+        }
+
+        .date-picker-container { text-align: center; margin: 10px 0 15px 0; }
+        .date-picker-container input[type="date"] {
+            padding: 8px 15px; font-size: 16px; font-weight: bold;
+            border: 2px solid var(--primary); border-radius: 10px;
+            color: var(--primary); background: rgba(255, 255, 255, 0.8); outline: none; cursor: pointer;
+        }
+
+        .parent-notice-bar {
+            background-color: rgba(255, 243, 224, 0.6); color: #e65100; border: 2px dashed #ffb74d;
+            padding: 8px; border-radius: 10px; text-align: center; font-weight: bold;
+            font-size: 18px; margin-bottom: 12px; backdrop-filter: blur(5px);
+        }
+
+        #unsavedNotice {
+            display: none;
+            background-color: #ffcdd2; color: #b71c1c; border: 2px dashed #e53935;
+            padding: 8px; border-radius: 10px; text-align: center; font-weight: bold;
+            font-size: 18px; margin-bottom: 12px; animation: blinker 1.5s linear infinite;
+        }
+        @keyframes blinker { 50% { opacity: 0.7; } }
+
+        .tabs { 
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.3);
+            padding: 6px; border-radius: 14px; border: 3px solid transparent; border-image: var(--gold-gradient) 1;
+            box-shadow: var(--gold-glow); backdrop-filter: blur(5px);
+        }
+        .tab-btn { 
+            flex: 1; min-width: 85px; padding: 10px 4px; cursor: pointer; border: 1px solid transparent; 
+            background: transparent; font-size: 19px; font-weight: bold; color: #5c0632; border-radius: 10px;
+            text-align: center; transition: all 0.25s ease;
+        }
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.4); }
+        .tab-btn.active { background: var(--primary); color: white !important; box-shadow: 0 4px 12px rgba(173, 20, 87, 0.3); border-radius: 8px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        table { 
+            width: 100%; border-collapse: collapse; background: rgba(255, 255, 255, 0.25); border-radius: 12px; 
+            overflow: hidden; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 3px solid transparent; border-image: var(--gold-gradient) 1; box-shadow: var(--gold-glow);
+        }
+        th, td { 
+            padding: 12px 6px; border: 1px solid rgba(186, 149, 63, 0.4); text-align: center; 
+            font-size: 22px; color: #000000; font-weight: bold; background: rgba(255, 255, 255, 0.15); 
+        }
+        th { background: var(--primary) !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 22px; }
+        
+        .student-name { text-align: right !important; padding-right: 15px; font-weight: bold; color: #000000 !important; font-size: 24px; width: 45%; }
+        
+        .student-name-container { display: flex; justify-content: space-between; align-items: center; }
+        .three-dots-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--primary); padding: 0 8px; display: none; }
+        .teacher-mode-active .three-dots-btn { display: inline-block; }
+
+        .status-btn { 
+            width: 95px; padding: 6px 0; cursor: pointer; font-weight: bold; border-radius: 8px; background: rgba(245, 245, 245, 0.85); 
+            border: 1px solid rgba(186, 149, 63, 0.5); display: inline-block; text-align: center; font-size: 20px; color: #000; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .present { background-color: var(--present-clr) !important; color: white !important; border-color: var(--present-clr); }
+        .absent { background-color: var(--absent-clr) !important; color: white !important; border-color: var(--absent-clr); }
+        .leave { background-color: var(--leave-clr) !important; color: white !important; border-color: var(--leave-clr); }
+        .report-count { font-weight: 900; font-family: Arial, sans-serif !important; font-size: 24px; }
+
+        .student-lesson-card {
+            background: rgba(255, 255, 255, 0.25); border: 2px solid transparent; border-image: var(--gold-gradient) 1;
+            border-radius: 12px; padding: 12px; margin-bottom: 14px; box-shadow: var(--gold-glow), 0 4px 8px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .lesson-row-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; font-size: 22px; font-weight: bold; }
+        .lesson-inputs-holder { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 5px; border-top: 1px dashed rgba(186, 149, 63, 0.4); padding-top: 5px; }
+        .lesson-box-label { font-size: 18px; color: #880e4f; font-weight: bold; text-align: right; margin-top: 2px; }
+        
+        .diary-input { 
+            width: 95%; padding: 7px; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 6px; 
+            font-size: 22px; background: rgba(255, 255, 255, 0.75); color: #000000 !important; font-weight: bold;
+        }
+        .diary-input:disabled { background: rgba(255, 255, 255, 0.4); color: #000000 !important; border: 1px solid rgba(0,0,0,0.1); cursor: not-allowed; }
+
+        .former-student-card {
+            background: rgba(255,255,255,0.35);
+            border: 2px solid transparent;
+            border-image: var(--gold-gradient) 1;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--gold-glow);
+            backdrop-filter: blur(8px);
+        }
+        .former-student-name { color: var(--primary); font-size: 26px; font-weight: bold; margin-bottom: 10px; }
+        .former-student-line { font-size: 20px; font-weight: bold; margin-bottom: 6px; color: #111; }
+        .restore-btn { background: #1b5e20; color: white; border: none; border-radius: 10px; padding: 8px 18px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        .fb-uploader-card {
+            background: rgba(255, 255, 255, 0.4); padding: 15px; border-radius: 12px; border: 2px solid transparent; 
+            border-image: var(--gold-gradient) 1; margin-bottom: 20px; text-align: right; box-shadow: var(--gold-glow); backdrop-filter: blur(8px);
+        }
+        .fb-uploader-card select, .fb-uploader-card input, .fb-uploader-card textarea {
+            width: 100%; padding: 10px; margin: 6px 0; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 8px; font-size: 18px; font-weight:bold; box-sizing: border-box; background: rgba(255, 255, 255, 0.9);
+        }
+        .fb-feed-container { display: flex; flex-direction: column; gap: 20px; max-height: 700px; overflow-y: auto; padding: 5px; }
+        .fb-post-card {
+            background: rgba(255, 255, 255, 0.35); border: 2px solid transparent; border-image: var(--gold-gradient) 1; 
+            border-radius: 12px; padding: 15px; box-shadow: var(--gold-glow); text-align: right; position: relative; backdrop-filter: blur(8px);
+        }
+        .fb-post-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(186, 149, 63, 0.3); padding-bottom: 8px; margin-bottom: 12px; }
+        .fb-post-user { font-size: 20px; font-weight: bold; color: var(--primary); }
+        .fb-post-date { font-size: 14px; color: #111; font-family: Arial, sans-serif !important; font-weight: bold; }
+        .fb-post-title { font-size: 24px; font-weight: bold; color: #000000; margin-bottom: 12px; line-height: 1.5; }
+        
+        .fb-post-media { 
+            width: 100%; border-radius: 10px; border: 3px solid transparent; border-image: var(--gold-gradient) 1;
+            box-shadow: var(--gold-glow); overflow: hidden; margin-bottom: 5px; position: relative; background: rgba(255, 255, 255, 0.5);
+        }
+        .fb-del-btn { background: #b71c1c; color: white; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+
+        .timeline-text-post { background: #fff; padding: 18px; margin-top: 12px; border-radius: 12px; font-size: 22px; font-weight:bold; line-height: 1.9; white-space: pre-wrap; text-align: right; }
+
+        .teacher-badge { background: rgba(232, 245, 233, 0.6); color: #2e7d32; border: 2px solid #4caf50; padding: 10px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 20px; backdrop-filter: blur(5px); }
+
+        .footer-tools { margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .btn-tool { padding: 18px 10px; font-size: 22px; cursor: pointer; border: none; border-radius: 15px; color: white; font-weight: bold; text-align: center; line-height: 1.4; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.1s ease; }
+        .btn-tool:active { transform: scale(0.97); }
+        .teacher-only-btn { display: none; }
+
+        .management-panel { background: rgba(255, 255, 255, 0.4); border: 2px solid transparent; border-image: var(--gold-gradient) 1; padding: 15px; border-radius: 15px; margin-bottom: 15px; display: none; backdrop-filter: blur(5px); box-shadow: var(--gold-glow); }
+        .mgmt-input { padding: 8px; border: 1px solid rgba(186, 149, 63, 0.5); border-radius: 5px; font-size: 18px; font-weight:bold; width: 60%; max-width: 250px; background: rgba(255, 255, 255, 0.9); }
+        .btn-mgmt { padding: 8px 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; }
+
+        .edit-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+        .modal-content { background: #fffdf9; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; border: 4px solid transparent; border-image: var(--gold-gradient) 1; text-align: right; box-shadow: var(--gold-glow); }
+
+        .video-btn { background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .video-container { display: none; padding: 10px; background: rgba(249, 249, 249, 0.3); text-align: center; backdrop-filter: blur(5px); }
+        .video-container iframe { width: 100%; max-width: 450px; height: 250px; border-radius: 10px; border: 2px solid transparent; border-image: var(--gold-gradient) 1; box-shadow: var(--gold-glow); }
+        .yt-playlist-link-btn { display: inline-block; background: #ff0000; color: white !important; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 16px; font-weight: bold; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        .login-portal { margin-top: 40px; background: rgba(255, 249, 229, 0.5); border: 3px dashed var(--primary); padding: 15px; border-radius: 15px; text-align: center; backdrop-filter: blur(5px); }
+        .login-portal h3 { margin-top: 0; color: var(--primary); font-size: 22px; font-weight:bold; }
+        .login-input { padding: 8px; margin: 5px; border: 1px solid var(--primary); border-radius: 5px; font-size: 18px; font-weight:bold; width: 80%; max-width: 200px; text-align: center; background: white; }
+        .login-submit { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px; }
+        
+        .forgot-pass-link { display: inline-block; margin-top: 12px; color: var(--primary); font-weight: bold; font-size: 17px; text-decoration: underline; cursor: pointer; }
+
+        /* ===== سبق ہسٹری ===== */
+        .history-btn{ width:100%; margin-top:8px; padding:10px; border:none; border-radius:10px; background:#00695c; color:#fff; font-size:19px; font-weight:bold; cursor:pointer; }
+        .history-modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:99999; overflow:auto; }
+        .history-box{ width:95%; max-width:700px; margin:25px auto; background:#fff; border-radius:15px; padding:18px; }
+        .history-title{ text-align:center; font-size:28px; font-weight:bold; color:#00695c; margin-bottom:20px; }
+        .history-item{ background:#f8f8f8; border-right:5px solid #00695c; border-radius:10px; padding:12px; margin-bottom:12px; font-size: 22px; font-weight: bold; }
+        .history-date{ color:#c62828; font-size:20px; font-weight:bold; margin-bottom:10px; }
+        .close-history{ width:100%; padding:12px; border:none; border-radius:10px; background:#c62828; color:#fff; font-size:20px; font-weight:bold; cursor:pointer; }
+
+        /* ===== مکمل صاف سادہ نیٹو ویڈیو پلیئر ===== */
+        .native-yt-card,
+        .native-yt-card * {
+            -webkit-tap-highlight-color: transparent !important;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .native-yt-card {
+            width: 100%;
+            background: #140a28;
+            border-radius: 16px;
+            border: 2px solid #b38728;
+            overflow: hidden;
+            margin: 0 auto 10px auto;
+            box-shadow:
+                0 14px 28px rgba(0, 0, 0, 0.42),
+                0 6px 14px rgba(173, 20, 87, 0.28),
+                0 2px 10px rgba(212, 175, 55, 0.35);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .native-yt-stage {
+            position: relative;
+            width: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .native-yt-stage iframe,
+        .native-yt-player-target {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            border: none;
+            pointer-events: none;
+        }
+
+        .native-yt-thumb {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            pointer-events: none;
+            background: radial-gradient(circle at center, #4a148c 0%, #150b29 100%);
+            transition: opacity 0.3s ease;
+        }
+
+        .native-yt-card.is-playing .native-yt-thumb,
+        .native-yt-card.has-started .native-yt-thumb {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .native-yt-click-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: none;
+        }
+
+        .native-yt-card.is-playing .native-yt-click-layer {
+            pointer-events: auto;
+        }
+
+        .native-yt-center-btn {
+            pointer-events: auto;
+            cursor: pointer;
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            background: rgba(173, 20, 87, 0.84);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fcf6ba;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fcf6ba;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 0 12px rgba(252, 246, 186, 0.35);
+            transition: transform 0.2s, opacity 0.25s;
+            font-family: Arial, sans-serif !important;
+            padding-left: 4px;
+            outline: none;
+        }
+
+        .native-yt-center-btn:active {
+            transform: scale(0.92);
+        }
+
+        .native-yt-card.is-playing .native-yt-center-btn {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .native-yt-card.is-playing.is-paused .native-yt-center-btn {
+            opacity: 0.95;
+            pointer-events: auto;
+            width: 56px;
+            height: 56px;
+            font-size: 21px;
+            padding-left: 3px;
+        }
+
+        .native-yt-controls {
+            width: 100%;
+            height: 42px;
+            box-sizing: border-box;
+            background: linear-gradient(90deg, #1b0d36 0%, #3b0e28 50%, #1b0d36 100%);
+            border-top: 1px solid rgba(252, 246, 186, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            direction: ltr;
+        }
+
+        .native-yt-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(252, 246, 186, 0.14);
+            border: 1px solid rgba(252, 246, 186, 0.45);
+            color: #fcf6ba;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.15s, border-color 0.2s;
+        }
+
+        .native-yt-icon-btn:active {
+            transform: scale(0.9);
+        }
+
+        .native-yt-icon-btn.is-muted {
+            background: rgba(183, 28, 28, 0.35);
+            border-color: rgba(255, 138, 128, 0.7);
+            color: #ffcdd2;
+        }
+
+        .native-yt-icon-btn svg {
+            width: 15px;
+            height: 15px;
+            display: block;
+        }
+
+        .native-yt-progress {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.28);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .native-yt-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #bf953f, #fcf6ba);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .native-yt-progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 6px rgba(0,0,0,0.6);
+        }
+
+        .native-yt-time {
+            color: #fcf6ba;
+            font-size: 13px;
+            font-weight: bold;
+            font-family: Arial, sans-serif !important;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+
+        @media print {
+            .tabs, .footer-tools, .date-picker-container, .login-portal, .teacher-badge, .management-panel, .fb-uploader-card, .fb-del-btn, .parent-notice-bar, .three-dots-btn { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+
+        .class-time-box{ width:80%; max-width:500px; margin:12px auto; padding:12px; min-height:50px; background:rgba(255,255,255,0.9); border:3px solid #b38728; border-radius:15px; text-align:center; font-size:24px; font-weight:bold; color:#ad1457; box-shadow: 0 0 10px rgba(218,165,32,0.4), inset 0 0 8px rgba(255,215,0,0.2); }
+        .class-time-editor{ text-align:center; margin-bottom:12px; }
+        .class-time-editor input{ width:80%; max-width:500px; padding:8px; border:2px solid #b38728; border-radius:10px; font-size:20px; font-weight:bold; }
+
+        .lesson-highlight{ border:4px solid gold !important; box-shadow: 0 0 25px gold, 0 0 40px #ffd700 !important; animation:lessonFlash .8s infinite alternate; }
+        @keyframes lessonFlash{ from{transform:scale(1);} to{transform:scale(1.02);} }
+    </style>
 </head>
 <body>
 
-<!-- ہلکا دھندلا لوڈنگ اسکرین (جب تک جمیل نوری نستعلیق لوڈ ہو) -->
-<div id="fontLoader" class="font-loader-overlay">
-  <div class="loader-spinner"></div>
-  <div class="loader-text">Loading...</div>
+<div class="container" id="mainContainer">
+    <div class="header-section">
+        <img src="https://lh3.googleusercontent.com/d/1Tvn2hUZfgC0y4ioWbJ5p6pAStAc0o4BJ" alt="امام حسین مسجد بینر" class="banner-img">
+        <div id="displayUrduDate" class="urdu-date"></div>
+    </div>
+
+    <div class="date-picker-container">
+        <label for="mainDate" style="color: var(--primary); font-weight: bold; font-size: 18px; margin-left: 5px;">تاریخ منتخب کریں:</label>
+        <input type="date" id="mainDate" onchange="handleDateChange()">
+    </div>
+
+    <div id="classTimeBox" class="class-time-box"></div>
+
+    <div id="classTimeEditor" class="class-time-editor" style="display:none;">
+        <input type="text" id="classTimeInput" placeholder="کلاس ٹائم لکھیں">
+        <button class="btn-mgmt" style="background:#b38728;margin-top:5px;" onclick="saveClassTime()">محفوظ کریں</button>
+    </div>
+
+    <div id="teacherBadge" class="teacher-badge" style="display: none;">🔓 استاد موڈ فعال ہے (ترمیم کھلی ہے)</div>
+
+    <div id="managementPanel" class="management-panel">
+        <strong style="color: var(--primary); font-size: 20px;">🆕 نیا داخلہ (طالب علم شامل کریں):</strong>
+        <div style="margin-top: 8px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" id="newStudentName" class="mgmt-input" placeholder="طالب علم کا نام لکھیں...">
+            <input type="text" id="newStudentYT" class="mgmt-input" placeholder="یوٹیوب پلے لسٹ آئی ڈی (آپشنل)">
+            <button class="btn-mgmt" style="background: var(--present-clr);" id="btnAddStudentSubmit" onclick="addStudent()">داخل کریں</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('dailyAtt', event)">حاضری</button>
+        <button class="tab-btn" onclick="openTab('dailyLesson', event)">سبق</button>
+        <button class="tab-btn" onclick="openTab('videoTab', event)">ویڈیوز</button>
+        <button class="tab-btn" onclick="openTab('attReport', event)">حاضری رپورٹ</button>
+        <button class="tab-btn" onclick="openTab('lessReport', event)">سبق رپورٹ</button>
+        <button class="tab-btn" onclick="openTab('miscellaneousTab', event)">متفرق</button>
+        <button class="tab-btn" onclick="openTab('formerStudentsTab', event)">سابقہ طلباء</button>
+    </div>
+
+    <div id="dailyAtt" class="tab-content active">
+        <div id="unsavedNotice">⚠️ آپ نے کچھ تبدیلیاں کی ہیں! انہیں پکا محفوظ کرنے کے لیے نیچے دیئے گئے "آن لائن ڈیٹا بھیجیں 🚀" بٹن کو دبائیں۔</div>
+        <div class="parent-notice-bar" id="loadingBar" style="display:none;">🔄 کلاؤڈ سے آپ کا پرانا ڈیٹا لایا جا رہا ہے...</div>
+        
+        <div class="parent-notice-bar">📢 ریکارڈ دیکھنے کیلئے اوپر دی گئی تاریخ منتخب کریں</div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <div></div>
+            <div style="color:var(--primary); font-weight:bold; font-size:20px;" id="totalStudentsCount">تعداد: لوڈ ہو رہا ہے...</div>
+        </div>
+        <table>
+            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>حاضری</th></tr></thead>
+            <tbody id="attTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="dailyLesson" class="tab-content">
+        <div style="position:sticky;top:0;z-index:20; background:rgba(255,248,240,.9); padding:10px; backdrop-filter:blur(8px);">
+            <input id="lessonSearch" type="text" placeholder="🔍 طالب علم کا نام یا نمبر لکھیں..." onkeyup="searchLessonStudent(event)" style="width:100%; padding:12px; font-size:20px; border:2px solid #ad1457; border-radius:12px; box-sizing:border-box; font-weight:bold;">
+        </div>
+        <div id="lessCardsContainer"></div>
+    </div>
+
+    <div id="videoTab" class="tab-content">
+        <table>
+            <thead><tr><th>نمبر</th><th>نام طالب علم</th><th>ویڈیوز دیکھیں</th></tr></thead>
+            <tbody id="videoTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="attReport" class="tab-content">
+        <div style="text-align:center; padding:10px; font-weight:bold; font-size:26px; color:var(--primary);" class="monthTitle"></div>
+        <table>
+            <thead><tr><th class="name-header">نام</th><th style="background:var(--present-clr) !important; color: white !important;">حاضر</th><th style="background:var(--absent-clr) !important; color: white !important;">غیر حاضر</th><th style="background:var(--leave-clr) !important; color: white !important;">رخصت</th></tr></thead>
+            <tbody id="attReportBody"></tbody>
+        </table>
+    </div>
+
+    <div id="lessReport" class="tab-content">
+        <div style="text-align:center; padding:10px; font-weight:bold; font-size:26px; color:var(--primary);" class="monthTitle"></div>
+        <table>
+            <thead><tr><th class="name-header">نام</th><th style="background:var(--present-clr) !important; color: white !important;">سنایا</th><th style="background:var(--absent-clr) !important; color: white !important;">یاد نہیں</th><th style="background:var(--leave-clr) !important; color: white !important;">نہیں سنایا</th></tr></thead>
+            <tbody id="lessReportBody"></tbody>
+        </table>
+    </div>
+
+    <div id="miscellaneousTab" class="tab-content">
+        <div class="fb-uploader-card" id="fbUploaderPanel" style="display: none;">
+            <strong style="color:var(--primary); font-size:20px;">📝 میڈیا ٹائم لائن پوسٹ تخلیق کریں:</strong>
+            <select id="mediaStudentSelect"><option value="">طالب علم کا انتخاب کریں (آپشنل)</option></select>
+            <input type="text" id="mediaTitleInput" placeholder="پوسٹ کا عنوان یا ٹائٹل لکھیں...">
+            <input type="text" id="mediaUrlInput" placeholder="یوٹیوب، ڈرائیو یا فیس بک کا لنک پیسٹ کریں...">
+            <textarea id="timelineText" class="mgmt-input" style="width:100%; max-width:100%; margin:6px 0; padding:10px; border-radius:8px; box-sizing:border-box;" placeholder="صرف پیغام بھی لکھ سکتے ہیں..." rows="4"></textarea>
+            <button class="btn-mgmt" style="background:var(--primary); width:100%; margin-top:5px; padding:10px;" id="btnTimelineSubmit" onclick="addTimelinePost()">ٹائم لائن پر پوسٹ کریں ✨</button>
+        </div>
+        <div class="fb-feed-container" id="fbFeedTimeline"></div>
+    </div>
+
+    <div id="formerStudentsTab" class="tab-content">
+        <div id="formerStudentsCount" style="text-align:center; font-size:22px; font-weight:bold; color:var(--primary); margin-bottom:15px;"></div>
+        <div id="formerStudentsContainer"></div>
+    </div>
+
+    <div class="footer-tools">
+        <button class="btn-tool" style="background: var(--purple-btn);" onclick="window.print()">پرنٹ نکالیں</button>
+        <button class="btn-tool teacher-only-btn" style="background: var(--present-clr);" id="syncAllBtn" onclick="syncAllDataToCloud()">آن لائن ڈیٹا<br>بھیجیں 🚀</button>
+        <button class="btn-tool teacher-only-btn" style="background: var(--purple-btn);" id="exportBtn" onclick="downloadBackup()">بیک اپ<br>(Backup)</button>
+    </div>
+
+    <div class="login-portal" id="loginPortalSection">
+        <h3 id="portalTitle">🔐 استاد پورٹل لاگ ان</h3>
+        <div id="loginFormInputs">
+            <input type="text" id="uName" class="login-input" placeholder="ای میل ایڈریس درج کریں">
+            <input type="password" id="pWord" class="login-input" placeholder="پاس ورڈ درج کریں">
+            <button class="login-submit" onclick="checkTeacherLogin()">لاگ ان</button>
+            <br>
+            <a class="forgot-pass-link" onclick="resetPassword()">پاسورڈ بھول گئے؟ یہاں کلک کریں</a>
+        </div>
+        <button class="login-submit" id="logoutBtn" style="display:none; background:#b71c1c;" onclick="teacherLogout()">لاگ آؤٹ</button>
+    </div>
 </div>
 
-<!-- محفوظ ہونے کا واضح میسج -->
-<div id="toastBanner" class="toast-banner">✅ ڈیٹا آن لائن محفوظ ہو گیا ہے!</div>
-
-<div class="container">
-  <!-- دونوں مسجدوں کے بینر: رضوان مسجد دائیں طرف (پہلے) اور امام حسین مسجد بائیں طرف (دوسرے نمبر پر) -->
-  <div class="banner-wrapper">
-    <div class="active-banner-box" id="activeBannerBox"></div>
-    <div class="mosque-switcher" id="mosqueSwitcher"></div>
-  </div>
-
-  <!-- مہینے اور سال کا بڑا عنوان + پچھلے مہینے دیکھنے کا سلیکٹر -->
-  <div class="month-hero-card" id="monthHeroCard"></div>
-
-  <!-- ایڈمن کنٹرولز (صرف لاگ ان ہونے پر نظر آئیں گے) -->
-  <div id="adminTopBar" style="display:none;">
-    <div class="admin-top-grid">
-      <button type="button" class="btn btn-add-class" onclick="openAddClass()">+ کلاس شامل کریں</button>
-      <button type="button" class="btn btn-sync-online" id="manualSyncBtn" onclick="manualPushOnline()">☁️ ڈیٹا آن لائن بھیجیں</button>
-      <button type="button" class="btn btn-print" onclick="printRecord()">🖨️ پرنٹ / PDF محفوظ کریں</button>
+<div id="editStudentModal" class="edit-modal">
+    <div class="modal-content">
+        <h3 style="color:var(--primary); margin-top:0;">✏️ طالب علم کا ڈیٹا اپڈیٹ کریں</h3>
+        <input type="hidden" id="editStudentIndex">
+        <label style="font-weight:bold;">طالب علم کا نام:</label>
+        <input type="text" id="editStudentNameInput" class="mgmt-input" style="width:100%; max-width:100%; margin:8px 0 15px 0;"><br>
+        <label style="font-weight:bold;">یوٹیوب پلے لسٹ آئی ڈی:</label>
+        <input type="text" id="editStudentYTInput" class="mgmt-input" style="width:100%; max-width:100%; margin:8px 0 20px 0;"><br>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-mgmt" style="background:var(--present-clr); flex:1;" id="btnEditStudentSubmit" onclick="saveStudentEdits()">محفوظ کریں</button>
+            <button class="btn-mgmt" style="background:var(--absent-clr); flex:1;" onclick="closeEditModal()">بند کریں</button>
+        </div>
     </div>
-  </div>
-
-  <!-- کلاسز، پوزیشنز، نگران بچے، اور ان کو دیئے گئے بچوں کی فہرست -->
-  <div id="classesArea"></div>
-
-  <!-- نیچے ایڈمن لاگ ان / سٹیٹس -->
-  <div class="admin-footer" id="adminFooter"></div>
 </div>
 
-<!-- نام لکھنے والا باکس -->
-<div class="modal-overlay" id="inputModal">
-  <form class="modal-box" onsubmit="submitModal(event)">
-    <div class="modal-title" id="modalTitle">نام لکھیں</div>
-    <input type="text" id="modalInput" class="modal-input" autocomplete="off" />
-    <div class="modal-btns">
-      <button type="button" class="btn btn-icon" onclick="closeModal()">منسوخ</button>
-      <button type="submit" class="btn btn-gold">محفوظ کریں</button>
+<div id="studentMenuModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:2000;">
+    <div style="background:white; width:90%; max-width:320px; margin:120px auto; padding:15px; border-radius:15px; text-align:center;">
+        <input type="hidden" id="menuStudentIndex">
+        <button class="btn-mgmt" style="background:var(--primary); width:100%; margin-bottom:10px;" onclick="menuEditStudent()">✏️ ترمیم کریں</button>
+        <button class="btn-mgmt" style="background:#ef6c00; width:100%; margin-bottom:10px;" onclick="menuMoveFormer()">📦 سابقہ میں منتقل کریں</button>
+        <button class="btn-mgmt" style="background:#b71c1c; width:100%;" onclick="closeStudentMenu()">بند کریں</button>
     </div>
-  </form>
 </div>
 
-<!-- ایڈمن لاگ ان باکس -->
-<div class="modal-overlay" id="loginModal" onclick="if(event.target===this) closeLoginModal()">
-  <form class="modal-box" onsubmit="handleAdminLogin(event)">
-    <div class="modal-title">🔐 ایڈمن لاگ ان</div>
-    <input type="email" id="loginEmail" class="modal-input auth-input" placeholder="Email address" value="tulabaedhanda@gmail.com" required />
-    <input type="password" id="loginPassword" class="modal-input auth-input" placeholder="Password" required />
-    <div id="loginError" style="color:#ff8a80; font-size:1.1rem; margin-bottom:10px; display:none;"></div>
-    <div class="modal-btns">
-      <button type="button" class="btn btn-icon" onclick="closeLoginModal()">منسوخ</button>
-      <button type="submit" id="loginSubmitBtn" class="btn btn-gold">لاگ ان کریں</button>
+<div id="lessonHistoryModal" class="history-modal">
+    <div class="history-box">
+        <div id="lessonHistoryTitle" class="history-title"></div>
+        <div id="lessonHistoryBody" style="max-height: 60vh; overflow-y: auto; padding-right: 5px;"></div>
+        <button class="close-history" style="margin-top:15px;" onclick="closeLessonHistory()">بند کریں</button>
     </div>
-  </form>
-</div>
-
-<!-- نیچے گنتی والا کی بورڈ -->
-<div class="keypad-overlay" id="keypadOverlay" onclick="if(event.target===this) closeKeypad()">
-  <div class="keypad-sheet">
-    <div class="kp-header">
-      <div class="kp-title" id="kpStudentName">بچے کا نام</div>
-      <button type="button" class="kp-close" onclick="closeKeypad()">✕ بند</button>
-    </div>
-
-    <div class="kp-display">
-      <div class="kp-row">
-        <span>پہلے: <strong id="kpBase" class="score-num" style="font-size:1.3rem;">0</strong></span>
-        <span class="kp-expr score-num" id="kpExpr">+ 0</span>
-      </div>
-      <div class="kp-row" style="border-top:1px dashed rgba(255,255,255,0.2); margin-top:4px; padding-top:4px;">
-        <span>نیا ٹوٹل:</span>
-        <span class="kp-total score-num" id="kpTotal">0</span>
-      </div>
-    </div>
-
-    <div class="kp-modes">
-      <button type="button" id="btnModeAdd" class="kp-mode add-on" onclick="setKpMode('add')">➕ جمع کریں</button>
-      <button type="button" id="btnModeSub" class="kp-mode" onclick="setKpMode('sub')">➖ کم کریں</button>
-    </div>
-
-    <div class="kp-grid">
-      <button type="button" class="kp-key" onclick="kpDigit('1')">1</button>
-      <button type="button" class="kp-key" onclick="kpDigit('2')">2</button>
-      <button type="button" class="kp-key" onclick="kpDigit('3')">3</button>
-      <button type="button" class="kp-key kp-back" onclick="kpBack()">⌫</button>
-
-      <button type="button" class="kp-key" onclick="kpDigit('4')">4</button>
-      <button type="button" class="kp-key" onclick="kpDigit('5')">5</button>
-      <button type="button" class="kp-key" onclick="kpDigit('6')">6</button>
-      <button type="button" class="kp-key kp-plus" onclick="kpPlus()">+</button>
-
-      <button type="button" class="kp-key" onclick="kpDigit('7')">7</button>
-      <button type="button" class="kp-key" onclick="kpDigit('8')">8</button>
-      <button type="button" class="kp-key" onclick="kpDigit('9')">9</button>
-      <button type="button" class="kp-key kp-clr" onclick="kpClear()">صاف</button>
-
-      <button type="button" class="kp-key" onclick="kpDot()">.</button>
-      <button type="button" class="kp-key" onclick="kpDigit('0')">0</button>
-      <button type="button" class="kp-key kp-save" onclick="kpSave()">✔ محفوظ کریں</button>
-    </div>
-  </div>
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://fetygtmtqufoamyumjjy.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_wpRuG6Un5k4bDjLYEIjqng_yFUt79Q1';
-  const ADMIN_EMAIL = 'tulabaedhanda@gmail.com';
-  const TABLE_NAME = 'masjid_sabaq_board';
-  const ROW_ID = 'main';
+    const SUPABASE_URL = "https://fetygtmtqufoamyumjjy.supabase.co"; 
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHlndG10cXVmb2FteXVtamp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzIxMzYsImV4cCI6MjA5NzI0ODEzNn0.iLNnWr9yHmWQcIXtDGPt2THJAJCv5TtoiDc4UTlyqlE";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    let names = [];
+    let videoLists = [];
+    let timelinePosts = [];
+    let globalData = {}; 
+    let pendingEdits = {};
+    let isTeacherMode = false;
+    let classTime = "";
+    let formerStudents = [];
+    window.studentJoinDates = {};
 
-  const sb = (window.supabase && SUPABASE_URL.startsWith('https://'))
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: {
-          storageKey: 'masjid_sabaq_separate_auth_v1',
-          persistSession: true,
-          autoRefreshToken: true
-        }
-      })
-    : null;
+    let unsavedChanges = false;
+    let loadedMonths = new Set();
+    let isSettingsLoaded = false;
+    let sortedDatesCache = [];
 
-  let currentUser = null;
-  let syncStatusText = '';
+    let ytPlayers = {};
+    let ytTimers = {};
+    let activeYtBoxId = null;
 
-  function isAdmin() {
-    if (!sb) return false;
-    return Boolean(
-      currentUser &&
-      currentUser.email &&
-      currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
-    );
-  }
+    const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
+    const urduDays = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
 
-  // =========================================================
-  // 1. رضوان مسجد دائیں طرف (پہلے) اور امام حسین مسجد بائیں طرف (دوسرے نمبر پر)
-  // =========================================================
-  const MOSQUES_CONFIG = [
-    {
-      id: 'mosque_2',
-      label: 'رضوان مسجد',
-      driveId: '1hk9-Mbrl0Xc9Jg799XCt1XZFzG1fBw7A'
-    },
-    {
-      id: 'mosque_1',
-      label: 'امام حسین مسجد',
-      driveId: '18UcaX2RmQbMbZOMlNOFlxAO_ImmNGeDc'
+    function formatUrduDate(dateString){
+        if(!dateString || dateString==='-') return '-';
+        const d = new Date(dateString);
+        return `${d.getDate()} ${urduMonths[d.getMonth()]} ${d.getFullYear()}`;
     }
-  ];
 
-  function getBannerPrimaryUrl(driveId) {
-    return `https://lh3.googleusercontent.com/d/${driveId}`;
-  }
+    _supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+            const newPassword = prompt("پاسورڈ ری سیٹ کا عمل شروع ہو گیا ہے۔ براہ کرم اپنا نیا پاسورڈ درج کریں:");
+            if (!newPassword) return;
+            const { data, error } = await _supabase.auth.updateUser({ password: newPassword });
+            if (data) alert("زبردست! آپ کا پاسورڈ کامیابی سے تبدیل ہو گیا ہے۔ اب آپ نئے پاسورڈ سے لاگ ان کر سکتے ہیں۔");
+            if (error) alert("پاسورڈ اپڈیٹ کرنے میں مسئلہ آیا: " + error.message);
+        }
+    });
 
-  function getBannerFallbackUrl(driveId) {
-    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
-  }
+    window.onload = function() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('mainDate').value = `${yyyy}-${mm}-${dd}`;
 
-  let toastTimer = null;
-  function showToast(msg, isError = false) {
-    const el = document.getElementById('toastBanner');
-    el.textContent = msg;
-    el.className = 'toast-banner show' + (isError ? ' error' : '');
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      el.classList.remove('show');
-    }, 3200);
-  }
+        if (sessionStorage.getItem('isTeacherLoggedIn') === 'true') {
+            activateTeacherMode();
+        }
 
-  function printRecord() {
-    window.print();
-  }
+        // صرف وہی تبدیلیاں لوڈ کریں جو ابھی کلاؤڈ پر نہیں بھیجی گئیں (تاکہ پرانا ریکارڈ دوبارہ اوور رائٹ نہ کرے)
+        const savedPending = localStorage.getItem('masjid_pending_edits');
+        if (savedPending) {
+            try {
+                pendingEdits = JSON.parse(savedPending);
+                for (let d in pendingEdits) {
+                    if (!globalData[d]) globalData[d] = {};
+                    Object.assign(globalData[d], pendingEdits[d]);
+                }
+                if (Object.keys(pendingEdits).length > 0) {
+                    unsavedChanges = true;
+                    document.getElementById('unsavedNotice').style.display = 'block';
+                }
+            } catch (e) {}
+        }
 
-  const STORAGE_KEY = 'masjid_nigrans_monthly_v1';
-  const OLD_STORAGE_KEY = 'masjid_nigrans_v1';
+        // 1. کیش سے فوراً فہرست دکھائیں تاکہ صفر تاخیر سے صفحہ کھلے
+        loadCachedSettingsImmediate();
+        updateAll();
 
-  function cleanNum(num) {
-    return Math.round((Number(num) + Number.EPSILON) * 1000) / 1000;
-  }
-
-  function getStylishOrdinalHtml(index) {
-    if (index === 0) return '1<sup>st</sup>';
-    if (index === 1) return '2<sup>nd</sup>';
-    return '3<sup>rd</sup>';
-  }
-
-  const URDU_MONTHS = [
-    'جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون',
-    'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'
-  ];
-
-  // اصل کیلنڈر کا موجودہ مہینہ اور سال
-  function getCurrentCalendarMonth() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const mIdx = now.getMonth();
-    return {
-      id: `m_${year}_${mIdx + 1}`,
-      name: `${URDU_MONTHS[mIdx]} ${year}`
+        // 2. ساتھ ہی کلاؤڈ سے تازہ فہرست اور اس مہینے کا ڈیٹا لائیں
+        document.getElementById('loadingBar').style.display = 'block';
+        Promise.all([
+            fetchBasicSettings(),
+            fetchMonthData(`${yyyy}-${mm}`)
+        ]).then(() => {
+            document.getElementById('loadingBar').style.display = 'none';
+            updateAll();
+        });
     };
-  }
 
-  function cloneClassesWithZeroPoints(sourceClasses) {
-    if (!Array.isArray(sourceClasses)) return [];
-    const stamp = Date.now();
-    return sourceClasses.map((cls, ci) => ({
-      id: `c_${stamp}_${ci}_${Math.floor(Math.random() * 1000)}`,
-      name: cls.name,
-      monitors: (cls.monitors || []).map((mon, mi) => ({
-        id: `m_${stamp}_${ci}_${mi}_${Math.floor(Math.random() * 1000)}`,
-        name: mon.name,
-        students: (mon.students || []).map((st, si) => ({
-          id: `s_${stamp}_${ci}_${mi}_${si}_${Math.floor(Math.random() * 1000)}`,
-          name: st.name,
-          points: 0
-        }))
-      }))
-    }));
-  }
-
-  // مہینے کا خودکار انتظام (اور اگر پچھلی بار غلطی سے ڈبل مہینے بن گئے ہوں تو انہیں صاف کرنا)
-  function ensureCurrentMonthReady(dataObj, forceSelectCurrent = false) {
-    const curr = getCurrentCalendarMonth();
-    let changed = false;
-
-    if (!Array.isArray(dataObj.months)) dataObj.months = [];
-    if (!dataObj.monthlyRecords) dataObj.monthlyRecords = {};
-
-    // پچھلی بار غلطی سے بننے والے ڈبل یا مستقبل کے صفر مہینوں کو صاف کریں
-    const seenNames = new Set();
-    const cleanedMonths = [];
-    for (const m of dataObj.months) {
-      if (seenNames.has(m.name)) {
-        changed = true;
-        continue;
-      }
-      // اگر یہ مستقبل کا خودکار صفر مہینہ ہے اور ابھی وہ مہینہ نہیں آیا تو ہٹا دیں
-      if (m.id !== curr.id && m.id.startsWith('m_') && m.id.length > 10 && m.name === 'دسمبر 2026' && curr.id !== 'm_2026_12') {
-        changed = true;
-        continue;
-      }
-      seenNames.add(m.name);
-      cleanedMonths.push(m);
-    }
-    dataObj.months = cleanedMonths;
-
-    // اگر موجودہ مہینہ ابھی نہیں بنا (مثلاً نیا مہینہ چڑھ گیا ہو) تو خود بخود بنائیں
-    const alreadyExists = dataObj.months.some(m => m.id === curr.id);
-    if (!alreadyExists) {
-      const latestMonth = dataObj.months.length > 0
-        ? dataObj.months[dataObj.months.length - 1]
-        : null;
-      const prevRec = latestMonth && dataObj.monthlyRecords[latestMonth.id]
-        ? dataObj.monthlyRecords[latestMonth.id]
-        : { mosque_2: [], mosque_1: [] };
-
-      dataObj.months.push({ id: curr.id, name: curr.name });
-      dataObj.monthlyRecords[curr.id] = {
-        mosque_2: cloneClassesWithZeroPoints(prevRec.mosque_2),
-        mosque_1: cloneClassesWithZeroPoints(prevRec.mosque_1)
-      };
-      changed = true;
+    function loadCachedSettingsImmediate() {
+        const cachedSettings = localStorage.getItem('hussain_masjid_settings_cache');
+        if (!cachedSettings) return;
+        try {
+            const c = JSON.parse(cachedSettings);
+            if (Array.isArray(c.names)) names = c.names;
+            if (Array.isArray(c.videos)) videoLists = c.videos;
+            if (Array.isArray(c.timeline)) timelinePosts = c.timeline;
+            if (Array.isArray(c.former_students)) formerStudents = c.former_students;
+            if (c.student_join_dates) window.studentJoinDates = c.student_join_dates;
+            if (c.class_time !== undefined) {
+                classTime = c.class_time;
+                const box = document.getElementById("classTimeBox");
+                if(box) box.innerHTML = classTime || "";
+                const inp = document.getElementById("classTimeInput");
+                if(inp) inp.value = classTime || "";
+            }
+            populateStudentSelect();
+        } catch (e) {}
     }
 
-    if (forceSelectCurrent || !dataObj.months.some(m => m.id === dataObj.activeMonthId)) {
-      dataObj.activeMonthId = curr.id;
-    }
-
-    return changed;
-  }
-
-  const initialCurr = getCurrentCalendarMonth();
-  let appData = {
-    activeMosqueId: 'mosque_2',
-    activeMonthId: initialCurr.id,
-    months: [
-      { id: initialCurr.id, name: initialCurr.name }
-    ],
-    monthlyRecords: {
-      [initialCurr.id]: {
-        mosque_2: [],
-        mosque_1: []
-      }
-    }
-  };
-
-  function normalizeAppData(raw) {
-    if (!raw || typeof raw !== 'object') return null;
-
-    let normalized = null;
-    if (raw.monthlyRecords && Array.isArray(raw.months) && raw.months.length > 0) {
-      normalized = {
-        activeMosqueId: raw.activeMosqueId === 'mosque_1' ? 'mosque_1' : 'mosque_2',
-        activeMonthId: raw.activeMonthId,
-        months: [...raw.months],
-        monthlyRecords: { ...raw.monthlyRecords }
-      };
-    } else if (raw.records) {
-      const curr = getCurrentCalendarMonth();
-      normalized = {
-        activeMosqueId: 'mosque_2',
-        activeMonthId: curr.id,
-        months: [{ id: curr.id, name: curr.name }],
-        monthlyRecords: {
-          [curr.id]: {
-            mosque_2: Array.isArray(raw.records.mosque_2) ? raw.records.mosque_2 : [],
-            mosque_1: Array.isArray(raw.records.mosque_1) ? raw.records.mosque_1 : []
-          }
+    async function handleDateChange() {
+        const dateInput = document.getElementById('mainDate').value;
+        if(!dateInput) return;
+        const mKey = dateInput.substring(0, 7); 
+        
+        if(!loadedMonths.has(mKey)) {
+            document.getElementById('loadingBar').style.display = 'block';
+            await fetchMonthData(mKey);
+        } else {
+            updateAll();
         }
-      };
     }
 
-    if (normalized) {
-      ensureCurrentMonthReady(normalized, false);
-    }
-    return normalized;
-  }
+    async function fetchBasicSettings() {
+        try {
+            const { data: settingsData, error } = await _supabase.from('masjid_settings').select('*').eq('id', 1).single();
+            if (error || !settingsData) {
+                console.error("Settings Load Error:", error);
+                populateStudentSelect();
+                if(isTeacherMode) renderFormerStudents();
+                return;
+            }
 
-  function loadLocalCache() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_STORAGE_KEY);
-      if (saved) {
-        const parsed = normalizeAppData(JSON.parse(saved));
-        if (parsed) {
-          ensureCurrentMonthReady(parsed, true);
-          appData = parsed;
+            if(settingsData.names) names = JSON.parse(settingsData.names);
+            if(settingsData.videos) videoLists = JSON.parse(settingsData.videos);
+            if(settingsData.timeline) timelinePosts = JSON.parse(settingsData.timeline);
+            if(settingsData.class_time !== undefined && settingsData.class_time !== null) classTime = settingsData.class_time;
+            if(settingsData.former_students) formerStudents = JSON.parse(settingsData.former_students);
+            if(settingsData.student_join_dates) window.studentJoinDates = JSON.parse(settingsData.student_join_dates);
+
+            isSettingsLoaded = true;
+            localStorage.setItem('hussain_masjid_settings_cache', JSON.stringify({
+                names, videos: videoLists, timeline: timelinePosts,
+                former_students: formerStudents, student_join_dates: window.studentJoinDates,
+                class_time: classTime
+            }));
+
+            const box = document.getElementById("classTimeBox");
+            if(box) box.innerHTML = classTime || "";
+            const inp = document.getElementById("classTimeInput");
+            if(inp) inp.value = classTime || "";
+
+            populateStudentSelect();
+            if(isTeacherMode) renderFormerStudents();
+        } catch (err) {
+            console.error("Settings Load Error:", err);
         }
-      }
-    } catch (e) {
-      console.error(e);
     }
-  }
 
-  function saveLocalCache() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  function hasAnyData(dataObj) {
-    if (!dataObj || !dataObj.monthlyRecords) return false;
-    return Object.values(dataObj.monthlyRecords).some(mRec => {
-      const c1 = Array.isArray(mRec?.mosque_1) ? mRec.mosque_1.length : 0;
-      const c2 = Array.isArray(mRec?.mosque_2) ? mRec.mosque_2.length : 0;
-      return (c1 + c2) > 0;
-    });
-  }
-
-  // Supabase سے لائیو ریکارڈ لوڈ کرنا
-  async function fetchCloudData(isInitialLoad = false) {
-    if (!sb) return;
-    try {
-      const { data, error } = await sb
-        .from(TABLE_NAME)
-        .select('data')
-        .eq('id', ROW_ID)
-        .single();
-
-      if (!error && data && data.data) {
-        const cloudNormalized = normalizeAppData(data.data);
-        if (!cloudNormalized) return;
-
-        const cloudHas = hasAnyData(cloudNormalized);
-        const localHas = hasAnyData(appData);
-
-        if (!cloudHas && localHas) {
-          if (isAdmin()) {
-            await saveData(false);
-          }
-          return;
+    async function fetchMonthData(monthPrefix) {
+        try {
+            let limit = 1000; let start = 0;
+            while(true) {
+                const { data, error } = await _supabase
+                    .from('attendance_records')
+                    .select('date,student_name,attendance_status,attendance_class,lesson_status,lesson_class,quran_lesson,prayer_lesson')
+                    .like('date', `${monthPrefix}%`)
+                    .range(start, start + limit - 1);
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    data.forEach(row => {
+                        if (!globalData[row.date]) globalData[row.date] = {};
+                        const pendingRow = pendingEdits[row.date] && pendingEdits[row.date][row.student_name];
+                        globalData[row.date][row.student_name] = pendingRow || {
+                            aS: row.attendance_status || '---', aC: row.attendance_class || 'status-btn',
+                            lS: row.lesson_status || '---', lC: row.lesson_class || 'status-btn',
+                            w: row.quran_lesson || '', wD: row.prayer_lesson || ''
+                        };
+                    });
+                }
+                if(!data || data.length < limit) break;
+                start += limit;
+            }
+            sortedDatesCache = Object.keys(globalData).sort((a, b) => b.localeCompare(a));
+            loadedMonths.add(monthPrefix); 
+            document.getElementById('loadingBar').style.display = 'none';
+            updateAll();
+        } catch (err) {
+            console.error("Month Load Error:", err);
+            document.getElementById('loadingBar').innerText = "انٹرنیٹ کا مسئلہ! آف لائن موڈ چل رہا ہے۔";
+            setTimeout(() => { document.getElementById('loadingBar').style.display = 'none'; }, 3000);
+            updateAll();
         }
+    }
 
-        const autoUpdated = ensureCurrentMonthReady(cloudNormalized, isInitialLoad);
-        const keepMosque = appData.activeMosqueId || 'mosque_2';
-        const curr = getCurrentCalendarMonth();
-
-        const targetMonth = isInitialLoad
-          ? curr.id
-          : (cloudNormalized.months.some(m => m.id === appData.activeMonthId)
-              ? appData.activeMonthId
-              : curr.id);
-
-        appData = {
-          activeMosqueId: keepMosque,
-          activeMonthId: targetMonth,
-          months: cloudNormalized.months,
-          monthlyRecords: cloudNormalized.monthlyRecords
+    async function syncSettingsToSupabase() {
+        if (!isSettingsLoaded) {
+            alert("🛑 خبردار! کلاؤڈ سے تازہ فہرست لوڈ نہیں ہوئی تھی، اس لیے پرانا ڈیٹا اپلوڈ ہونے سے روک دیا گیا ہے۔ براہ کرم انٹرنیٹ چیک کر کے صفحہ ریفریش کریں۔");
+            throw new Error("Settings not loaded from cloud");
+        }
+        const payload = {
+            id: 1,
+            names: JSON.stringify(names),
+            videos: JSON.stringify(videoLists),
+            timeline: JSON.stringify(timelinePosts),
+            former_students: JSON.stringify(formerStudents),
+            student_join_dates: JSON.stringify(window.studentJoinDates || {}),
+            class_time: classTime
         };
-        saveLocalCache();
-        render();
+        const { error } = await _supabase.from('masjid_settings').upsert(payload);
+        if (error) throw error;
 
-        if (autoUpdated && isAdmin()) {
-          await saveData(false);
+        localStorage.setItem('hussain_masjid_settings_cache', JSON.stringify({
+            names, videos: videoLists, timeline: timelinePosts,
+            former_students: formerStudents, student_join_dates: window.studentJoinDates,
+            class_time: classTime
+        }));
+    }
+
+    function populateStudentSelect() {
+        const select = document.getElementById('mediaStudentSelect');
+        select.innerHTML = '<option value="">طالب علم کا انتخاب کریں (آپشنل)</option>';
+        names.forEach((n) => { select.innerHTML += `<option value="${n}">${n}</option>`; });
+    }
+
+    async function checkTeacherLogin() {
+        const u = document.getElementById('uName').value.trim();
+        const p = document.getElementById('pWord').value.trim();
+        if(!u || !p) return alert("ای میل اور پاسورڈ درج کریں!");
+
+        const btn = document.querySelector('.login-submit');
+        btn.innerText = "لاگ ان ہو رہا ہے... ⏳"; btn.disabled = true;
+
+        try {
+            const { data, error } = await _supabase.auth.signInWithPassword({ email: u, password: p });
+            if (error) throw error;
+            sessionStorage.setItem('isTeacherLoggedIn', 'true');
+            activateTeacherMode();
+            alert("لاگ ان کامیاب!");
+            document.getElementById('uName').value = ""; document.getElementById('pWord').value = "";
+        } catch (err) {
+            console.error("Login Error:", err); alert("غلط ای میل یا پاسورڈ!");
+        } finally {
+            btn.innerText = "لاگ ان"; btn.disabled = false;
         }
-      }
-    } catch (err) {
-      console.error('Cloud fetch error:', err);
     }
-  }
 
-  // Supabase پر ریکارڈ محفوظ کرنا
-  async function saveData(showSuccessToast = true) {
-    saveLocalCache();
-    if (!sb || !isAdmin()) return;
+    async function resetPassword() {
+        const email = prompt("اپنا وہ ای میل درج کریں جس سے آپ نے رجسٹر بنایا تھا:");
+        if (!email) return;
+        const { error } = await _supabase.auth.resetPasswordForEmail(email);
+        if (error) alert("ایرر آیا ہے: " + error.message);
+        else alert("پاسورڈ ری سیٹ کا لنک آپ کے ای میل پر بھیج دیا گیا ہے۔ اپنا ان باکس یا Spam فولڈر چیک کریں!");
+    }
 
-    syncStatusText = 'آن لائن بھیجا جا رہا ہے...';
-    renderFooter();
+    function activateTeacherMode() {
+        isTeacherMode = true;
+        document.getElementById('mainContainer').classList.add('teacher-mode-active');
+        document.getElementById('teacherBadge').style.display = "block"; document.getElementById('managementPanel').style.display = "block";
+        document.getElementById('fbUploaderPanel').style.display = "block"; document.getElementById('loginFormInputs').style.display = "none";
+        document.getElementById('logoutBtn').style.display = "inline-block"; document.getElementById('portalTitle').innerText = "🧔 ناصر علی (استاد)";
+        document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'inline-block');
+        document.getElementById('classTimeEditor').style.display = 'block'; document.getElementById('classTimeInput').value = classTime || '';
+        renderFormerStudents(); updateAll();
+    }
 
-    try {
-      const { error } = await sb
-        .from(TABLE_NAME)
-        .upsert({
-          id: ROW_ID,
-          data: {
-            activeMosqueId: appData.activeMosqueId,
-            activeMonthId: appData.activeMonthId,
-            months: appData.months,
-            monthlyRecords: appData.monthlyRecords
-          },
-          updated_at: new Date().toISOString()
-        });
+    function teacherLogout() {
+        isTeacherMode = false; sessionStorage.removeItem('isTeacherLoggedIn');
+        document.getElementById('mainContainer').classList.remove('teacher-mode-active');
+        document.getElementById('teacherBadge').style.display = "none"; document.getElementById('managementPanel').style.display = "none";
+        document.getElementById('fbUploaderPanel').style.display = "none"; document.getElementById('loginFormInputs').style.display = "block";
+        document.getElementById('logoutBtn').style.display = "none"; document.getElementById('portalTitle').innerText = "🔐 استاد پورٹل لاگ ان";
+        document.querySelectorAll('.teacher-only-btn').forEach(btn => btn.style.display = 'none');
+        document.getElementById('classTimeEditor').style.display = 'none'; updateAll();
+    }
 
-      if (error) {
-        syncStatusText = 'محفوظ کرنے میں خرابی!';
-        showToast('❌ ڈیٹا محفوظ نہیں ہو سکا، دوبارہ کوشش کریں!', true);
-      } else {
-        syncStatusText = 'لائیو محفوظ ہو گیا ✓';
-        if (showSuccessToast) {
-          showToast('✅ ڈیٹا آن لائن محفوظ ہو گیا ہے!');
+    async function addStudent() {
+        const name = document.getElementById('newStudentName').value.trim();
+        let ytInput = document.getElementById('newStudentYT').value.trim();
+        let ytList = "PL3-aVTBoE-13TR-5h0Mi9_ElEtmLI53Zq";
+        if(!name) return alert("نام لکھیں"); if(names.includes(name)) return alert("یہ نام پہلے سے موجود ہے!");
+
+        if(ytInput) { if(ytInput.includes('list=')) { ytList = ytInput.split('list=').pop().split('&')[0]; } else { ytList = ytInput; } }
+        names.push(name); videoLists.push(ytList);
+        
+        const today = document.getElementById('mainDate').value;
+        if(!window.studentJoinDates) window.studentJoinDates = {}; window.studentJoinDates[name] = today;
+        
+        await syncSettingsToSupabase();
+        document.getElementById('newStudentName').value = ""; document.getElementById('newStudentYT').value = "";
+        populateStudentSelect(); renderFormerStudents(); updateAll();
+    }
+
+    function saveLocalRecord(name, k, v, c) {
+        const d = document.getElementById('mainDate').value;
+        if(!globalData[d]) globalData[d] = {};
+        if(!globalData[d][name]) globalData[d][name] = {aS:'---', aC:'status-btn', lS:'---', lC:'status-btn', w:'', wD:''};
+        
+        if(k==='aS'){ globalData[d][name].aS=v; globalData[d][name].aC=c; }
+        else if(k==='lS'){ globalData[d][name].lS=v; globalData[d][name].lC=c; }
+        else if(k==='w'){ globalData[d][name].w=v; }
+        else if(k==='wD'){ globalData[d][name].wD=v; }
+
+        if(!pendingEdits[d]) pendingEdits[d] = {};
+        pendingEdits[d][name] = { ...globalData[d][name] };
+        localStorage.setItem('masjid_pending_edits', JSON.stringify(pendingEdits));
+
+        sortedDatesCache = Object.keys(globalData).sort((a, b) => b.localeCompare(a));
+        unsavedChanges = true;
+        document.getElementById('unsavedNotice').style.display = 'block';
+    }
+
+    function tglA(el, name) {
+        if (!isTeacherMode) return; 
+        let s, c;
+        if(el.innerText==="---"){s="حاضر"; c="status-btn present";}
+        else if(el.innerText==="حاضر"){s="غیر حاضر"; c="status-btn absent";}
+        else if(el.innerText==="غیر حاضر"){s="رخصت"; c="status-btn leave";}
+        else {s="---"; c="status-btn";}
+        el.innerText=s; el.className=c; saveLocalRecord(name, 'aS', s, c);
+    }
+
+    function tglL(el, name) {
+        if (!isTeacherMode) return; 
+        let s, c;
+        if(el.innerText==="---"){s="سنایا"; c="status-btn present";}
+        else if(el.innerText==="سنایا"){s="یاد نہیں"; c="status-btn absent";}
+        else if(el.innerText==="یاد نہیں"){s="نہیں سنایا"; c="status-btn leave";}
+        else {s="---"; c="status-btn";}
+        el.innerText=s; el.className=c; saveLocalRecord(name, 'lS', s, c);
+    }
+
+    function saveW(name, v) { saveLocalRecord(name, 'w', v); }
+    function saveWD(name, v) { saveLocalRecord(name, 'wD', v); }
+
+    async function syncAllDataToCloud() {
+        if (!isTeacherMode) return;
+        if (!isSettingsLoaded) {
+            alert("🛑 خبردار! کلاؤڈ سے تازہ فہرست لوڈ نہیں ہوئی تھی، اس لیے پرانا ڈیٹا اپلوڈ ہونے سے روک دیا گیا ہے۔ براہ کرم انٹرنیٹ چیک کر کے صفحہ ریفریش کریں۔");
+            return;
         }
-      }
-    } catch (err) {
-      syncStatusText = 'انٹرنیٹ خرابی!';
-      showToast('❌ انٹرنیٹ کنکشن چیک کریں!', true);
-    }
-    renderFooter();
-  }
+        const btn = document.getElementById('syncAllBtn');
+        btn.innerHTML = "آن لائن بھیجا جا رہا ہے... ⏳"; btn.disabled = true;
 
-  async function manualPushOnline() {
-    if (!isAdmin()) return;
-    const btn = document.getElementById('manualSyncBtn');
-    if (btn) {
-      btn.textContent = '⏳ بھیجا جا رہا ہے...';
-      btn.disabled = true;
-    }
-    await saveData(true);
-    if (btn) {
-      btn.textContent = '☁️ ڈیٹا آن لائن بھیجیں';
-      btn.disabled = false;
-    }
-  }
-
-  function getActiveClasses() {
-    if (!appData.monthlyRecords[appData.activeMonthId]) {
-      appData.monthlyRecords[appData.activeMonthId] = { mosque_2: [], mosque_1: [] };
-    }
-    if (!appData.monthlyRecords[appData.activeMonthId][appData.activeMosqueId]) {
-      appData.monthlyRecords[appData.activeMonthId][appData.activeMosqueId] = [];
-    }
-    return appData.monthlyRecords[appData.activeMonthId][appData.activeMosqueId];
-  }
-
-  function switchMosque(mosqueId) {
-    appData.activeMosqueId = mosqueId;
-    saveLocalCache();
-    render();
-  }
-
-  function switchMonth(monthId) {
-    appData.activeMonthId = monthId;
-    saveLocalCache();
-    render();
-  }
-
-  // =========================================================
-  // 2. ایڈمن لاگ ان / لاگ آؤٹ
-  // =========================================================
-  function openLoginModal() {
-    document.getElementById('loginError').style.display = 'none';
-    document.getElementById('loginPassword').value = '';
-    document.getElementById('loginModal').classList.add('show');
-    setTimeout(() => document.getElementById('loginPassword').focus(), 60);
-  }
-
-  function closeLoginModal() {
-    document.getElementById('loginModal').classList.remove('show');
-  }
-
-  async function handleAdminLogin(e) {
-    e.preventDefault();
-    if (!sb) return;
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const btn = document.getElementById('loginSubmitBtn');
-    const errBox = document.getElementById('loginError');
-
-    if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-      errBox.textContent = 'صرف مجاز ایڈمن ای میل سے لاگ ان کی اجازت ہے۔';
-      errBox.style.display = 'block';
-      return;
+        try {
+            const recordsToUpload = [];
+            for (let d in pendingEdits) {
+                for (let name in pendingEdits[d]) {
+                    const r = pendingEdits[d][name];
+                    recordsToUpload.push({
+                        date: d, student_name: name,
+                        attendance_status: r.aS, attendance_class: r.aC,
+                        lesson_status: r.lS, lesson_class: r.lC,
+                        quran_lesson: r.w, prayer_lesson: r.wD
+                    });
+                }
+            }
+            if (recordsToUpload.length > 0) {
+                const { error } = await _supabase.from('attendance_records').upsert(recordsToUpload, { onConflict: 'date,student_name' });
+                if (error) throw error;
+            }
+            await syncSettingsToSupabase();
+            pendingEdits = {};
+            localStorage.removeItem('masjid_pending_edits');
+            localStorage.removeItem('masjid_backup');
+            unsavedChanges = false;
+            document.getElementById('unsavedNotice').style.display = 'none';
+            alert("ڈیٹا کامیابی سے انٹرنیٹ پر محفوظ ہو گیا ہے! 🚀");
+        } catch (e) {
+            console.error(e); alert("انٹرنیٹ کا مسئلہ! ڈیٹا آن لائن نہیں گیا: " + (e.message || "Unknown error"));
+        } finally {
+            btn.innerHTML = "آن لائن ڈیٹا<br>بھیجیں 🚀"; btn.disabled = false;
+        }
     }
 
-    btn.textContent = 'لاگ ان ہو رہا ہے...';
-    btn.disabled = true;
-    errBox.style.display = 'none';
-
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-    btn.textContent = 'لاگ ان کریں';
-    btn.disabled = false;
-
-    if (error) {
-      errBox.textContent = 'ای میل یا پاس ورڈ غلط ہے۔';
-      errBox.style.display = 'block';
-      return;
+    function getLatestLesson(targetDate, name, type) {
+        for(let d of sortedDatesCache) {
+            if (d < targetDate && globalData[d] && globalData[d][name] && globalData[d][name][type]) {
+                return globalData[d][name][type];
+            }
+        }
+        return '';
     }
 
-    currentUser = data.user;
-    closeLoginModal();
-    await fetchCloudData(false);
-    render();
-  }
+    function updateAll() {
+        const date = document.getElementById('mainDate').value; if(!date) return;
+        const dObj = new Date(date);
+        document.getElementById('displayUrduDate').innerText = `${urduDays[dObj.getDay()]}، ${dObj.getDate()} ${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()}`;
+        document.getElementById('totalStudentsCount').innerText = `تعداد: ${names.length}`;
 
-  async function handleAdminLogout() {
-    if (!sb) return;
-    await sb.auth.signOut();
-    currentUser = null;
-    syncStatusText = '';
-    render();
-  }
+        const dayData = globalData[date] || {};
+        const b1 = document.getElementById('attTableBody'), b4 = document.getElementById('videoTableBody'), lessCardsContainer = document.getElementById('lessCardsContainer');
+        const disabledInput = isTeacherMode ? '' : 'disabled';
 
-  // =========================================================
-  // 3. نام درج کرنے والا ماڈل
-  // =========================================================
-  let modalCallback = null;
+        let attHtml = '';
+        let lessHtml = '';
+        let vidHtml = '';
 
-  function openModal({ title, placeholder = '', defaultValue = '', onSave }) {
-    if (!isAdmin()) return;
-    document.getElementById('modalTitle').textContent = title;
-    const inp = document.getElementById('modalInput');
-    inp.placeholder = placeholder;
-    inp.value = defaultValue;
-    modalCallback = onSave;
-    document.getElementById('inputModal').classList.add('show');
-    setTimeout(() => inp.focus(), 60);
-  }
+        names.forEach((n, i) => {
+            let s = dayData[n];
+            let currentW = '', currentWD = '';
+            if (s) {
+                currentW = s.w || '';
+                currentWD = s.wD || '';
+            } else {
+                s = { aS: '---', aC: 'status-btn', lS: '---', lC: 'status-btn', w: '', wD: '' };
+            }
+            if (!currentW) currentW = getLatestLesson(date, n, 'w');
+            if (!currentWD) currentWD = getLatestLesson(date, n, 'wD');
 
-  function closeModal() {
-    document.getElementById('inputModal').classList.remove('show');
-    modalCallback = null;
-  }
-
-  function submitModal(e) {
-    if (e) e.preventDefault();
-    const val = document.getElementById('modalInput').value.trim();
-    const cb = modalCallback;
-    closeModal();
-    if (cb && val) cb(val);
-  }
-
-  // =========================================================
-  // 4. کلاس، نگران بچہ، اور دیئے گئے بچے
-  // =========================================================
-  function openAddClass() {
-    if (!isAdmin()) return;
-    const classes = getActiveClasses();
-    openModal({
-      title: 'کلاس کا نام لکھیں',
-      placeholder: `مثلاً: کلاس ${classes.length + 1}`,
-      onSave: (name) => {
-        classes.push({
-          id: 'c_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-          name,
-          monitors: []
-        });
-        saveData(true);
-        render();
-      }
-    });
-  }
-
-  function renameClass(classId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    if (!cls) return;
-    openModal({
-      title: 'کلاس کا نام بدلیں',
-      defaultValue: cls.name,
-      onSave: (name) => {
-        cls.name = name;
-        saveData(true);
-        render();
-      }
-    });
-  }
-
-  function deleteClass(classId) {
-    if (!isAdmin()) return;
-    if (!confirm('کیا آپ اس کلاس کو حذف کرنا چاہتے ہیں؟')) return;
-    appData.monthlyRecords[appData.activeMonthId][appData.activeMosqueId] =
-      getActiveClasses().filter(c => c.id !== classId);
-    saveData(true);
-    render();
-  }
-
-  function openAddMonitor(classId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    if (!cls) return;
-    openModal({
-      title: `${cls.name} میں نگران بچے کا نام`,
-      placeholder: 'نگران بچے کا نام لکھیں...',
-      onSave: (name) => {
-        cls.monitors.push({
-          id: 'm_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-          name,
-          students: []
-        });
-        saveData(true);
-        render();
-      }
-    });
-  }
-
-  function renameMonitor(classId, monitorId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    const mon = cls?.monitors.find(m => m.id === monitorId);
-    if (!mon) return;
-    openModal({
-      title: 'نگران بچے کا نام بدلیں',
-      defaultValue: mon.name,
-      onSave: (name) => {
-        mon.name = name;
-        saveData(true);
-        render();
-      }
-    });
-  }
-
-  function deleteMonitor(classId, monitorId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    if (!cls) return;
-    if (!confirm('کیا آپ اس نگران بچے اور اس کے گروپ کو حذف کرنا چاہتے ہیں؟')) return;
-    cls.monitors = cls.monitors.filter(m => m.id !== monitorId);
-    saveData(true);
-    render();
-  }
-
-  function openAddStudent(classId, monitorId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    const mon = cls?.monitors.find(m => m.id === monitorId);
-    if (!mon) return;
-    openModal({
-      title: `${mon.name} کو دیا جانے والا بچہ`,
-      placeholder: 'بچے کا نام لکھیں...',
-      onSave: (name) => {
-        mon.students.push({
-          id: 's_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-          name,
-          points: 0
-        });
-        saveData(true);
-        render();
-      }
-    });
-  }
-
-  function renameStudent(classId, monitorId, studentId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    const mon = cls?.monitors.find(m => m.id === monitorId);
-    const st = mon?.students.find(s => s.id === studentId);
-    if (!st) return;
-    openModal({
-      title: 'بچے کا نام بدلیں',
-      defaultValue: st.name,
-      onSave: (name) => {
-        st.name = name;
-        saveData(true);
-        render();
-      }
-    });
-  }
-
-  function deleteStudent(classId, monitorId, studentId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    const mon = cls?.monitors.find(m => m.id === monitorId);
-    if (!mon) return;
-    if (!confirm('کیا آپ اس بچے کو نکالنا چاہتے ہیں؟')) return;
-    mon.students = mon.students.filter(s => s.id !== studentId);
-    saveData(true);
-    render();
-  }
-
-  // =========================================================
-  // 5. نیچے گنتی والا کی بورڈ
-  // =========================================================
-  let kpTarget = null;
-  let kpMode = 'add';
-  let kpTokens = [''];
-
-  function openKeypad(classId, monitorId, studentId) {
-    if (!isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === classId);
-    const mon = cls?.monitors.find(m => m.id === monitorId);
-    const st = mon?.students.find(s => s.id === studentId);
-    if (!st) return;
-
-    kpTarget = { classId, monitorId, studentId, base: cleanNum(st.points || 0) };
-    kpMode = 'add';
-    kpTokens = [''];
-    document.getElementById('kpStudentName').textContent = st.name;
-    updateKpScreen();
-    document.getElementById('keypadOverlay').classList.add('show');
-  }
-
-  function closeKeypad() {
-    document.getElementById('keypadOverlay').classList.remove('show');
-    kpTarget = null;
-  }
-
-  function setKpMode(m) {
-    kpMode = m;
-    updateKpScreen();
-  }
-
-  function kpDigit(d) {
-    let curr = kpTokens[kpTokens.length - 1];
-    curr = curr === '0' ? d : (curr.length < 7 ? curr + d : curr);
-    kpTokens[kpTokens.length - 1] = curr;
-    updateKpScreen();
-  }
-
-  function kpDot() {
-    let curr = kpTokens[kpTokens.length - 1];
-    if (curr.includes('.')) return;
-    kpTokens[kpTokens.length - 1] = curr === '' ? '0.' : curr + '.';
-    updateKpScreen();
-  }
-
-  function kpPlus() {
-    const curr = kpTokens[kpTokens.length - 1];
-    if (curr === '' || curr === '0.') return;
-    kpTokens.push('');
-    updateKpScreen();
-  }
-
-  function kpBack() {
-    let curr = kpTokens[kpTokens.length - 1];
-    if (curr.length > 0) {
-      kpTokens[kpTokens.length - 1] = curr.slice(0, -1);
-    } else if (kpTokens.length > 1) {
-      kpTokens.pop();
-    }
-    updateKpScreen();
-  }
-
-  function kpClear() {
-    kpTokens = [''];
-    updateKpScreen();
-  }
-
-  function getKpSum() {
-    return kpTokens.reduce((acc, t) => {
-      const n = parseFloat(t);
-      return isNaN(n) ? acc : cleanNum(acc + n);
-    }, 0);
-  }
-
-  function updateKpScreen() {
-    if (!kpTarget) return;
-    const entered = getKpSum();
-    const nextTotal = kpMode === 'add'
-      ? cleanNum(kpTarget.base + entered)
-      : Math.max(0, cleanNum(kpTarget.base - entered));
-
-    document.getElementById('kpBase').textContent = kpTarget.base;
-    const expr = kpTokens.map(t => (t === '' ? '0' : t)).join(' + ');
-    const sign = kpMode === 'add' ? '+' : '-';
-    document.getElementById('kpExpr').textContent =
-      kpTokens.length > 1 ? `${sign} (${expr} = ${entered})` : `${sign} ${expr}`;
-    document.getElementById('kpTotal').textContent = nextTotal;
-
-    document.getElementById('btnModeAdd').className = 'kp-mode' + (kpMode === 'add' ? ' add-on' : '');
-    document.getElementById('btnModeSub').className = 'kp-mode' + (kpMode === 'sub' ? ' sub-on' : '');
-  }
-
-  function kpSave() {
-    if (!kpTarget || !isAdmin()) return;
-    const cls = getActiveClasses().find(c => c.id === kpTarget.classId);
-    const mon = cls?.monitors.find(m => m.id === kpTarget.monitorId);
-    const st = mon?.students.find(s => s.id === kpTarget.studentId);
-    if (!st) return;
-
-    const entered = getKpSum();
-    st.points = kpMode === 'add'
-      ? cleanNum((st.points || 0) + entered)
-      : Math.max(0, cleanNum((st.points || 0) - entered));
-
-    saveData(true);
-    closeKeypad();
-    render();
-  }
-
-  function getMonitorTotal(monitor) {
-    return cleanNum(
-      (monitor.students || []).reduce((sum, st) => sum + cleanNum(st.points || 0), 0)
-    );
-  }
-
-  function renderFooter() {
-    const footer = document.getElementById('adminFooter');
-    if (isAdmin()) {
-      footer.innerHTML = `
-        ${syncStatusText ? `<span class="sync-badge">${syncStatusText}</span>` : ''}
-        <button type="button" class="admin-trigger-btn" onclick="handleAdminLogout()">🚪 لاگ آؤٹ</button>
-      `;
-    } else {
-      footer.innerHTML = `
-        <button type="button" class="admin-trigger-btn" onclick="openLoginModal()">🔐 ایڈمن لاگ ان</button>
-      `;
-    }
-  }
-
-  function render() {
-    const admin = isAdmin();
-    const activeMosque = MOSQUES_CONFIG.find(m => m.id === appData.activeMosqueId) || MOSQUES_CONFIG[0];
-    const activeMonthObj = appData.months.find(m => m.id === appData.activeMonthId)
-      || appData.months[appData.months.length - 1];
-
-    // 1. فعال مسجد کا بڑا بینر
-    document.getElementById('activeBannerBox').innerHTML = `
-      <img
-        class="active-banner-img"
-        src="${getBannerPrimaryUrl(activeMosque.driveId)}"
-        onerror="this.onerror=null; this.src='${getBannerFallbackUrl(activeMosque.driveId)}';"
-        alt="${activeMosque.label}"
-      />
-    `;
-
-    // 2. دونوں مسجدوں کے بینر سوئچر (رضوان مسجد دائیں طرف پہلے، امام حسین مسجد بائیں طرف دوسرے نمبر پر)
-    document.getElementById('mosqueSwitcher').innerHTML = MOSQUES_CONFIG.map(m => `
-      <button type="button" class="thumb-btn ${m.id === activeMosque.id ? 'active' : ''}" onclick="switchMosque('${m.id}')">
-        <img
-          src="${getBannerPrimaryUrl(m.driveId)}"
-          onerror="this.onerror=null; this.src='${getBannerFallbackUrl(m.driveId)}';"
-          alt="${m.label}"
-        />
-      </button>
-    `).join('');
-
-    // 3. اوپر مہینے اور سال کا بڑا عنوان + پچھلا مہینہ دیکھنے کا سلیکٹر (بغیر کسی + نیا مہینہ بٹن کے)
-    const monthHeroCard = document.getElementById('monthHeroCard');
-    monthHeroCard.innerHTML = `
-      <div class="month-big-title">${activeMonthObj ? activeMonthObj.name : ''}</div>
-      ${appData.months.length > 1 ? `
-        <div class="month-sub-row">
-          <select class="month-select" onchange="switchMonth(this.value)">
-            ${[...appData.months].reverse().map(m =>
-              `<option value="${m.id}" ${m.id === appData.activeMonthId ? 'selected' : ''}>📅 ${m.name}</option>`
-            ).join('')}
-          </select>
-        </div>
-      ` : ''}
-    `;
-
-    // 4. ایڈمن بٹن (بشمول پرنٹ بٹن) صرف لاگ ان حالت میں دکھائیں
-    document.getElementById('adminTopBar').style.display = admin ? 'block' : 'none';
-
-    // 5. کلاسز، پوزیشنز، نگران بچے اور ان کے بچے
-    const classes = getActiveClasses();
-    const classesArea = document.getElementById('classesArea');
-
-    if (classes.length === 0) {
-      classesArea.innerHTML = `
-        <div class="class-card">
-          <div class="empty-text">${admin ? 'اس مہینے میں ابھی کوئی کلاس نہیں۔ اوپر <strong>"+ کلاس شامل کریں"</strong> دبا کر پہلی کلاس بنائیں۔' : 'ابھی ریکارڈ درج نہیں ہوا۔'}</div>
-        </div>
-      `;
-      renderFooter();
-      return;
-    }
-
-    classesArea.innerHTML = classes.map(cls => {
-      const rankedMonitors = [...cls.monitors]
-        .map(mon => ({
-          ...mon,
-          totalPoints: getMonitorTotal(mon)
-        }))
-        .sort((a, b) => b.totalPoints - a.totalPoints);
-
-      const topMonitors = rankedMonitors.filter(m => m.totalPoints > 0).slice(0, 3);
-
-      const winnerSectionHtml = topMonitors.length === 0
-        ? ''
-        : `<div class="winner-box">
-            ${topMonitors.map((mon, idx) => `
-              <div class="winner-item">
-                <div class="winner-left-group">
-                  <span class="winner-pos-stylish pos-${idx + 1}">${getStylishOrdinalHtml(idx)}</span>
-                  <div class="winner-name-side">${mon.name}</div>
-                </div>
-                <div class="winner-pts-bare sharp-gold-shine">${mon.totalPoints}</div>
-              </div>
-            `).join('')}
-          </div>`;
-
-      const monitorsHtml = rankedMonitors.length === 0
-        ? `<div class="empty-text">${admin ? 'اس کلاس میں ابھی کوئی نگران بچہ نہیں۔ اوپر "+ نگران بچہ" دبائیں۔' : 'ابھی کوئی اندراج موجود نہیں۔'}</div>`
-        : rankedMonitors.map((mon, idx) => {
-            const isWinner = idx === 0 && mon.totalPoints > 0;
-
-            const studentsHtml = mon.students.length === 0
-              ? `<div class="empty-text" style="padding:4px; font-size:1.1rem;">${admin ? 'ابھی کوئی بچہ نہیں دیا گیا۔ "+ بچہ دیں" دبائیں۔' : 'کوئی بچہ درج نہیں۔'}</div>`
-              : mon.students.map(st => {
-                  const pts = cleanNum(st.points || 0);
-                  return `
-                    <div class="student-row">
-                      <div class="student-info-col">
-                        <div class="student-name">${st.name}</div>
-                        ${admin ? `
-                          <div class="student-btns-row">
-                            <button type="button" class="pts-btn" onclick="openKeypad('${cls.id}', '${mon.id}', '${st.id}')">+ نمبر</button>
-                            <button type="button" class="btn btn-icon" onclick="renameStudent('${cls.id}', '${mon.id}', '${st.id}')">✏️</button>
-                            <button type="button" class="btn btn-del" onclick="deleteStudent('${cls.id}', '${mon.id}', '${st.id}')">🗑️</button>
-                          </div>
-                        ` : ''}
-                      </div>
-                      <div class="student-score-bare score-num ${admin ? 'editable' : ''}" ${admin ? `onclick="openKeypad('${cls.id}', '${mon.id}', '${st.id}')"` : ''}>${pts}</div>
+            attHtml += `<tr><td>${i+1}</td><td class="student-name"><div class="student-name-container"><span>${n}</span><button class="three-dots-btn" onclick="openStudentMenu(${i})">⋮</button></div></td><td><div class="${s.aC}" onclick="tglA(this,'${n}')">${s.aS}</div></td></tr>`;
+            
+            lessHtml += `
+                <div class="student-lesson-card">
+                    <div class="lesson-row-container">
+                        <span style="font-size:22px; color:var(--primary); font-weight:bold;">${i+1}. ${n}</span>
+                        <div class="${s.lC}" onclick="tglL(this,'${n}')">${s.lS}</div>
                     </div>
-                  `;
-                }).join('');
-
-            return `
-              <div class="monitor-card ${isWinner ? 'top-monitor' : ''}">
-                <div class="monitor-top">
-                  <div class="monitor-name-area">
-                    <span class="monitor-serial-num score-num">${idx + 1}</span>
-                    <span class="monitor-name">${mon.name}</span>
-                    <span class="monitor-total-bare score-num">${mon.totalPoints}</span>
-                  </div>
-                  ${admin ? `
-                    <div style="display:flex; gap:5px; align-items:center;">
-                      <button type="button" class="btn btn-gold" style="padding:2px 10px; font-size:1.05rem;" onclick="openAddStudent('${cls.id}', '${mon.id}')">+ بچہ دیں</button>
-                      <button type="button" class="btn btn-icon" onclick="renameMonitor('${cls.id}', '${mon.id}')">✏️</button>
-                      <button type="button" class="btn btn-del" onclick="deleteMonitor('${cls.id}', '${mon.id}')">🗑️</button>
+                    <div class="lesson-inputs-holder">
+                        <span class="lesson-box-label">قرآن کا سبق:</span>
+                        <input type="text" class="diary-input" value="${currentW}" ${disabledInput} onchange="saveW('${n}',this.value)" placeholder="قرآن کا سبق">
+                        <span class="lesson-box-label">نماز / دعائیں:</span>
+                        <input type="text" class="diary-input" value="${currentWD}" ${disabledInput} onchange="saveWD('${n}',this.value)" placeholder="نماز کا سبق">
+                        <button class="history-btn" onclick="showLessonHistory('${n}')">📖 مکمل سبق ریکارڈ</button>
                     </div>
-                  ` : ''}
+                </div>`;
+            
+            vidHtml += `<tr><td>${i+1}</td><td class="student-name">${n}</td><td><button class="video-btn" onclick="toggleVideo(${i})">ویڈیوز دیکھیں</button></td></tr><tr id="videoRow-${i}" class="video-container"><td colspan="3"><div id="videoArea-${i}"></div></td></tr>`;
+        });
+
+        b1.innerHTML = attHtml;
+        lessCardsContainer.innerHTML = lessHtml;
+        b4.innerHTML = vidHtml;
+
+        renderTimeline();
+        renderFormerStudents();
+        loadReports();
+    }
+
+    function toggleVideo(i) {
+        const row = document.getElementById(`videoRow-${i}`);
+        const area = document.getElementById(`videoArea-${i}`);
+        const listID = videoLists[i] || "PL3-aVTBoE-13TR-5h0Mi9_ElEtmLI53Zq";
+        const boxId = `hussain_student_pl_${i}`;
+
+        if (row.style.display === "table-row") {
+            destroyCustomYT(boxId);
+            row.style.display = "none";
+            area.innerHTML = "";
+        } else {
+            pauseAllCustomYT();
+            document.querySelectorAll('.video-container').forEach(r => {
+                const idxStr = r.id.replace('videoRow-', '');
+                destroyCustomYT(`hussain_student_pl_${idxStr}`);
+                r.style.display = 'none';
+                const oldArea = document.getElementById(`videoArea-${idxStr}`);
+                if (oldArea) oldArea.innerHTML = "";
+            });
+
+            row.style.display = "table-row";
+            area.innerHTML = `
+                ${buildCustomYTBox({ boxId, listId: listID })}
+                <a href="https://www.youtube.com/playlist?list=${listID}" target="_blank" class="yt-playlist-link-btn">تمام ویڈیوز یوٹیوب پہ دیکھیں</a>`;
+            setupNativeYouTubeCards(area);
+        }
+    }
+
+    function loadReports() {
+        const dateInput = document.getElementById('mainDate').value; if(!dateInput) return;
+        const mKey = dateInput.substring(0, 7); const dObj = new Date(dateInput);
+        const monthStr = `${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()} کی رپورٹ`;
+        document.querySelectorAll('.monthTitle').forEach(el => el.innerText = monthStr);
+
+        let attHtml = '', lessHtml = '';
+        names.forEach((n) => {
+            let p=0, ab=0, lv=0, sn=0, yn=0, ns=0;
+            for(let d in globalData) {
+                if(d.startsWith(mKey) && globalData[d][n]) {
+                    const r = globalData[d][n];
+                    if(r.aS==="حاضر") p++; else if(r.aS==="غیر حاضر") ab++; else if(r.aS==="رخصت") lv++;
+                    if(r.lS==="سنایا") sn++; else if(r.lS==="یاد نہیں") yn++; else if(r.lS==="نہیں سنایا") ns++;
+                }
+            }
+            attHtml += `<tr><td class="student-name">${n}</td><td class="report-count" style="color:var(--present-clr)">${p}</td><td class="report-count" style="color:var(--absent-clr)">${ab}</td><td class="report-count" style="color:var(--leave-clr)">${lv}</td></tr>`;
+            lessHtml += `<tr><td class="student-name">${n}</td><td class="report-count" style="color:var(--present-clr)">${sn}</td><td class="report-count" style="color:var(--absent-clr)">${yn}</td><td class="report-count" style="color:var(--leave-clr)">${ns}</td></tr>`;
+        });
+        document.getElementById('attReportBody').innerHTML = attHtml;
+        document.getElementById('lessReportBody').innerHTML = lessHtml;
+    }
+
+    function openTab(id, e) {
+        pauseAllCustomYT();
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        e.currentTarget.classList.add('active');
+        if(id.includes('Report')) loadReports();
+    }
+
+    async function addTimelinePost() {
+        const student = document.getElementById('mediaStudentSelect').value; const title = document.getElementById('mediaTitleInput').value.trim();
+        let url = document.getElementById('mediaUrlInput').value.trim(); let text = document.getElementById('timelineText').value.trim();
+        const dObj = new Date(); const formattedCurrentUrduDate = `${urduDays[dObj.getDay()]}، ${dObj.getDate()} ${urduMonths[dObj.getMonth()]} ${dObj.getFullYear()}`;
+        if(!title) return alert("براہ کرم عنوان لکھیں!"); if(!url && !text) return alert("لنک یا پیغام درج کریں");
+
+        const btn = document.getElementById('btnTimelineSubmit'); btn.innerText = "آن لائن پوسٹ ہو رہا ہے..."; btn.disabled = true;
+
+        timelinePosts.unshift({ student, title, text, url: url || "", date: formattedCurrentUrduDate });
+        await syncSettingsToSupabase();
+
+        btn.innerText = "ٹائم لائن پر پوسٹ کریں ✨"; btn.disabled = false;
+        document.getElementById('mediaTitleInput').value = ''; document.getElementById('mediaUrlInput').value = ''; document.getElementById('timelineText').value = ''; document.getElementById('mediaStudentSelect').value = '';
+        renderTimeline();
+    }
+
+    async function deleteTimelinePost(idx) {
+        if(!confirm("کیا آپ واقعی یہ پوسٹ وال سے حذف کرنا چاہتے ہیں؟")) return;
+        timelinePosts.splice(idx, 1); await syncSettingsToSupabase(); renderTimeline();
+    }
+
+    function extractYouTubeId(url) {
+        if (!url) return '';
+        if (url.includes('/shorts/')) return url.split('/shorts/').pop().split(/[?&/]/)[0];
+        if (url.includes('/live/')) return url.split('/live/').pop().split(/[?&/]/)[0];
+        if (url.includes('v=')) return url.split('v=').pop().split('&')[0];
+        if (url.includes('youtu.be/')) return url.split('youtu.be/').pop().split(/[?&/]/)[0];
+        if (url.includes('/embed/')) return url.split('/embed/').pop().split(/[?&/]/)[0];
+        return '';
+    }
+
+    function formatTimeSec(sec) {
+        sec = Math.floor(sec || 0);
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function buildCustomYTBox({ boxId, videoId = '', listId = '', isShort = false }) {
+        const cardStyle = isShort ? "max-width: 340px; width: 100%;" : "max-width: 100%; width: 100%;";
+        const stageStyle = isShort ? "aspect-ratio: 9/16;" : "aspect-ratio: 16/9;";
+        const thumbSrc = videoId ? `https://i.ytimg.com/vi/${videoId}/sddefault.jpg` : `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`;
+        const thumbFallback = videoId ? `onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${videoId}/hqdefault.jpg';"` : '';
+
+        return `
+        <div class="native-yt-card" id="${boxId}" data-videoid="${videoId}" data-listid="${listId}" style="${cardStyle}">
+            <div class="native-yt-stage" style="${stageStyle}">
+                <div class="native-yt-player-target" id="target_${boxId}"></div>
+                <img class="native-yt-thumb" src="${thumbSrc}" ${thumbFallback} alt="Video" loading="lazy">
+                <div class="native-yt-click-layer" onclick="toggleCustomYT('${boxId}')">
+                    <div class="native-yt-center-btn" onclick="event.stopPropagation(); toggleCustomYT('${boxId}')"><svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><polygon points="6,4 20,12 6,20"></polygon></svg></div>
                 </div>
-                <div class="student-list">
-                  ${studentsHtml}
+            </div>
+            <div class="native-yt-controls" dir="ltr" onclick="event.stopPropagation()">
+                <button type="button" class="native-yt-icon-btn mute-btn" aria-label="Volume" onclick="toggleMuteCustomYT('${boxId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></button>
+                <div class="native-yt-progress" onclick="seekCustomYT(event, '${boxId}')">
+                    <div class="native-yt-progress-fill"></div>
                 </div>
-              </div>
-            `;
-          }).join('');
+                <span class="native-yt-time">00:00 / 00:00</span>
+            </div>
+        </div>`;
+    }
 
-      return `
-        <div class="class-card">
-          <div class="class-header">
-            <div class="class-title">📚 ${cls.name}</div>
-            ${admin ? `
-              <div style="display:flex; gap:5px; align-items:center;">
-                <button type="button" class="btn btn-gold" style="padding:2px 11px; font-size:1.08rem;" onclick="openAddMonitor('${cls.id}')">+ نگران بچہ</button>
-                <button type="button" class="btn btn-icon" onclick="renameClass('${cls.id}')">✏️</button>
-                <button type="button" class="btn btn-del" onclick="deleteClass('${cls.id}')">🗑️</button>
-              </div>
-            ` : ''}
-          </div>
+    function formatMediaEmbed(url, idx = 0) {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const videoId = extractYouTubeId(url);
+            const isShort = url.includes('/shorts/');
+            const boxId = `hussain_ytbox_${idx}_${videoId}`;
+            return buildCustomYTBox({ boxId, videoId, isShort });
+        } else if (url.includes('drive.google.com')) {
+            let embedUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview').replace('?usp=drivesdk', '');
+            return `<iframe src="${embedUrl}" style="aspect-ratio: 16/9; width: 100%; border:none; border-radius:12px;" allowfullscreen></iframe>`;
+        } else if (url.includes('facebook.com') || url.includes('fb.watch')) {
+            let encodedUrl = encodeURIComponent(url);
+            return `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=0" style="aspect-ratio: 16/9; width: 100%; border:none; border-radius:12px;" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+        } else {
+            return `<img src="${url}" style="width: 100%; height: auto; border-radius: 12px; display: block; object-fit: contain;" loading="lazy">`;
+        }
+    }
 
-          ${winnerSectionHtml}
-          ${monitorsHtml}
-        </div>
-      `;
-    }).join('');
+    function renderTimeline() {
+        pauseAllCustomYT();
+        const feed = document.getElementById('fbFeedTimeline');
+        if(!timelinePosts || timelinePosts.length === 0) {
+            feed.innerHTML = `<p style="text-align:center; color:#333; font-size:18px; padding:30px; font-weight:bold;">ٹائم لائن ابھی خالی ہے۔ استاد موڈ میں لاگ ان ہو کر نئی ویڈیوز یا تصاویر یہاں اپلوڈ کریں۔</p>`;
+            return;
+        }
 
-    renderFooter();
-  }
+        let html = '';
+        timelinePosts.forEach((post, idx) => {
+            const deleteBtnHtml = isTeacherMode ? `<button class="fb-del-btn" onclick="deleteTimelinePost(${idx})">حذف کریں</button>` : '';
+            const tagStudentHtml = post.student ? `<span style="background:rgba(26, 35, 126, 0.15); color:#1a237e; padding:2px 8px; border-radius:4px; font-size:14px; margin-right:8px; font-weight:bold;">👤 ${post.student}</span>` : '';
 
-  function hideFontLoader() {
-    const loader = document.getElementById('fontLoader');
-    if (loader) loader.classList.add('hidden');
-  }
+            html += `
+                <div class="fb-post-card">
+                    <div class="fb-post-header">
+                        <div><span class="fb-post-user">امام حسین مسجد میڈیا گیلری</span>${tagStudentHtml}</div>
+                        <div><span class="fb-post-date">${post.date}</span>${deleteBtnHtml}</div>
+                    </div>
+                    <div class="fb-post-title">${post.title}</div>
+                    ${post.text ? `<div class="timeline-text-post">${post.text}</div>` : ''}
+                    ${post.url ? `<div class="fb-post-media" style="background: transparent; border: none; box-shadow: none;">${formatMediaEmbed(post.url, idx)}</div>` : ''}
+                </div>`;
+        });
+        feed.innerHTML = html;
+        setupNativeYouTubeCards();
+    }
 
-  async function initApp() {
-    loadLocalCache();
-    render();
+    const ytScrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const boxId = entry.target.id;
+            if (entry.intersectionRatio < 0.35 && activeYtBoxId === boxId) {
+                pauseCustomYT(boxId);
+            }
+        });
+    }, { threshold: [0, 0.35, 0.7] });
 
-    const fontReadyPromise = (document.fonts && document.fonts.ready)
-      ? document.fonts.ready
-      : Promise.resolve();
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) pauseAllCustomYT();
+    });
 
-    const maxWaitTimeout = new Promise(resolve => setTimeout(resolve, 4000));
+    function applyOriginalRatioBeforePlay(box, oembedTargetUrl) {
+        if (!box || box.dataset.ratioApplied === '1') return;
+        fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(oembedTargetUrl)}&format=json`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (!data) return;
+                box.dataset.ratioApplied = '1';
+                if (data.thumbnail_url) {
+                    const thumbEl = box.querySelector('.native-yt-thumb');
+                    if (thumbEl) thumbEl.src = data.thumbnail_url;
+                }
+                const stageEl = box.querySelector('.native-yt-stage');
+                if (data.width && data.height && stageEl) {
+                    stageEl.style.aspectRatio = `${data.width} / ${data.height}`;
+                    if (data.height > data.width) {
+                        box.style.maxWidth = '340px';
+                        box.style.margin = '0 auto';
+                    } else {
+                        box.style.maxWidth = '100%';
+                    }
+                }
+            }).catch(() => {});
+    }
 
-    const cloudInitPromise = (async () => {
-      if (!sb) return;
-      const { data } = await sb.auth.getSession();
-      currentUser = data?.session?.user || null;
-      render();
+    function setupNativeYouTubeCards(rootEl = document) {
+        rootEl.querySelectorAll('.native-yt-card').forEach(box => {
+            if (box.dataset.observed === '1') return;
+            box.dataset.observed = '1';
+            ytScrollObserver.observe(box);
+        });
+    }
 
-      sb.auth.onAuthStateChange((_event, session) => {
-        currentUser = session?.user || null;
-        render();
-      });
+    function initYTPlayer(boxId, autoPlayNow = false) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
 
-      await fetchCloudData(true);
+        box.dataset.autoplayPending = autoPlayNow ? '1' : '0';
 
-      sb.channel('masjid-board-live')
-        .on('postgres_changes', { event: '*', schema: 'public', table: TABLE_NAME }, () => {
-          fetchCloudData(false);
-        })
-        .subscribe();
+        if (ytPlayers[boxId] && typeof ytPlayers[boxId].playVideo === 'function') {
+            if (autoPlayNow) ytPlayers[boxId].playVideo();
+            return;
+        }
 
-      setInterval(() => fetchCloudData(false), 10000);
-    })();
+        if (typeof YT === 'undefined' || !YT.Player) {
+            setTimeout(() => initYTPlayer(boxId, box.dataset.autoplayPending === '1'), 350);
+            return;
+        }
 
-    await Promise.race([
-      Promise.allSettled([fontReadyPromise, cloudInitPromise]),
-      maxWaitTimeout
-    ]);
-    hideFontLoader();
-  }
+        if (box.dataset.initializing === '1') return;
+        box.dataset.initializing = '1';
 
-  initApp();
+        const videoId = box.dataset.videoid;
+        const listId = box.dataset.listid;
+
+        if (videoId) {
+            applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${videoId}`);
+        }
+
+        const playerVars = {
+            autoplay: autoPlayNow ? 1 : 0,
+            controls: 0,
+            modestbranding: 1,
+            rel: 0,
+            playsinline: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            disablekb: 1
+        };
+        if (window.location && window.location.origin && window.location.origin.startsWith('http')) {
+            playerVars.origin = window.location.origin;
+        }
+        if (listId) {
+            playerVars.listType = 'playlist';
+            playerVars.list = listId;
+        }
+
+        const config = {
+            playerVars: playerVars,
+            events: {
+                onReady: (e) => {
+                    box.dataset.initializing = '0';
+                    if (listId && box.dataset.autoplayPending !== '1') {
+                        try {
+                            e.target.cuePlaylist({ list: listId, listType: 'playlist', index: 0 });
+                        } catch (err) {}
+                    }
+                    try {
+                        const vData = e.target.getVideoData ? e.target.getVideoData() : null;
+                        if (vData && vData.video_id) {
+                            box.dataset.cuedVid = vData.video_id;
+                            applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${vData.video_id}`);
+                        }
+                    } catch (err) {}
+
+                    if (box.dataset.autoplayPending === '1') {
+                        box.dataset.autoplayPending = '0';
+                        e.target.playVideo();
+                    }
+                },
+                onStateChange: (e) => {
+                    if (e.data === YT.PlayerState.CUED) {
+                        try {
+                            const vData = e.target.getVideoData ? e.target.getVideoData() : null;
+                            if (vData && vData.video_id) {
+                                box.dataset.cuedVid = vData.video_id;
+                                applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${vData.video_id}`);
+                            }
+                        } catch (err) {}
+                    } else if (e.data === YT.PlayerState.PLAYING) {
+                        let currentVid = '';
+                        try {
+                            const vData = e.target.getVideoData ? e.target.getVideoData() : null;
+                            if (vData && vData.video_id) currentVid = vData.video_id;
+                        } catch (err) {}
+
+                        if (currentVid) {
+                            if (!box.dataset.lockedVid) {
+                                box.dataset.lockedVid = currentVid;
+                                applyOriginalRatioBeforePlay(box, `https://www.youtube.com/watch?v=${currentVid}`);
+                            } else if (box.dataset.lockedVid !== currentVid) {
+                                try { e.target.pauseVideo(); } catch (err) {}
+                                box.dataset.lockedVid = '';
+                                pauseCustomYT(boxId);
+                                return;
+                            }
+                        }
+
+                        pauseAllCustomYT(boxId);
+                        activeYtBoxId = boxId;
+
+                        const centerBtn = box.querySelector('.native-yt-center-btn');
+                        if (centerBtn) centerBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
+                        box.classList.add('has-started');
+                        box.classList.remove('is-paused');
+
+                        setTimeout(() => {
+                            if (activeYtBoxId === boxId) box.classList.add('is-playing');
+                        }, 220);
+                        startYtProgressTimer(boxId);
+                    } else if (e.data === YT.PlayerState.ENDED) {
+                        box.dataset.lockedVid = '';
+                        box.classList.remove('has-started');
+                        box.classList.remove('is-paused');
+                        try {
+                            e.target.seekTo(0, true);
+                            e.target.pauseVideo();
+                        } catch (err) {}
+                        const fillEl = box.querySelector('.native-yt-progress-fill');
+                        if (fillEl) fillEl.style.width = '0%';
+                        pauseCustomYT(boxId);
+                    } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
+                        if (e.data === YT.PlayerState.PAUSED) {
+                            box.classList.add('has-started');
+                            box.classList.add('is-paused');
+                            const centerBtn = box.querySelector('.native-yt-center-btn');
+                            if (centerBtn) centerBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+                            if (activeYtBoxId === boxId) activeYtBoxId = null;
+                            clearInterval(ytTimers[boxId]);
+                        } else {
+                            box.classList.remove('is-playing');
+                        }
+                    }
+                }
+            }
+        };
+
+        if (videoId) {
+            config.videoId = videoId;
+        }
+
+        ytPlayers[boxId] = new YT.Player(`target_${boxId}`, config);
+    }
+
+    function toggleCustomYT(boxId) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
+
+        if (ytPlayers[boxId] && typeof ytPlayers[boxId].getPlayerState === 'function') {
+            const state = ytPlayers[boxId].getPlayerState();
+            if (state === YT.PlayerState.PLAYING) {
+                try { ytPlayers[boxId].pauseVideo(); } catch (e) {}
+                return;
+            }
+            if (state === YT.PlayerState.PAUSED) {
+                pauseAllCustomYT(boxId);
+                activeYtBoxId = boxId;
+                box.classList.remove('is-paused');
+                box.classList.add('has-started');
+                try { ytPlayers[boxId].playVideo(); } catch (e) {}
+                return;
+            }
+        }
+
+        pauseAllCustomYT(boxId);
+        activeYtBoxId = boxId;
+        box.dataset.lockedVid = '';
+
+        initYTPlayer(boxId, true);
+    }
+
+    function destroyCustomYT(boxId) {
+        clearInterval(ytTimers[boxId]);
+        delete ytTimers[boxId];
+        if (ytPlayers[boxId]) {
+            try { ytPlayers[boxId].destroy(); } catch (e) {}
+            delete ytPlayers[boxId];
+        }
+        if (activeYtBoxId === boxId) activeYtBoxId = null;
+    }
+
+    function pauseCustomYT(boxId) {
+        const box = document.getElementById(boxId);
+        if (box) {
+            box.dataset.autoplayPending = '0';
+            box.classList.remove('is-playing');
+            box.classList.remove('is-paused');
+            box.classList.remove('has-started');
+            const centerBtn = box.querySelector('.native-yt-center-btn');
+            if (centerBtn) centerBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+        }
+        if (ytPlayers[boxId] && typeof ytPlayers[boxId].pauseVideo === 'function') {
+            try { ytPlayers[boxId].pauseVideo(); } catch (e) {}
+        }
+        clearInterval(ytTimers[boxId]);
+        if (activeYtBoxId === boxId) activeYtBoxId = null;
+    }
+
+    function pauseAllCustomYT(exceptBoxId = null) {
+        Object.keys(ytPlayers).forEach(id => {
+            if (id !== exceptBoxId) pauseCustomYT(id);
+        });
+    }
+
+    function getVolumeSVG(muted) {
+        if (muted) {
+            return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+        }
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>';
+    }
+
+    function toggleMuteCustomYT(boxId) {
+        const player = ytPlayers[boxId];
+        const box = document.getElementById(boxId);
+        if (!player || !box) return;
+        const btn = box.querySelector('.mute-btn');
+        if (player.isMuted()) {
+            player.unMute();
+            btn.classList.remove('is-muted');
+            btn.innerHTML = getVolumeSVG(false);
+        } else {
+            player.mute();
+            btn.classList.add('is-muted');
+            btn.innerHTML = getVolumeSVG(true);
+        }
+    }
+
+    function seekCustomYT(event, boxId) {
+        const player = ytPlayers[boxId];
+        if (!player || typeof player.getDuration !== 'function') return;
+        const bar = event.currentTarget;
+        const rect = bar.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        const dur = player.getDuration();
+        if (dur > 0) player.seekTo(dur * ratio, true);
+    }
+
+    function startYtProgressTimer(boxId) {
+        clearInterval(ytTimers[boxId]);
+        ytTimers[boxId] = setInterval(() => {
+            const player = ytPlayers[boxId];
+            const box = document.getElementById(boxId);
+            if (!player || !box || typeof player.getCurrentTime !== 'function') return;
+            const cur = player.getCurrentTime() || 0;
+            const dur = player.getDuration() || 0;
+            const timeEl = box.querySelector('.native-yt-time');
+            const fillEl = box.querySelector('.native-yt-progress-fill');
+            if (timeEl) timeEl.innerText = `${formatTimeSec(cur)} / ${formatTimeSec(dur)}`;
+            if (fillEl && dur > 0) fillEl.style.width = `${(cur / dur) * 100}%`;
+        }, 500);
+    }
+
+    function openEditModal(index) {
+        if (!isTeacherMode) return;
+        document.getElementById('editStudentIndex').value = index; document.getElementById('editStudentNameInput').value = names[index];
+        document.getElementById('editStudentYTInput').value = videoLists[index] || ""; document.getElementById('editStudentModal').style.display = "flex";
+    }
+
+    function closeEditModal() { document.getElementById('editStudentModal').style.display = "none"; }
+
+    async function saveStudentEdits() {
+        const idx = document.getElementById('editStudentIndex').value; const oldName = names[idx];
+        const newName = document.getElementById('editStudentNameInput').value.trim(); const newYT = document.getElementById('editStudentYTInput').value.trim();
+        if(!newName) return alert("طالب علم کا نام خالی نہیں ہو سکتا!");
+
+        const btn = document.getElementById('btnEditStudentSubmit'); btn.innerText = "آن لائن اپڈیٹ ہو رہا ہے..."; btn.disabled = true;
+
+        if(oldName !== newName) {
+            if (names.includes(newName)) { btn.innerText = "محفوظ کریں"; btn.disabled = false; return alert("یہ نام پہلے سے موجود ہے!"); }
+            for (let date in globalData) {
+                if (globalData[date][oldName]) {
+                    globalData[date][newName] = globalData[date][oldName]; delete globalData[date][oldName];
+                    if (!pendingEdits[date]) pendingEdits[date] = {};
+                    pendingEdits[date][newName] = { ...globalData[date][newName] };
+                    await _supabase.from('attendance_records').delete().eq('date', date).eq('student_name', oldName);
+                }
+            }
+            names[idx] = newName; unsavedChanges = true; 
+            if(window.studentJoinDates && window.studentJoinDates[oldName]) { window.studentJoinDates[newName] = window.studentJoinDates[oldName]; delete window.studentJoinDates[oldName]; }
+        }
+
+        if(newYT) { if(newYT.includes('list=')) { videoLists[idx] = newYT.split('list=').pop().split('&')[0]; } else { videoLists[idx] = newYT; } } else { videoLists[idx] = ""; }
+
+        await syncSettingsToSupabase();
+        btn.innerText = "محفوظ کریں"; btn.disabled = false; closeEditModal();
+        populateStudentSelect(); renderFormerStudents(); updateAll(); document.getElementById('unsavedNotice').style.display = 'block'; 
+    }
+
+    function openStudentMenu(index){ document.getElementById('menuStudentIndex').value = index; document.getElementById('studentMenuModal').style.display = 'block'; }
+    function closeStudentMenu(){ document.getElementById('studentMenuModal').style.display = 'none'; }
+    function menuEditStudent(){ const index = document.getElementById('menuStudentIndex').value; closeStudentMenu(); openEditModal(index); }
+    function menuMoveFormer(){ const index = document.getElementById('menuStudentIndex').value; closeStudentMenu(); moveToFormerStudent(index); }
+
+    async function moveToFormerStudent(index){
+        const studentName = names[index]; if(!confirm(`${studentName} کو سابقہ طلباء میں منتقل کرنا ہے؟`)) return;
+        const today = document.getElementById('mainDate').value; let lastAttendance = '-';
+        for(const d of sortedDatesCache){ if(globalData[d] && globalData[d][studentName] && globalData[d][studentName].aS === 'حاضر'){ lastAttendance = d; break; } }
+        const joinDate = window.studentJoinDates ? window.studentJoinDates[studentName] : null;
+        let studyPeriod = joinDate ? `${formatUrduDate(joinDate)} تا ${formatUrduDate(today)}` : '-';
+        formerStudents.push({ name: studentName, playlist: videoLists[index] || '', formerDate: today, lastAttendance: lastAttendance, studyPeriod: studyPeriod, joinDate: joinDate || '' });
+        names.splice(index,1); videoLists.splice(index,1);
+        await syncSettingsToSupabase(); populateStudentSelect(); renderFormerStudents(); updateAll(); alert('سابقہ طلباء میں منتقل کر دیا گیا');
+    }
+
+    async function restoreStudent(index){
+        const student = formerStudents[index]; names.push(student.name); videoLists.push(student.playlist || '');
+        if(student.joinDate){ if(!window.studentJoinDates) window.studentJoinDates = {}; window.studentJoinDates[student.name] = student.joinDate; }
+        formerStudents.splice(index,1); await syncSettingsToSupabase(); populateStudentSelect(); renderFormerStudents(); updateAll(); alert('طالب علم بحال کر دیا گیا');
+    }
+
+    async function deleteFormerStudent(index){
+        if(!confirm("کیا آپ واقعی اس طالب علم کا ریکارڈ مکمل طور پر حذف کرنا چاہتے ہیں؟")) return;
+        formerStudents.splice(index, 1); await syncSettingsToSupabase(); renderFormerStudents(); alert("طالب علم کا ریکارڈ مکمل حذف کر دیا گیا");
+    }
+
+    function renderFormerStudents(){
+        const container = document.getElementById('formerStudentsContainer'); if(!container) return;
+        const countBox = document.getElementById('formerStudentsCount'); if (countBox) countBox.innerText = `سابقہ طلباء: ${formerStudents.length}`;
+        if(formerStudents.length===0){ container.innerHTML=`<div style="text-align:center; font-size:20px; padding:30px; color:#666;">ابھی کوئی سابقہ طالب علم موجود نہیں</div>`; return; }
+        let html = '';
+        formerStudents.forEach((student,index)=>{
+            let restoreBtn=''; let deleteBtn='';
+            if(isTeacherMode){ restoreBtn=`<button class="restore-btn" onclick="restoreStudent(${index})">♻️ ری سٹور کریں</button>`; deleteBtn=`<button class="restore-btn" style="background:#b71c1c; margin-right:10px;" onclick="deleteFormerStudent(${index})">🗑️ مکمل حذف کریں</button>`; }
+            html += `
+            <div class="former-student-card">
+                <div class="former-student-name">👤 ${student.name}</div>
+                <div class="former-student-line">🏷️ حیثیت: سابقہ طالب علم</div><div class="former-student-line">📅 چھوڑنے کی تاریخ: ${formatUrduDate(student.formerDate)}</div>
+                <div class="former-student-line">📖 آخری حاضری: ${formatUrduDate(student.lastAttendance)}</div><div class="former-student-line">⏳ مدت تعلیم: ${student.studyPeriod || '-'}</div>
+                <button class="video-btn" onclick="showFormerPlaylist(${index})">🎥 ویڈیوز دیکھیں</button><div id="formerVideo${index}" style="margin-top:10px;"></div>
+                ${restoreBtn} ${deleteBtn}
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function showFormerPlaylist(index){
+        const student = formerStudents[index];
+        const container = document.getElementById(`formerVideo${index}`);
+        const boxId = `hussain_former_pl_${index}`;
+        if(container.innerHTML !== ''){
+            destroyCustomYT(boxId);
+            container.innerHTML = '';
+            return;
+        }
+        pauseAllCustomYT();
+        const playlist = student.playlist || 'PL3-aVTBoE-13TR-5h0Mi9_ElEtmLI53Zq';
+        container.innerHTML = `
+            ${buildCustomYTBox({ boxId, listId: playlist })}
+            <a href="intent://www.youtube.com/playlist?list=${playlist}#Intent;package=com.google.android.youtube;scheme=https;end" class="yt-playlist-link-btn">مکمل Playlist یوٹیوب پر دیکھیں</a>`;
+        setupNativeYouTubeCards(container);
+    }
+
+    function searchLessonStudent(e){
+        let value=document.getElementById("lessonSearch").value.trim().toLowerCase(); let cards=document.querySelectorAll("#lessCardsContainer .student-lesson-card");
+        cards.forEach(c=>c.classList.remove("lesson-highlight")); if(value=="") return; let found=null;
+        cards.forEach((card,index)=>{
+            let txt=card.innerText.toLowerCase(); let number=(index+1).toString();
+            if(!found && (txt.includes(value)||number==value)){ found=card; }
+        });
+        if(found){ found.classList.add("lesson-highlight"); found.scrollIntoView({ behavior:"smooth", block:"center" }); }
+        if(e.key==="Escape"){ document.getElementById("lessonSearch").value=""; cards.forEach(c=>c.classList.remove("lesson-highlight")); }
+    }
+
+    async function saveClassTime(){
+        classTime = document.getElementById('classTimeInput').value.trim();
+        document.getElementById('classTimeBox').innerHTML = classTime;
+        await syncSettingsToSupabase();
+        alert('کلاس ٹائم محفوظ ہوگیا');
+    }
+
+    async function showLessonHistory(studentName){
+        document.getElementById("lessonHistoryModal").style.display = "block";
+        document.getElementById("lessonHistoryTitle").innerHTML = "📖 " + studentName + " کا سبق ریکارڈ";
+        document.getElementById("lessonHistoryBody").innerHTML = "<div style='text-align:center; padding:20px; font-size:18px;'>ڈیٹا کلاؤڈ سے لایا جا رہا ہے... ⏳</div>";
+
+        try {
+            const { data, error } = await _supabase
+                .from('attendance_records')
+                .select('date, quran_lesson, prayer_lesson')
+                .eq('student_name', studentName)
+                .order('date', { ascending: false });
+
+            if (error) throw error;
+
+            let html = "";
+            if (data && data.length > 0) {
+                data.forEach(function(rec){
+                    const quran = (rec.quran_lesson || "").trim();
+                    const prayer = (rec.prayer_lesson || "").trim();
+                    
+                    if(quran.length > 0 || prayer.length > 0) {
+                        html += `<div class="history-item">
+                                    <div class="history-date">📅 ${formatUrduDate(rec.date)}</div>
+                                    <div style="margin-bottom:10px;"><b>📖 قرآن:</b><br>${quran || "-"}</div>
+                                    <div><b>🕌 نماز / دعا:</b><br>${prayer || "-"}</div>
+                                 </div>`;
+                    }
+                });
+            }
+
+            if(html === ""){ 
+                html = `<div style="text-align:center;padding:30px;font-size:20px;">ابھی اس طالب علم کا کوئی سبق ریکارڈ موجود نہیں۔</div>`; 
+            }
+            
+            document.getElementById("lessonHistoryBody").innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById("lessonHistoryBody").innerHTML = `<div style="color:red; text-align:center; font-weight:bold;">انٹرنیٹ کا مسئلہ! ڈیٹا لانے میں ناکامی۔</div>`;
+        }
+    }
+
+    function closeLessonHistory(){ document.getElementById("lessonHistoryModal").style.display="none"; }
+
+    function downloadBackup() {
+        const backupData = { attendance: globalData, names, videos: videoLists, timelinePosts, formerStudents, studentJoinDates: window.studentJoinDates || {} };
+        const blob = new Blob([JSON.stringify(backupData)], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'hussain_masjid_full_backup.txt'; a.click();
+    }
+    
+    window.addEventListener('beforeunload', function (e) {
+        if (unsavedChanges) { e.preventDefault(); e.returnValue = ''; }
+    });
 </script>
+
 </body>
 </html>
