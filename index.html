@@ -260,6 +260,12 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.12);
             transition: all 0.2s ease;
         }
+        .lesson-voice-mic-btn {
+            display: none !important;
+        }
+        .teacher-mode-active .lesson-voice-mic-btn {
+            display: flex !important;
+        }
         .voice-mic-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
@@ -1411,11 +1417,11 @@
                         </div>
                         <div class="input-with-mic">
                             <input type="text" id="quranInput_${i}" class="diary-input ${quranFontClass}" value="${currentW}" ${disabledInput} onchange="saveW('${safeN}',this.value)" placeholder="قرآن کا سبق">
-                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے قرآن کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'w', 'quranInput_${i}')">${GOOGLE_MIC_SVG}</button>
+                            <button type="button" class="voice-mic-btn lesson-voice-mic-btn" ${disabledInput} title="آواز سے قرآن کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'w', 'quranInput_${i}')">${GOOGLE_MIC_SVG}</button>
                         </div>
 
                         <div class="lesson-label-row">
-                            <span class="lesson-box-label">نماز / دعائیں:</span>
+                            <span class="lesson-box-label">نماز کا سبق:</span>
                             <div class="font-toggle-group">
                                 <button type="button" class="font-toggle-btn ${prayerFont === 'urdu' ? 'active' : ''}" onclick="setStudentLessonFont('${safeN}', 'wD', 'urdu')">اردو</button>
                                 <button type="button" class="font-toggle-btn ${prayerFont === 'arabic' ? 'active' : ''}" onclick="setStudentLessonFont('${safeN}', 'wD', 'arabic')">عربی</button>
@@ -1423,7 +1429,7 @@
                         </div>
                         <div class="input-with-mic">
                             <input type="text" id="prayerInput_${i}" class="diary-input ${prayerFontClass}" value="${currentWD}" ${disabledInput} onchange="saveWD('${safeN}',this.value)" placeholder="نماز کا سبق">
-                            <button type="button" class="voice-mic-btn" ${disabledInput} title="آواز سے نماز کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'wD', 'prayerInput_${i}')">${GOOGLE_MIC_SVG}</button>
+                            <button type="button" class="voice-mic-btn lesson-voice-mic-btn" ${disabledInput} title="آواز سے نماز کا سبق لکھیں" onclick="startLessonVoice(this, '${safeN}', 'wD', 'prayerInput_${i}')">${GOOGLE_MIC_SVG}</button>
                         </div>
 
                         <button class="history-btn" onclick="showLessonHistory('${safeN}')">📖 مکمل سبق ریکارڈ</button>
