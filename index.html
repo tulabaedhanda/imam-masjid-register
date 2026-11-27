@@ -214,7 +214,7 @@
       display: block;
     }
 
-    /* مہینے اور سال کی بڑی سرخی اور سلیکٹر */
+    /* مہینے اور سال کی بڑی سرخی اور پچھلے مہینے دیکھنے کا سلیکٹر */
     .month-hero-card {
       background: linear-gradient(135deg, rgba(24, 6, 48, 0.88), rgba(66, 14, 102, 0.88));
       border: 2px solid rgba(255, 215, 0, 0.65);
@@ -226,7 +226,7 @@
     }
 
     .month-big-title {
-      font-size: 2.35rem;
+      font-size: 2.4rem;
       font-weight: bold;
       line-height: 1.65;
       color: #ffd700;
@@ -237,13 +237,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
       margin-top: 6px;
-      flex-wrap: wrap;
     }
 
     .month-select {
-      flex: 1;
+      width: 100%;
       max-width: 260px;
       min-height: 42px;
       padding: 2px 12px;
@@ -315,10 +313,10 @@
       width: 100%;
       background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
       color: #240b36;
-      font-size: 1.24rem;
+      font-size: 1.28rem;
       font-weight: bold;
       border-radius: 14px;
-      padding: 4px 12px;
+      padding: 5px 12px;
     }
 
     .btn-gold {
@@ -790,9 +788,7 @@
     .kp-clr  { background: linear-gradient(135deg, #cb2d3e, #ef473a); font-family: 'JameelNoori', Tahoma, sans-serif; font-size: 1.2rem; }
     .kp-save { grid-column: span 2; background: linear-gradient(135deg, #11998e, #38ef7d); color: #052216; font-family: 'JameelNoori', Tahoma, sans-serif; font-size: 1.4rem; }
 
-    /* =========================================================
-       پرنٹ (A4 / PDF) کے لیے صاف اور واضح ڈیزائن
-       ========================================================= */
+    /* پرنٹ (A4 / PDF) کے لیے صاف اور واضح ڈیزائن */
     @media print {
       body {
         background: #ffffff !important;
@@ -811,9 +807,7 @@
       .keypad-overlay {
         display: none !important;
       }
-      .container {
-        max-width: 100% !important;
-      }
+      .container { max-width: 100% !important; }
       .banner-wrapper {
         background: #ffffff !important;
         border: 1.5px solid #000 !important;
@@ -896,13 +890,13 @@
 <div id="toastBanner" class="toast-banner">✅ ڈیٹا آن لائن محفوظ ہو گیا ہے!</div>
 
 <div class="container">
-  <!-- دونوں مسجدوں کے بینر (رضوان مسجد پہلے) -->
+  <!-- دونوں مسجدوں کے بینر: رضوان مسجد دائیں طرف (پہلے) اور امام حسین مسجد بائیں طرف (دوسرے نمبر پر) -->
   <div class="banner-wrapper">
     <div class="active-banner-box" id="activeBannerBox"></div>
     <div class="mosque-switcher" id="mosqueSwitcher"></div>
   </div>
 
-  <!-- مہینے اور سال کا بڑا عنوان + مہینہ منتخب کرنے کی سہولت -->
+  <!-- مہینے اور سال کا بڑا عنوان + پچھلے مہینے دیکھنے کا سلیکٹر -->
   <div class="month-hero-card" id="monthHeroCard"></div>
 
   <!-- ایڈمن کنٹرولز (صرف لاگ ان ہونے پر نظر آئیں گے) -->
@@ -1024,18 +1018,18 @@
   }
 
   // =========================================================
-  // 1. رضوان مسجد پہلے، امام حسین مسجد دوسرے نمبر پر (نئے ڈرائیو لنکس اوپر نیچے کر دیے گئے ہیں)
+  // 1. رضوان مسجد دائیں طرف (پہلے) اور امام حسین مسجد بائیں طرف (دوسرے نمبر پر)
   // =========================================================
   const MOSQUES_CONFIG = [
     {
       id: 'mosque_2',
       label: 'رضوان مسجد',
-      driveId: '18UcaX2RmQbMbZOMlNOFlxAO_ImmNGeDc'
+      driveId: '1hk9-Mbrl0Xc9Jg799XCt1XZFzG1fBw7A'
     },
     {
       id: 'mosque_1',
       label: 'امام حسین مسجد',
-      driveId: '1hk9-Mbrl0Xc9Jg799XCt1XZFzG1fBw7A'
+      driveId: '18UcaX2RmQbMbZOMlNOFlxAO_ImmNGeDc'
     }
   ];
 
@@ -1047,7 +1041,6 @@
     return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
   }
 
-  // کنفرمیشن میسج
   let toastTimer = null;
   function showToast(msg, isError = false) {
     const el = document.getElementById('toastBanner');
@@ -1059,7 +1052,6 @@
     }, 3200);
   }
 
-  // پرنٹ فنکشن
   function printRecord() {
     window.print();
   }
@@ -1082,7 +1074,7 @@
     'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'
   ];
 
-  // موجودہ کیلنڈر مہینہ اور سال معلوم کرنے کا فنکشن
+  // اصل کیلنڈر کا موجودہ مہینہ اور سال
   function getCurrentCalendarMonth() {
     const now = new Date();
     const year = now.getFullYear();
@@ -1111,14 +1103,33 @@
     }));
   }
 
-  // نیا مہینہ چڑھنے پر خودکار نیا مہینہ بنانا (نام برقرار، پوائنٹس 0، پچھلا ریکارڈ محفوظ)
+  // مہینے کا خودکار انتظام (اور اگر پچھلی بار غلطی سے ڈبل مہینے بن گئے ہوں تو انہیں صاف کرنا)
   function ensureCurrentMonthReady(dataObj, forceSelectCurrent = false) {
     const curr = getCurrentCalendarMonth();
-    let createdNew = false;
+    let changed = false;
 
     if (!Array.isArray(dataObj.months)) dataObj.months = [];
     if (!dataObj.monthlyRecords) dataObj.monthlyRecords = {};
 
+    // پچھلی بار غلطی سے بننے والے ڈبل یا مستقبل کے صفر مہینوں کو صاف کریں
+    const seenNames = new Set();
+    const cleanedMonths = [];
+    for (const m of dataObj.months) {
+      if (seenNames.has(m.name)) {
+        changed = true;
+        continue;
+      }
+      // اگر یہ مستقبل کا خودکار صفر مہینہ ہے اور ابھی وہ مہینہ نہیں آیا تو ہٹا دیں
+      if (m.id !== curr.id && m.id.startsWith('m_') && m.id.length > 10 && m.name === 'دسمبر 2026' && curr.id !== 'm_2026_12') {
+        changed = true;
+        continue;
+      }
+      seenNames.add(m.name);
+      cleanedMonths.push(m);
+    }
+    dataObj.months = cleanedMonths;
+
+    // اگر موجودہ مہینہ ابھی نہیں بنا (مثلاً نیا مہینہ چڑھ گیا ہو) تو خود بخود بنائیں
     const alreadyExists = dataObj.months.some(m => m.id === curr.id);
     if (!alreadyExists) {
       const latestMonth = dataObj.months.length > 0
@@ -1133,14 +1144,14 @@
         mosque_2: cloneClassesWithZeroPoints(prevRec.mosque_2),
         mosque_1: cloneClassesWithZeroPoints(prevRec.mosque_1)
       };
-      createdNew = true;
+      changed = true;
     }
 
-    if (forceSelectCurrent || !dataObj.activeMonthId) {
+    if (forceSelectCurrent || !dataObj.months.some(m => m.id === dataObj.activeMonthId)) {
       dataObj.activeMonthId = curr.id;
     }
 
-    return createdNew;
+    return changed;
   }
 
   const initialCurr = getCurrentCalendarMonth();
@@ -1246,7 +1257,7 @@
           return;
         }
 
-        const autoRolledNewMonth = ensureCurrentMonthReady(cloudNormalized, isInitialLoad);
+        const autoUpdated = ensureCurrentMonthReady(cloudNormalized, isInitialLoad);
         const keepMosque = appData.activeMosqueId || 'mosque_2';
         const curr = getCurrentCalendarMonth();
 
@@ -1265,7 +1276,7 @@
         saveLocalCache();
         render();
 
-        if (autoRolledNewMonth && isAdmin()) {
+        if (autoUpdated && isAdmin()) {
           await saveData(false);
         }
       }
@@ -1435,7 +1446,7 @@
   }
 
   // =========================================================
-  // 4. کلاس، نگران بچہ، اور دیئے گئے بچے (صرف منتخب مہینے میں تبدیلی ہوگی)
+  // 4. کلاس، نگران بچہ، اور دیئے گئے بچے
   // =========================================================
   function openAddClass() {
     if (!isAdmin()) return;
@@ -1718,7 +1729,7 @@
       />
     `;
 
-    // 2. دونوں مسجدوں کے بینر سوئچر (رضوان مسجد پہلے)
+    // 2. دونوں مسجدوں کے بینر سوئچر (رضوان مسجد دائیں طرف پہلے، امام حسین مسجد بائیں طرف دوسرے نمبر پر)
     document.getElementById('mosqueSwitcher').innerHTML = MOSQUES_CONFIG.map(m => `
       <button type="button" class="thumb-btn ${m.id === activeMosque.id ? 'active' : ''}" onclick="switchMosque('${m.id}')">
         <img
@@ -1729,7 +1740,7 @@
       </button>
     `).join('');
 
-    // 3. اوپر مہینے اور سال کا بڑا عنوان + پچھلا مہینہ دیکھنے کا سلیکٹر
+    // 3. اوپر مہینے اور سال کا بڑا عنوان + پچھلا مہینہ دیکھنے کا سلیکٹر (بغیر کسی + نیا مہینہ بٹن کے)
     const monthHeroCard = document.getElementById('monthHeroCard');
     monthHeroCard.innerHTML = `
       <div class="month-big-title">${activeMonthObj ? activeMonthObj.name : ''}</div>
@@ -1744,7 +1755,7 @@
       ` : ''}
     `;
 
-    // 4. ایڈمن بٹن صرف لاگ ان حالت میں دکھائیں
+    // 4. ایڈمن بٹن (بشمول پرنٹ بٹن) صرف لاگ ان حالت میں دکھائیں
     document.getElementById('adminTopBar').style.display = admin ? 'block' : 'none';
 
     // 5. کلاسز، پوزیشنز، نگران بچے اور ان کے بچے
@@ -1890,11 +1901,9 @@
         })
         .subscribe();
 
-      // والدین کے موبائل پر ہر 10 سیکنڈ بعد خودکار تازہ ریکارڈ لوڈ ہو
       setInterval(() => fetchCloudData(false), 10000);
     })();
 
-    // جمیل نوری فونٹ اور کلاؤڈ ڈیٹا لوڈ ہونے کے بعد لوڈنگ اسکرین ہٹائیں
     await Promise.race([
       Promise.allSettled([fontReadyPromise, cloudInitPromise]),
       maxWaitTimeout
